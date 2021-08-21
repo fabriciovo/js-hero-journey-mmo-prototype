@@ -8,11 +8,11 @@ _Brief Summary or Hook_
   grid-template-columns: auto auto;
   padding: 10px;">
 
-<img src="./doc/tibia.jpg" width="600px" height="440px" style="border: 1px solid #ddd;
+<img src="./doc/tibia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;"/>
 
-<img src="./doc/zezenia.jpg" width="710px" height="440px" style="border: 1px solid #ddd;
+<img src="./doc/zezenia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;"
  />
