@@ -10,11 +10,13 @@ _Brief Summary or Hook_
 <img src="./doc/tibia.jpg" aling="center" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
+  height: 200px;
   width: 200px;"/>
 
 <img src="./doc/zezenia.jpg" aling="center" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
+  height: 200px;
   width: 265px;"/>
 </div>
 
