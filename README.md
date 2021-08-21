@@ -3,9 +3,6 @@
 
 _Brief Summary or Hook_
 
-![zezenia](./doc/zezenia.jpg)
-<img src="./doc/zezenia.jpg"  width="120" height="120">
-
 ## Inspirações
 <div style="display: grid;
   grid-template-columns: auto auto;
