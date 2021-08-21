@@ -10,12 +10,12 @@ _Brief Summary or Hook_
 <img src="./doc/tibia.jpg" aling="center" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
-  width: 600px;"/>
+  width: 300px;"/>
 
 <img src="./doc/zezenia.jpg" aling="center" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
-  width: 730px;"/>
+  width: 365px;"/>
 </div>
 
 **Estilo:** MMORPG
