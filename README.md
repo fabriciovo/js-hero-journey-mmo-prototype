@@ -3,34 +3,21 @@
 
 _Brief Summary or Hook_
 
-a[href^="https://intranet.example.com"] {
-    color: #e8e8e8
-    border-bottom: 1px solid #e8e8e8 ;
-}
-
-
-![Kitten](/doc/tibia.jpg){: width=150 height=100 style="float:right; padding:16px"}
-
-
-![Kitten](/doc/tibia.jpg){
-    color: #e8e8e8
-    border-bottom: 1px solid #e8e8e8 ;
-}
-
 ## Inspirações
-<div style="display: grid;
-  grid-template-columns: auto auto;
-  padding: 10px;">
 
+
+<div style='text-align: left;'>  
 <img src="./doc/tibia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;"/>
+</div>
 
+<div style='text-align: right;'>  
 <img src="./doc/zezenia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;"
  />
-</div>
+ </div>
 
 ## Descrição
 
