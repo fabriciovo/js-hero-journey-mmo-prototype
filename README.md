@@ -5,19 +5,8 @@ _Brief Summary or Hook_
 
 ## Inspirações
 
-
-<div style='text-align: left;'>  
-<img src="./doc/tibia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px;"/>
-</div>
-
-<div style='text-align: right;'>  
-<img src="./doc/zezenia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px;"
- />
- </div>
+<div style='text-align: left;'><img src="./doc/tibia.jpg" width="200px" height="200px" style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/></div>
+<div style='text-align: right;'><img src="./doc/zezenia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/></div>
 
 ## Descrição
 
