@@ -6,8 +6,8 @@
 ## Inspirações
 
 <p align="center">
- <img src="./doc/tibia.jpg" width="200px" height="200px" style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/>
- <img src="./doc/zezenia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/>
+ <img src="./doc/tibia.jpg" width="400px"  style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/>
+ <img src="./doc/zezenia.jpg" width="400px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/>
 </p>
 
 
