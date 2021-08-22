@@ -6,7 +6,9 @@
 ## Inspirações
 
 <p align="center">
+Tibia
  <img src="./doc/tibia.jpg" width="500px"  style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/>
+ zezenia
  <img src="./doc/zezenia.jpg" width="620px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/>
 </p>
 
