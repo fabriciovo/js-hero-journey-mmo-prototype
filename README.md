@@ -1,12 +1,17 @@
 ##
 # **Phaser MMORPG**
 
-_Brief Summary or Hook_
+**itch.io:** _https://fabriciovarisco.itch.io/phaser-rpg_
 
 ## Inspirações
 
-<div style='text-align: left;'><img src="./doc/tibia.jpg" width="200px" height="200px" style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/></div>
-<div style='text-align: right;'><img src="./doc/zezenia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/></div>
+<p align="center">
+ <img src="./doc/tibia.jpg" width="200px" height="200px" style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/>
+ <img src="./doc/zezenia.jpg" width="200px" height="200px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/>
+</p>
+
+
+
 
 ## Descrição
 
