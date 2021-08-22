@@ -4,6 +4,7 @@ var config = {
     height: 600,
     scene: [BootScene,TitleScene,GameScene,UiScene],
     pixelArt: true,
+    roundPixels: true,
     physics: {
         default: 'arcade',
         arcade: {
