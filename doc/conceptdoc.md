@@ -46,3 +46,7 @@ O Jogo inicialmente fornecera ao jogador 3 classes:
 Além do nível do jogador o jogo também tem um sistema de nível de habilidades que aumenta ainda mais a força do jogador, quanto mais monstros um guerreiro mata com uma espada mais habilidade com essa arma ele tem.
 
 _Nota: Não ira existir uma limitação de classe, isso significa que um guerreiro também pode usar magias e arcos, mas ele não terá uma bonificação e também será mais difícil de evoluir sua habilidade._
+
+
+
+[Voltar](../README.md)
