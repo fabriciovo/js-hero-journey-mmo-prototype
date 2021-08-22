@@ -6,8 +6,8 @@
 **Tibia e Zezenia**
 
 <p align="center">
-<img src="./doc/tibia.jpg" width="340px"  style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/>
-<img src="./doc/zezenia.jpg" width="420px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/>
+<img src="./tibia.jpg" width="340px"  style="border: 1px solid #ddd; border-radius: 4px;padding: 5px;"/>
+<img src="./zezenia.jpg" width="420px" style="border: 1px solid #ddd;border-radius: 4px;padding: 5px;"/>
 </p>
 
 
