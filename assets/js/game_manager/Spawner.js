@@ -1,6 +1,6 @@
 
 class Spawner {
-    constructor(config, spawnLocations, addObject,deletedObject){
+    constructor(config, spawnLocations, addObject, deletedObject) {
         this.id = config.id;
         this.spawnInterval = config.spawnInterval;
         this.limit = config.limit;
@@ -16,42 +16,54 @@ class Spawner {
     }
 
 
-    start(){
-        this.interval = setInterval(() =>{
-            if(this.objectsCreated.length < this.limit){
+    start() {
+        this.interval = setInterval(() => {
+            if (this.objectsCreated.length < this.limit) {
                 this.spawnObject();
             }
         }, this.spawnInterval)
     }
 
-    spawnObject(){
-        if(this.objectType === 'CHEST'){
+    spawnObject() {
+        if (this.objectType === SpawnerType.CHEST) {
             this.spawnChest();
+        } else if (this.objectType === SpawnerType.MONSTER) {
+            this.spawnMonster();
         }
     }
 
-    spawnChest(){
+    spawnChest() {
         const location = this.pickRandomLocation();
-        const chest = new ChestModel(location[0],location[1],10,this.id);
+        const chest = new ChestModel(location[0], location[1], 10, this.id);
         this.objectsCreated.push(chest);
         this.addObject(chest.id, chest);
     }
 
-    pickRandomLocation(){
+    spawnMonster() {
+        const location = this.pickRandomLocation();
+        const monster = new MonsterModel(
+            location[0], location[1], 10, this.id,
+            1,10,10);
+        this.objectsCreated.push(monster);
+        this.addObject(monster.id, monster);
+    }
+
+    pickRandomLocation() {
         const location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)];
         const invalidLocation = this.objectsCreated.some((obj) => {
-            if(obj.x === location[0] && obj.y === location[1]){
+            if (obj.x === location[0] && obj.y === location[1]) {
                 return true;
             }
             return false;
         })
 
-        if(invalidLocation) return this.pickRandomLocation();
+        if (invalidLocation) return this.pickRandomLocation();
         return location
     }
 
-    removeObject(){
-        
+    removeObject(id) {
+        this.objectsCreated = this.objectsCreated.filter((obj) => obj.id !== id);
+        this.deletedObject(id)
     }
 
 }
