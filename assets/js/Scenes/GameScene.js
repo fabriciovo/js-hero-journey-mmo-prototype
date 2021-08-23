@@ -14,20 +14,23 @@ class GameScene extends Phaser.Scene {
 
     create() {
         this.createMap();
-        this.createPlayer();
+
         this.createChest();
         this.createWalls();
-        this.addCollisions();
+      
         this.createInputs();
+
+        this.createGameManager();
 
     }
 
     update() {
-        this.player.update(this.cursors);
+        if(this.player) this.player.update(this.cursors);
     }
 
-    createPlayer() {
-        this.player = new Player(this, 200, 200, 'characters', 0);
+    createPlayer(location) {
+        debugger
+        this.player = new Player(this, location[0] * 2, location[1] * 2, 'characters', 0);
     }
     createChest() {
         this.chests = this.physics.add.group();
@@ -57,5 +60,15 @@ class GameScene extends Phaser.Scene {
 
     createMap(){
         this.map = new Map(this, 'map','colored');
+    }
+
+    createGameManager() {
+        this.events.on('spawnPlayer',(location)=>{
+            debugger
+            this.createPlayer(location);
+            this.addCollisions();
+        });
+        this.gameManager = new GameManager(this, this.map.map.objects);
+        this.gameManager.setup();
     }
 }
