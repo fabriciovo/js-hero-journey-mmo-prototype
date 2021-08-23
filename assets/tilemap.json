@@ -61,23 +61,6 @@
                  "width":0.666667,
                  "x":-283.333,
                  "y":42
-                }, 
-                {
-                 "height":0,
-                 "id":8,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"spawner",
-                         "type":"string",
-                         "value":""
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":546,
-                 "y":494.667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -218,7 +201,7 @@
                  "visible":true,
                  "width":0,
                  "x":84,
-                 "y":329.333333333333
+                 "y":329.333
                 }, 
                 {
                  "height":0,
@@ -234,8 +217,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":287.333333333333,
-                 "y":349.333333333333
+                 "x":287.333,
+                 "y":349.333
                 }, 
                 {
                  "height":0,
@@ -251,8 +234,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":298.666666666667,
-                 "y":116.666666666667
+                 "x":298.667,
+                 "y":116.667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -294,6 +277,19 @@
         {
          "columns":32,
          "firstgid":1,
+         "image":"..\/..\/kenney_1bitPack\/Tilemap\/tileset_legacy.png",
+         "imageheight":543,
+         "imagewidth":543,
+         "margin":0,
+         "name":"colored",
+         "spacing":1,
+         "tilecount":1024,
+         "tileheight":16,
+         "tilewidth":16
+        }, 
+        {
+         "columns":32,
+         "firstgid":1025,
          "image":"..\/..\/kenney_1bitPack\/Tilemap\/tileset_legacy.png",
          "imageheight":543,
          "imagewidth":543,
