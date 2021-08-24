@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 576,
+    height: 432,
     scene: [BootScene,TitleScene,GameScene,UiScene],
     pixelArt: true,
     roundPixels: true,
