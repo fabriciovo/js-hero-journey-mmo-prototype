@@ -84,4 +84,6 @@ Os npcs geralmente vivem pelas cidades, podem dar dicas de quests ou vender/comp
 ## 🔊 Sound
 
 * Ainda estou na procura dos áudios.
-* 
+
+
+[Voltar](../README.md)
