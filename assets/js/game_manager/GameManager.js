@@ -79,6 +79,7 @@ class GameManager {
 
 
             if (this.monsters[monsterId]) {
+                console.log(this.monsters[monsterId])
                 this.monsters[monsterId].loseHealth();
                 if (this.monsters[monsterId].health <= 0) {
 

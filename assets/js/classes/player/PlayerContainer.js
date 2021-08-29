@@ -115,8 +115,6 @@ class PlayerContainer extends Phaser.GameObjects.Container {
         this.updateHealthBar();
 
 
-
-
         if (this.currentDirection === Direction.DOWN) {
             this.player.playAnimation('walk_down');
         }

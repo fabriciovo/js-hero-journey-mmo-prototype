@@ -1,4 +1,4 @@
-class Monster extends Phaser.Physics.Arcade.Image {
+class Monster extends Phaser.Physics.Arcade.Sprite {
     constructor(scene,x,y,key,frame,id,health,maxHealth){
         super(scene,x,y,key,frame);
         this.scene = scene;
@@ -17,6 +17,7 @@ class Monster extends Phaser.Physics.Arcade.Image {
         this.scene.add.existing(this);
         this.setOrigin(0);
         this.createHealthBar();
+        
 
     }
 
@@ -40,6 +41,8 @@ class Monster extends Phaser.Physics.Arcade.Image {
 
     updateHealth(health){ 
         this.health = health;
+        this.body.velocity.x -=600;
+        this.body.setBounce(1)
         this.updateHealthBar();
     }
     createHealthBar(){
