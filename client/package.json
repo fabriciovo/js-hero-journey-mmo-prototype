@@ -1,0 +1,31 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test speciCDfied\" && exit 1",
+    "build": "npx webpack --mode production",
+    "start": "npm run build && webpack-dev-server --port=8000 --mode development",
+    "lint": "npx eslint src/ --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.15.4",
+    "@babel/preset-env": "^7.15.4",
+    "babel-loader": "^8.2.2",
+    "eslint": "^7.32.0",
+    "eslint-config": "^0.3.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "raw-loader": "^4.0.2",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.1.0"
+  },
+  "dependencies": {
+    "phaser": "^3.55.2",
+    "uuid": "^8.3.2"
+  }
+}
