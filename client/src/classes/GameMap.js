@@ -1,5 +1,5 @@
 import *  as Pahser from 'phaser'
-export default class Map {
+export default class GameMap {
     /**
      * 
      * @param {Pass the game scene} scene 
@@ -18,22 +18,22 @@ export default class Map {
     }
 
     createMap(){
-        this.map = this.scene.make.tilemap({key:this.key});
-        console.log(this.map)
-        this.tiles = this.map.addTilesetImage('colored','colored_packed',16,16);
+        this.tilemap = this.scene.make.tilemap({key:this.key});
+        console.log(this.tilemap)
+        this.tiles = this.tilemap.addTilesetImage('colored','colored_packed',16,16);
 
-        this.background =  this.map.createLayer(this.bgLayer, this.tiles, 0, 0);
+        this.background =  this.tilemap.createLayer(this.bgLayer, this.tiles, 0, 0);
         
-        this.blocked =  this.map.createLayer(this.blockedLayer, this.tiles, 0, 0);
+        this.blocked =  this.tilemap.createLayer(this.blockedLayer, this.tiles, 0, 0);
         this.blocked.setCollisionByExclusion([-1]);
 
         this.background.setScale(2);
         this.blocked.setScale(2);
 
-        this.scene.physics.world.bounds.width = this.map.widthInPixels * 2;
-        this.scene.physics.world.bounds.height = this.map.heightInPixels * 2;
+        this.scene.physics.world.bounds.width = this.tilemap.widthInPixels * 2;
+        this.scene.physics.world.bounds.height = this.tilemap.heightInPixels * 2;
 
-        this.scene.cameras.main.setBounds(0,0,this.map.widthInPixels * 2, this.map.heightInPixels * 2)
+        this.scene.cameras.main.setBounds(0,0,this.tilemap.widthInPixels * 2, this.tilemap.heightInPixels * 2)
     }
 
 }

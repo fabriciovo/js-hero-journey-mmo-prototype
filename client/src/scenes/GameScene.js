@@ -1,4 +1,10 @@
 import *  as Pahser from 'phaser'
+import PlayerContainer from '../classes/player/PlayerContainer';
+import GameManager from '../game_manager/GameManager';
+import Chest from '../classes/Chest';
+import Monster from '../classes/Monster';
+
+
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super('Game');
@@ -85,9 +91,9 @@ export default class GameScene extends Phaser.Scene {
         this.wall.setImmovable();
     }
     addCollisions() {
-        this.physics.add.collider(this.player, this.map.blocked);
+        this.physics.add.collider(this.player, this.gameMap.blocked);
 
-        this.physics.add.collider(this.monsters, this.map.blocked);
+        this.physics.add.collider(this.monsters, this.gameMap.blocked);
 
         this.physics.add.overlap(this.player, this.chests, this.collectChest, null, this);
         this.physics.add.overlap(this.player.weapon, this.monsters, this.enemyOverlap, null, this);
@@ -108,7 +114,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     createMap() {
-        this.map = new Map(this, 'map', 'colored');
+        this.gameMap = new GameMap(this, 'map', 'colored');
     }
 
     createGameManager() {
@@ -167,7 +173,7 @@ export default class GameScene extends Phaser.Scene {
             this.player.respawn(playerObject);
         });
 
-        this.gameManager = new GameManager(this, this.map.map.objects);
+        this.gameManager = new GameManager(this, this.gameMap.tilemap.objects);
         this.gameManager.setup();
     }
 }
