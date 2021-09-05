@@ -1,31 +1,30 @@
 {
   "name": "client",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Client mmorpg",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test speciCDfied\" && exit 1",
     "build": "npx webpack --mode production",
-    "start": "npm run build && webpack-dev-server --port=8000 --mode development",
-    "lint": "npx eslint src/ --fix"
+    "start": "npm run build && npx webpack-dev-server --port=8000 --mode development",
+    "lint": "npx eslint src/ --fix",
+    "bundle": "./bundle.sh"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Fabricio Varisco",
   "devDependencies": {
-    "@babel/core": "^7.15.4",
-    "@babel/preset-env": "^7.15.4",
-    "babel-loader": "^8.2.2",
-    "eslint": "^7.32.0",
-    "eslint-config": "^0.3.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.2",
-    "raw-loader": "^4.0.2",
-    "webpack": "^5.51.1",
-    "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.1.0"
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "raw-loader": "^3.1.0",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
-    "phaser": "^3.55.2",
-    "uuid": "^8.3.2"
+    "phaser": "^3.18.1",
+    "socket.io-client": "^4.2.0",
+    "uuid": "^3.3.2"
   }
 }
