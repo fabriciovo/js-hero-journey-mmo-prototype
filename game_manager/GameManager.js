@@ -22,39 +22,33 @@ export default class GameManager {
         this.setupEventListener();
         this.setupSpawners();
         console.log(this.chestLocations)
-        console.log(this.monsterLocations)
-
     }
-
-    parseMapData() {
-        this.levelData = levelData;
-        this.levelData.layers.forEach(layers => {
-            if (layers.name === 'player_locations') {
-                layers.objects.forEach(obj => {
-                    this.playerLocations.push([obj.x, obj.y])
-                })
-
-            } else if (layers.name === 'monster_locations') {
-                layers.objects.forEach(obj => {
-                    if (this.monsterLocations[obj.properties.spawner]) {
-                        this.monsterLocations[obj.properties.spawner].push([obj.x, obj.y])
-                    } else {
-                        this.monsterLocations[obj.properties.spawner] = [[obj.x, obj.y]];
-                    }
-                })
-            } else if (layers.name === 'chest_locations') {
-
-                layers.objects.forEach(obj => {
-                    if (this.chestLocations[obj.properties.spawner]) {
-                        this.chestLocations[obj.properties.spawner].push([obj.x, obj.y])
-                    } else {
-                        this.chestLocations[obj.properties.spawner] = [[obj.x, obj.y]];
-                    }
-                })
-            }
-
+  parseMapData() {
+    this.levelData = levelData;
+    this.levelData.layers.forEach((layer) => {
+      if (layer.name === 'player_locations') {
+        layer.objects.forEach((obj) => {
+          this.playerLocations.push([obj.x, obj.y]);
         });
-    }
+      } else if (layer.name === 'monster_locations') {
+        layer.objects.forEach((obj) => {
+          if (this.monsterLocations[obj.properties.spawner]) {
+            this.monsterLocations[obj.properties.spawner].push([obj.x, obj.y]);
+          } else {
+            this.monsterLocations[obj.properties.spawner] = [[obj.x, obj.y]];
+          }
+        });
+      } else if (layer.name === 'chest_locations') {
+        layer.objects.forEach((obj) => {
+          if (this.chestLocations[obj.properties.spawner]) {
+            this.chestLocations[obj.properties.spawner].push([obj.x, obj.y]);
+          } else {
+            this.chestLocations[obj.properties.spawner] = [[obj.x, obj.y]];
+          }
+        });
+      }
+    });
+  }
     setupEventListener() {
         this.io.on('connection', (socket) => {
             socket.on('disconnect', () => {
@@ -166,41 +160,41 @@ export default class GameManager {
 
     setupSpawners() {
         const config = {
-            spawnInterval: 3000,
-            limit: 3,
-            spawnerType: SpawnerType.CHEST,
-            id: '',
+          spawnInterval: 3000,
+          limit: 3,
+          spawnerType: SpawnerType.CHEST,
+          id: '',
         };
         let spawner;
-
+    
         // create chest spawners
         Object.keys(this.chestLocations).forEach((key) => {
-            config.id = `chest-${key}`;
-
-            spawner = new Spawner(
-                config,
-                this.chestLocations[key],
-                this.addChest.bind(this),
-                this.deleteChest.bind(this),
-            );
-            this.spawners[spawner.id] = spawner;
+          config.id = `chest-${key}`;
+    
+          spawner = new Spawner(
+            config,
+            this.chestLocations[key],
+            this.addChest.bind(this),
+            this.deleteChest.bind(this),
+          );
+          this.spawners[spawner.id] = spawner;
         });
-
+    
         // create monster spawners
         Object.keys(this.monsterLocations).forEach((key) => {
-            config.id = `monster-${key}`;
-            config.spawnerType = SpawnerType.MONSTER;
-
-            spawner = new Spawner(
-                config,
-                this.monsterLocations[key],
-                this.addMonster.bind(this),
-                this.deleteMonster.bind(this),
-                this.moveMonsters.bind(this),
-            );
-            this.spawners[spawner.id] = spawner;
+          config.id = `monster-${key}`;
+          config.spawnerType = SpawnerType.MONSTER;
+    
+          spawner = new Spawner(
+            config,
+            this.monsterLocations[key],
+            this.addMonster.bind(this),
+            this.deleteMonster.bind(this),
+            this.moveMonsters.bind(this),
+          );
+          this.spawners[spawner.id] = spawner;
         });
-    }
+      }
 
     spawnPlayer(playerId) {
         const player = new PlayerModel(playerId, this.playerLocations, this.players);
