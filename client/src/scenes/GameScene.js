@@ -154,7 +154,7 @@ export default class GameScene extends Phaser.Scene {
       } else {
         this.otherPlayers.getChildren().forEach(player => {
           if (player.id === playerId) {
-            this.player.updateHealth(playerObject);
+            this.player.updateHealth(health);
           }
         })
       }
@@ -162,8 +162,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on('respawnPlayer', (playerObject) => {
-
-
       if (this.player.id === playerObject.id) {
           this.playerDeathAudio.play();
           this.player.respawn(playerObject);
@@ -174,6 +172,14 @@ export default class GameScene extends Phaser.Scene {
           }
         })
       }
+    });
+
+    this.socket.on('disconnect', (playerId) => {
+      this.otherPlayers.getChildren().forEach((player) => {
+        if (player.id === playerId) {
+          player.cleanUp();
+        }
+      });
     });
 
   }

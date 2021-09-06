@@ -149,7 +149,7 @@ export default class GameManager {
                             socket.emit('updateScore', this.players[socket.id].gold);
 
                             // respawn the player
-                            this.players[socket.id].respawn();
+                            this.players[socket.id].respawn(this.players);
                             this.io.emit('respawnPlayer', this.players[socket.id]);
                         }
                     }
@@ -203,7 +203,7 @@ export default class GameManager {
     }
 
     spawnPlayer(playerId) {
-        const player = new PlayerModel(playerId, this.playerLocations);
+        const player = new PlayerModel(playerId, this.playerLocations, this.players);
         this.players[playerId] = player;
     }
 
