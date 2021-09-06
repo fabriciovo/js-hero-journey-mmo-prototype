@@ -1,28 +1,27 @@
-
 import PlayerModel from './PlayerModel';
-import * as levelData from '../public/assets/level/large_level.json'
-import Spawner from './Spawner'
-import { SpawnerType } from './utils'
+import * as levelData from '../public/assets/level/large_level.json';
+import Spawner from './Spawner';
+import { SpawnerType } from './utils';
 
 export default class GameManager {
-    constructor(io) {
-        this.io = io;
-        this.spawners = {};
-        this.chests = {};
-        this.monsters = {};
-        this.players = {};
+  constructor(io) {
+    this.io = io;
+    this.spawners = {};
+    this.chests = {};
+    this.monsters = {};
+    this.players = {};
 
-        this.playerLocations = [];
-        this.chestLocations = {};
-        this.monsterLocations = {};
-    }
+    this.playerLocations = [];
+    this.chestLocations = {};
+    this.monsterLocations = {};
+  }
 
-    setup() {
-        this.parseMapData();
-        this.setupEventListener();
-        this.setupSpawners();
-        console.log(this.chestLocations)
-    }
+  setup() {
+    this.parseMapData();
+    this.setupEventListeners();
+    this.setupSpawners();
+  }
+
   parseMapData() {
     this.levelData = levelData;
     this.levelData.layers.forEach((layer) => {
@@ -49,182 +48,208 @@ export default class GameManager {
       }
     });
   }
-    setupEventListener() {
-        this.io.on('connection', (socket) => {
-            socket.on('disconnect', () => {
-                // delete user data from server
-                delete this.players[socket.id];
 
-                //emit a message to all players to remove this player
-                this.io.emit('disconnected', socket.id);
-            });
+  setupEventListeners() {
+    this.io.on('connection', (socket) => {
+      // player disconnected
+      socket.on('disconnect', () => {
+        // delete user data from server
+        delete this.players[socket.id];
 
-            socket.on('newPlayer', () => {
-                console.log('new player');
+        // emit a message to all players to remove this player
+        this.io.emit('disconnected', socket.id);
+      });
 
-                this.spawnPlayer(socket.id);
+      socket.on('newPlayer', () => {
+        // create a new Player
+        this.spawnPlayer(socket.id);
 
-                socket.emit('currentPlayers', this.players);
+        // send the players object to the new player
+        socket.emit('currentPlayers', this.players);
 
-                socket.emit('currentMonsters', this.monsters);
+        // send the monsters object to the new player
+        socket.emit('currentMonsters', this.monsters);
 
-                socket.emit('currentChests', this.chests);
+        // send the chests object to the new player
+        socket.emit('currentChests', this.chests);
 
-                // inform the other players of the new player that joined
-                socket.broadcast.emit('spawnPlayer', this.players[socket.id]);
+        // inform the other players of the new player that joined
+        socket.broadcast.emit('spawnPlayer', this.players[socket.id]);
+      });
 
-            })
+      socket.on('playerMovement', (playerData) => {
+        if (this.players[socket.id]) {
+          this.players[socket.id].x = playerData.x;
+          this.players[socket.id].y = playerData.y;
+          this.players[socket.id].flipX = playerData.flipX;
+          this.players[socket.id].playerAttacking = playerData.playerAttacking;
+          this.players[socket.id].currentDirection = playerData.currentDirection;
 
-            socket.on('playerMovement', (playerData) => {
-                if (this.players[socket.id]) {
-                    this.players[socket.id].x = playerData.x;
-                    this.players[socket.id].y = playerData.y;
-                    this.players[socket.id].flipX = playerData.flipX;
-                    this.players[socket.id].playerAttacking = playerData.playerAttacking;
-                    this.players[socket.id].currentDirection = playerData.currentDirection;
+          // emit a message to all players about the player that moved
+          this.io.emit('playerMoved', this.players[socket.id]);
+        }
+      });
 
+      socket.on('pickUpChest', (chestId) => {
+        // update the spawner
+        if (this.chests[chestId]) {
+          const { gold } = this.chests[chestId];
 
-                    this.io.emit('playerMoved', this.players[socket.id]);
+          // updating the players gold
+          this.players[socket.id].updateGold(gold);
+          socket.emit('updateScore', this.players[socket.id].gold);
 
-                }
-            })
+          // removing the chest
+          this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
+        }
+      });
 
-            console.log('player connected');
+      socket.on('monsterAttacked', (monsterId) => {
+        // update the spawner
+        if (this.monsters[monsterId]) {
+          const { gold, attack } = this.monsters[monsterId];
 
+          // subtract health monster model
+          this.monsters[monsterId].loseHealth();
 
-            socket.on('pickUpChest', (chestId) => {
-                // update the spawner
-                if (this.chests[chestId]) {
-                    const { gold } = this.chests[chestId];
+          // check the monsters health, and if dead remove that object
+          if (this.monsters[monsterId].health <= 0) {
+            // updating the players gold
+            this.players[socket.id].updateGold(gold);
+            socket.emit('updateScore', this.players[socket.id].gold);
 
-                    // updating the players gold
-                    this.players[socket.id].updateGold(gold);
-                    socket.emit('updateScore', this.players[socket.id].gold);
+            // removing the monster
+            this.spawners[this.monsters[monsterId].spawnerId].removeObject(monsterId);
+            this.io.emit('monsterRemoved', monsterId);
 
-                    // removing the chest
-                    this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
+            // add bonus health to the player
+            this.players[socket.id].updateHealth(2);
+            this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
+          } else {
+            // update the players health
+            this.players[socket.id].updateHealth(-attack);
+            this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
 
-                }
-            });
+            // update the monsters health
+            this.io.emit('updateMonsterHealth', monsterId, this.monsters[monsterId].health);
 
-            socket.on('monsterAttacked', (monsterId) => {
-                // update the spawner
-                if (this.monsters[monsterId]) {
-                    const { gold, attack } = this.monsters[monsterId];
+            // check the player's health, if below 0 have the player respawn
+            if (this.players[socket.id].health <= 0) {
+              // update the gold the player has
+              this.players[socket.id].updateGold(parseInt(-this.players[socket.id].gold / 2, 10));
+              socket.emit('updateScore', this.players[socket.id].gold);
 
-                    // subtract health monster model
-                    this.monsters[monsterId].loseHealth();
+              // respawn the player
+              this.players[socket.id].respawn(this.players);
+              this.io.emit('respawnPlayer', this.players[socket.id]);
+            }
+          }
+        }
+      });
 
-                    // check the monsters health, and if dead remove that object
-                    if (this.monsters[monsterId].health <= 0) {
-                        // updating the players gold
-                        this.players[socket.id].updateGold(gold);
-                        socket.emit('updateScore', this.players[socket.id].gold);
+      socket.on('attackedPlayer', (attackedPlayerId) => {
+        if (this.players[attackedPlayerId]) {
+          // get required info from attacked player
+          const { gold } = this.players[attackedPlayerId];
 
-                        // removing the monster
-                        this.spawners[this.monsters[monsterId].spawnerId].removeObject(monsterId);
-                        this.io.emit('monsterRemoved', monsterId);
+          // subtract health from attacked player
+          this.players[attackedPlayerId].updateHealth(-1);
 
-                        // add bonus health to the player
-                        this.players[socket.id].updateHealth(2);
-                        this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
-                    } else {
-                        // update the players health
-                        this.players[socket.id].updateHealth(-attack);
-                        this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
+          // check attacked players health, if dead send gold to other player
+          if (this.players[attackedPlayerId].health <= 0) {
+            // get the amount of gold, and update player object
+            this.players[socket.id].updateGold(gold);
 
-                        // update the monsters health
-                        this.io.emit('updateMonsterHealth', monsterId, this.monsters[monsterId].health);
+            // respawn attacked player
+            this.players[attackedPlayerId].respawn(this.players);
+            this.io.emit('respawnPlayer', this.players[attackedPlayerId]);
 
-                        // check the player's health, if below 0 have the player respawn
-                        if (this.players[socket.id].health <= 0) {
-                            // update the gold the player has
-                            this.players[socket.id].updateGold(parseInt(-this.players[socket.id].gold / 2, 10));
-                            socket.emit('updateScore', this.players[socket.id].gold);
+            // send update gold message to player
+            socket.emit('updateScore', this.players[socket.id].gold);
 
-                            // respawn the player
-                            this.players[socket.id].respawn(this.players);
-                            this.io.emit('respawnPlayer', this.players[socket.id]);
-                        }
-                    }
-                }
-            });
-        });
+            // reset the attacked players gold
+            this.players[attackedPlayerId].updateGold(-gold);
+            this.io.to(`${attackedPlayerId}`).emit('updateScore', this.players[attackedPlayerId].gold);
 
+            // add bonus health to the player
+            this.players[socket.id].updateHealth(2);
+            this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
+          } else {
+            this.io.emit('updatePlayerHealth', attackedPlayerId, this.players[attackedPlayerId].health);
+          }
+        }
+      });
 
+      // player connected to our game
+      console.log('player connected to our game');
+      console.log(socket.id);
+    });
+  }
 
+  setupSpawners() {
+    const config = {
+      spawnInterval: 3000,
+      limit: 3,
+      spawnerType: SpawnerType.CHEST,
+      id: '',
+    };
+    let spawner;
 
+    // create chest spawners
+    Object.keys(this.chestLocations).forEach((key) => {
+      config.id = `chest-${key}`;
 
+      spawner = new Spawner(
+        config,
+        this.chestLocations[key],
+        this.addChest.bind(this),
+        this.deleteChest.bind(this),
+      );
+      this.spawners[spawner.id] = spawner;
+    });
 
-    }
+    // create monster spawners
+    Object.keys(this.monsterLocations).forEach((key) => {
+      config.id = `monster-${key}`;
+      config.spawnerType = SpawnerType.MONSTER;
 
-    setupSpawners() {
-        const config = {
-          spawnInterval: 3000,
-          limit: 3,
-          spawnerType: SpawnerType.CHEST,
-          id: '',
-        };
-        let spawner;
-    
-        // create chest spawners
-        Object.keys(this.chestLocations).forEach((key) => {
-          config.id = `chest-${key}`;
-    
-          spawner = new Spawner(
-            config,
-            this.chestLocations[key],
-            this.addChest.bind(this),
-            this.deleteChest.bind(this),
-          );
-          this.spawners[spawner.id] = spawner;
-        });
-    
-        // create monster spawners
-        Object.keys(this.monsterLocations).forEach((key) => {
-          config.id = `monster-${key}`;
-          config.spawnerType = SpawnerType.MONSTER;
-    
-          spawner = new Spawner(
-            config,
-            this.monsterLocations[key],
-            this.addMonster.bind(this),
-            this.deleteMonster.bind(this),
-            this.moveMonsters.bind(this),
-          );
-          this.spawners[spawner.id] = spawner;
-        });
-      }
+      spawner = new Spawner(
+        config,
+        this.monsterLocations[key],
+        this.addMonster.bind(this),
+        this.deleteMonster.bind(this),
+        this.moveMonsters.bind(this),
+      );
+      this.spawners[spawner.id] = spawner;
+    });
+  }
 
-    spawnPlayer(playerId) {
-        const player = new PlayerModel(playerId, this.playerLocations, this.players);
-        this.players[playerId] = player;
-    }
+  spawnPlayer(playerId, name) {
+    const player = new PlayerModel(playerId, this.playerLocations, this.players, name);
+    this.players[playerId] = player;
+  }
 
-    addChest(chestId, chest) {
-        this.chests[chestId] = chest;
-        this.io.emit('chestSpawned', chest);
-    }
+  addChest(chestId, chest) {
+    this.chests[chestId] = chest;
+    this.io.emit('chestSpawned', chest);
+  }
 
-    deleteChest(chestId) {
-        delete this.chests[chestId];
-        this.io.emit('chestRemoved', chestId);
+  deleteChest(chestId) {
+    delete this.chests[chestId];
+    this.io.emit('chestRemoved', chestId);
+  }
 
-    }
+  addMonster(monsterId, monster) {
+    this.monsters[monsterId] = monster;
+    this.io.emit('monsterSpawned', monster);
+  }
 
-    addMonster(monsterId, monster) {
-        console.log(monsterId)
-        this.monsters[monsterId] = monster;
-        this.io.emit('monsterSpawned', monster);
-    }
+  deleteMonster(monsterId) {
+    delete this.monsters[monsterId];
+    this.io.emit('monsterRemoved', monsterId);
+  }
 
-    deleteMonster(monsterId) {
-        delete this.monsters[monsterId];
-        this.io.emit('monsterRemoved', monsterId);
-
-    }
-
-    moveMonsters() {
-        this.io.emit('monsterMovement', this.monsters);
-    }
+  moveMonsters() {
+    this.io.emit('monsterMovement', this.monsters);
+  }
 }
