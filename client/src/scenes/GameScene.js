@@ -118,13 +118,6 @@ export default class GameScene extends Phaser.Scene {
       this.events.emit('updateScore', goldAmount);
     });
 
-    // this.events.on('spawnPlayer', (playerObject) => {
-    //   this.createPlayer(playerObject);
-    //   this.addCollisions();
-    // });
-
-
-
     this.socket.on('updateMonsterHealth', (monsterId, health) => {
       this.monsters.getChildren().forEach((monster) => {
         if (monster.id === monsterId) {
@@ -144,21 +137,18 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on('updatePlayerHealth', (playerId, health) => {
-
       if (this.player.id === playerId) {
         if (health < this.player.health) {
           this.playerDamageAudio.play();
         }
         this.player.updateHealth(health);
-
       } else {
-        this.otherPlayers.getChildren().forEach(player => {
+        this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerId) {
-            this.player.updateHealth(health);
+            player.updateHealth(health);
           }
-        })
+        });
       }
-
     });
 
     this.socket.on('respawnPlayer', (playerObject) => {
@@ -174,7 +164,7 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    this.socket.on('disconnect', (playerId) => {
+    this.socket.on('disconnected', (playerId) => {
       this.otherPlayers.getChildren().forEach((player) => {
         if (player.id === playerId) {
           player.cleanUp();
