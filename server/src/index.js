@@ -16,13 +16,8 @@ import GameManager from './game_manager/GameManager'
 console.log(process.env.CORS_ORIGIN)
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server, {
-    cors: {
-        origin: ["http://localhost:8000", "https://localhost:8000", "https://herojourney.herokuapp.com"],
-        methods: ["GET", "POST"],
+const io = require("socket.io")(server);
 
-    }
-});
 
 const gameManager = new GameManager(io);
 gameManager.setup();
