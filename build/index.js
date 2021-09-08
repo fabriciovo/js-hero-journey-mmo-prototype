@@ -31,12 +31,7 @@ var app = (0, _express["default"])();
 
 var server = require('http').Server(app);
 
-var io = require('socket.io')(server, {
-  cors: {
-    origin: ["http://localhost:8000", "https://localhost:8000", "https://herojourney.herokuapp.com"],
-    methods: ["GET", "POST"]
-  }
-});
+var io = require("socket.io")(server);
 
 var gameManager = new _GameManager["default"](io);
 gameManager.setup();
