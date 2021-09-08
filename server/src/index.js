@@ -1,5 +1,4 @@
 import 'dotenv/config';
-
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -19,7 +18,9 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: process.env.CORS_ORIGIN
+        origin: ["http://localhost:8000", "https://localhost:8000"],
+        methods: ["GET", "POST"],
+
     }
 });
 
@@ -64,10 +65,10 @@ app.get('/game.html', passport.authenticate('jwt', { session: false }), (request
     response.status(200).json(request.user);
 })
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/../public')));
 
 app.get('/', (request, response) => {
-    response.send(path.join(__dirname, '/index.html'));
+    response.send(path.join(__dirname, '/../index.html'));
 })
 
 app.use('/', routes);

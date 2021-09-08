@@ -1,0 +1,14 @@
+.input-div {
+    width: 100%;
+    position: fixed;
+    top: 140px;
+    left: 310px;
+  }
+  .form-label {
+    color: white;
+    font-size: 18px;
+  }
+  .login-input {
+    width: 200px;
+    height: 20px;
+  }

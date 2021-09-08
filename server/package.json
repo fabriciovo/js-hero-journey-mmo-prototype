@@ -5,7 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon index.js --exec babel-node"
+    "nodemon": "npx nodemon index.js --exec babel-node",
+    "mongo": "mongod --config /usr/local/etc/mongod.conf",
+    "mongo:up": "docker-compose up -d",
+    "mongo:down": "docker-compose down",
+    "clean": "rmdir /s build && mkdir build",
+    "build": "babel -d ./build ./src -s",
+    "start": "npm run clean && npm run build && node ./build/index.js"
+  },
+  "engines": {
+    "node": "16.1.0"
   },
   "author": "",
   "license": "ISC",
@@ -27,9 +36,12 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.4",
+    "@babel/cli": "^7.15.4",
+    "@babel/core": "^7.15.5",
     "@babel/node": "^7.15.4",
+    "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.4",
+    "@babel/runtime": "^7.15.4",
     "babel-loader": "^8.2.2"
   }
 }

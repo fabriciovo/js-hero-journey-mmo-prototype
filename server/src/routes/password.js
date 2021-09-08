@@ -57,7 +57,7 @@ router.post('/forgot-password', async (request, response) => {
     subject: 'MMO Password Reset',
     context: {
       name: 'joe',
-      url: `http://localhost:${process.env.PORT || 3000}/reset-password.html?token=${token}`,
+      url: `http://localhost:${process.env.PORT || 3000}/?token=${token}&scene=resetPassword`,
     },
   };
   await smtpTransport.sendMail(emailOptions);

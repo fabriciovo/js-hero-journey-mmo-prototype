@@ -23,7 +23,7 @@ const config = {
 class Game extends Phaser.Game {
   constructor() {
     super(config);
-    const socket = io('http://localhost:3000');
+    const socket = io(`${SERVER_URL}`);
     this.globals = { socket };
     this.scene.start('Boot');
   }
