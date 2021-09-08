@@ -18,7 +18,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
     cors: {
-        origin: ["http://localhost:8000", "https://localhost:8000"],
+        origin: ["http://localhost:8000", "https://localhost:8000", "https://herojourney.herokuapp.com"],
         methods: ["GET", "POST"],
 
     }
