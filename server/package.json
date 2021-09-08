@@ -14,7 +14,8 @@
     "start": "npm run clean && npm run build && node ./build/index.js"
   },
   "engines": {
-    "node": "16.1.0"
+    "node": "16.1.0",
+    "npm": "7.21.0"
   },
   "author": "",
   "license": "ISC",
