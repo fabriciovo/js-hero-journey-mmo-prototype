@@ -9,7 +9,7 @@
     "mongo": "mongod --config /usr/local/etc/mongod.conf",
     "mongo:up": "docker-compose up -d",
     "mongo:down": "docker-compose down",
-    "clean": "rmdir /s build && mkdir build",
+    "clean": "rm -rf build && mkdir build",
     "build": "babel -d ./build ./src -s",
     "start": "npm run clean && npm run build && node ./build/index.js"
   },
