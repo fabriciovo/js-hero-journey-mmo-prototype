@@ -61,12 +61,13 @@ export default class GameManager {
         this.io.emit("disconnected", socket.id);
       });
 
-      socket.on("newPlayer", (token) => {
+      socket.on("newPlayer", (token, frame) => {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const {name} = decoded.user;
+          const { name } = decoded.user;
           // create a new Player
-          this.spawnPlayer(socket.id, name);
+          console.log(frame)
+          this.spawnPlayer(socket.id, name, frame);
 
           // send the players object to the new player
           socket.emit("currentPlayers", this.players);
@@ -259,12 +260,13 @@ export default class GameManager {
     });
   }
 
-  spawnPlayer(playerId, name) {
+  spawnPlayer(playerId, name, frame) {
     const player = new PlayerModel(
       playerId,
       this.playerLocations,
       this.players,
-      name
+      name,
+      frame
     );
     this.players[playerId] = player;
   }

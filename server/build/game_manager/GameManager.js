@@ -90,13 +90,15 @@ var GameManager = /*#__PURE__*/function () {
 
           _this2.io.emit("disconnected", socket.id);
         });
-        socket.on("newPlayer", function (token) {
+        socket.on("newPlayer", function (token, frame) {
           try {
             var decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
 
             var name = decoded.user.name; // create a new Player
 
-            _this2.spawnPlayer(socket.id, name); // send the players object to the new player
+            console.log(frame);
+
+            _this2.spawnPlayer(socket.id, name, frame); // send the players object to the new player
 
 
             socket.emit("currentPlayers", _this2.players); // send the monsters object to the new player
@@ -247,8 +249,8 @@ var GameManager = /*#__PURE__*/function () {
     }
   }, {
     key: "spawnPlayer",
-    value: function spawnPlayer(playerId, name) {
-      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, name);
+    value: function spawnPlayer(playerId, name, frame) {
+      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, name, frame);
       this.players[playerId] = player;
     }
   }, {

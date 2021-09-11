@@ -12,7 +12,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
 var PlayerModel = /*#__PURE__*/function () {
-  function PlayerModel(playerId, spawnLocations, players, name) {
+  function PlayerModel(playerId, spawnLocations, players, name, frame) {
     (0, _classCallCheck2["default"])(this, PlayerModel);
     this.health = 10;
     this.maxHealth = 10;
@@ -25,6 +25,7 @@ var PlayerModel = /*#__PURE__*/function () {
     this.x = location[0];
     this.y = location[1];
     this.playerName = name;
+    this.frame = frame;
   }
 
   (0, _createClass2["default"])(PlayerModel, [{

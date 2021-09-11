@@ -9,18 +9,22 @@ export default class GameScene extends Phaser.Scene {
     super("Game");
   }
 
-  init() {
+  init(data) {
     this.scene.launch("Ui");
 
     this.socket = this.sys.game.globals.socket;
 
     this.listenForSocketEvents();
+
+    this.selectedCharacter = data.selectedCharacter || 0;
+    console.log(data )
   }
   listenForSocketEvents() {
     // spawn player game objects
     this.socket.on("currentPlayers", (players) => {
       Object.keys(players).forEach((id) => {
         if (players[id].id === this.socket.id) {
+          console.log(players[id])
           this.createPlayer(players[id], true);
           this.addCollisions();
         } else {
@@ -161,7 +165,7 @@ export default class GameScene extends Phaser.Scene {
     this.createInput();
 
     // emit event to server that a new player joined
-    this.socket.emit("newPlayer", getCookie('jwt'));
+    this.socket.emit("newPlayer", getCookie('jwt'), this.selectedCharacter);
 
     this.scale.on('resize',this.resize,this);
     this.resize({height:this.scale.height,width:this.scale.width})
@@ -222,12 +226,13 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer(playerObject, mainPlayer) {
+    console.log(playerObject)
     const newPlayerObject = new PlayerContainer(
       this,
       playerObject.x * 2,
       playerObject.y * 2,
       "characters",
-      0,
+      playerObject.frame,
       playerObject.health,
       playerObject.maxHealth,
       playerObject.id,
@@ -235,6 +240,7 @@ export default class GameScene extends Phaser.Scene {
       mainPlayer,
       playerObject.playerName
     );
+    console.log(playerObject.frame)
 
     if (!mainPlayer) {
       this.otherPlayers.add(newPlayerObject);

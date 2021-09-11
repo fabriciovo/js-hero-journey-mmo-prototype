@@ -29,7 +29,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.attackAudio = attackAudio;
     this.mainPlayer = mainPlayer;
     this.playerName = playerName;
-
     // set a size on the container
     this.setSize(64, 64);
     // enable physics
