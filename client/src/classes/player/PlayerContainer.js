@@ -75,6 +75,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   update(cursors) {
     this.body.setVelocity(0);
 
+
+
+
     if (this.mainPlayer) {
       if (cursors.left.isDown) {
         this.body.setVelocityX(-this.velocity);
@@ -107,12 +110,19 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     if (this.currentDirection === Direction.UP) {
       this.weapon.setPosition(0, -40);
+      this.player.playAnimation('up');
     } else if (this.currentDirection === Direction.DOWN) {
       this.weapon.setPosition(0, 40);
+      this.player.playAnimation('down');
+
     } else if (this.currentDirection === Direction.RIGHT) {
       this.weapon.setPosition(40, 0);
+      this.player.playAnimation('right');
+
     } else if (this.currentDirection === Direction.LEFT) {
       this.weapon.setPosition(-40, 0);
+      this.player.playAnimation('right');
+
 
     }
 
@@ -138,6 +148,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     }
 
     this.updateHealthBar();
+
+    if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
+      this.player.playAnimation('idle');
+      }
   }
 
   updateFlipX() {

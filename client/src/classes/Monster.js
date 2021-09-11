@@ -59,4 +59,12 @@ export default class Monster extends Phaser.Physics.Arcade.Image {
   update() {
     this.updateHealthBar();
   }
+
+  followPlayer() {
+
+  }
+
+  Attack() {
+    
+  }
 }
