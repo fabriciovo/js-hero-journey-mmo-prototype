@@ -1,7 +1,7 @@
 ##
 # **Phaser MMORPG**
 
-**itch.io:** _https://fabriciovarisco.itch.io/phaser-rpg_
+**Heroku:** _https://herojourney.herokuapp.com/_
 
 
 - [Concept Doc](./doc/conceptdoc.md)
