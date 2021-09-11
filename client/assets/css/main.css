@@ -1,8 +1,11 @@
+html,body {
+  margin: 0;
+}
 .input-div {
     width: 100%;
     position: fixed;
-    top: 140px;
-    left: 310px;
+    bottom: calc(55%);
+    text-align: center;
   }
   .form-label {
     color: white;
@@ -11,4 +14,10 @@
   .login-input {
     width: 200px;
     height: 20px;
+  }
+
+  @media screen and (max-height:600px) {
+      .input-div{
+        bottom: calc(45%);
+      }
   }

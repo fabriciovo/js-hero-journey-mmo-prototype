@@ -162,6 +162,9 @@ export default class GameScene extends Phaser.Scene {
 
     // emit event to server that a new player joined
     this.socket.emit("newPlayer", getCookie('jwt'));
+
+    this.scale.on('resize',this.resize,this);
+    this.resize({height:this.scale.height,width:this.scale.width})
   }
 
   update() {
@@ -229,7 +232,8 @@ export default class GameScene extends Phaser.Scene {
       playerObject.maxHealth,
       playerObject.id,
       this.playerAttackAudio,
-      mainPlayer
+      mainPlayer,
+      playerObject.playerName
     );
 
     if (!mainPlayer) {
@@ -373,5 +377,10 @@ export default class GameScene extends Phaser.Scene {
       "background",
       "blocked"
     );
+  }
+
+  resize(gameSize){
+    const {width,height} = gameSize;
+    this.cameras.resize(width, height)
   }
 }
