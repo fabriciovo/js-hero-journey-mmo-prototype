@@ -3,7 +3,9 @@ import PlayerContainer from "../classes/player/PlayerContainer";
 import Chest from "../classes/Chest";
 import Monster from "../classes/Monster";
 import GameMap from "../classes/GameMap";
-import {getCookie} from '../utils/utils'
+import { getCookie } from "../utils/utils";
+import DialogWindow from "../classes/Dialog";
+
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("Game");
@@ -17,14 +19,14 @@ export default class GameScene extends Phaser.Scene {
     this.listenForSocketEvents();
 
     this.selectedCharacter = data.selectedCharacter || 0;
-    console.log(data )
+    console.log(data);
   }
   listenForSocketEvents() {
     // spawn player game objects
     this.socket.on("currentPlayers", (players) => {
       Object.keys(players).forEach((id) => {
         if (players[id].id === this.socket.id) {
-          console.log(players[id])
+          console.log(players[id]);
           this.createPlayer(players[id], true);
           this.addCollisions();
         } else {
@@ -164,14 +166,20 @@ export default class GameScene extends Phaser.Scene {
     this.createGroups();
     this.createInput();
 
-    // emit event to server that a new player joined
-    this.socket.emit("newPlayer", getCookie('jwt'), this.selectedCharacter);
+    this.dialogWindow = new DialogWindow(this,{
+      x: this.scale.width,
+    });
 
-    this.scale.on('resize',this.resize,this);
-    this.resize({height:this.scale.height,width:this.scale.width})
+    // emit event to server that a new player joined
+    this.socket.emit("newPlayer", getCookie("jwt"), this.selectedCharacter);
+
+    this.scale.on("resize", this.resize, this);
+    this.resize({ height: this.scale.height, width: this.scale.width });
   }
 
   update() {
+    this.dialogWindow.update();
+
     if (this.player) this.player.update(this.cursors);
 
     if (this.player) {
@@ -226,7 +234,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer(playerObject, mainPlayer) {
-    console.log(playerObject)
+    console.log(playerObject);
     const newPlayerObject = new PlayerContainer(
       this,
       playerObject.x * 2,
@@ -240,7 +248,7 @@ export default class GameScene extends Phaser.Scene {
       mainPlayer,
       playerObject.playerName
     );
-    console.log(playerObject.frame)
+    console.log(playerObject.frame);
 
     if (!mainPlayer) {
       this.otherPlayers.add(newPlayerObject);
@@ -385,8 +393,9 @@ export default class GameScene extends Phaser.Scene {
     );
   }
 
-  resize(gameSize){
-    const {width,height} = gameSize;
-    this.cameras.resize(width, height)
+  resize(gameSize) {
+    const { width, height } = gameSize;
+    this.cameras.resize(width, height);
+    this.dialogWindow.resize(gameSize);
   }
 }
