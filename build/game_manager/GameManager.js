@@ -23,6 +23,8 @@ var _PlayerModel = _interopRequireDefault(require("./PlayerModel"));
 
 var levelData = _interopRequireWildcard(require("../../public/assets/level/large_level.json"));
 
+var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.json"));
+
 var _Spawner = _interopRequireDefault(require("./Spawner"));
 
 var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
@@ -41,9 +43,11 @@ var GameManager = /*#__PURE__*/function () {
     this.chests = {};
     this.monsters = {};
     this.players = {};
+    this.items = {};
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
+    this.itemsLocations = itemData.locations;
   }
 
   (0, _createClass2["default"])(GameManager, [{
@@ -155,7 +159,9 @@ var GameManager = /*#__PURE__*/function () {
 
             socket.emit("currentMonsters", _this2.monsters); // send the chests object to the new player
 
-            socket.emit("currentChests", _this2.chests); // inform the other players of the new player that joined
+            socket.emit("currentChests", _this2.chests); // send the items object to the new player
+
+            socket.emit("currentItems", _this2.items); // inform the other players of the new player that joined
 
             socket.broadcast.emit("spawnPlayer", _this2.players[socket.id]);
           } catch (error) {
@@ -186,14 +192,28 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
+        socket.on('pickUpItem', function (itemId) {
+          // update the spawner
+          if (_this2.items[itemId]) {
+            if (_this2.players[socket.id].canPickupItem()) {
+              _this2.players[socket.id].addItem(_this2.items[itemId]);
+
+              socket.emit('updateItems', _this2.players[socket.id]);
+              socket.broadcast.emit('updatePlayersItems', socket.id, _this2.players[socket.id]); // removing the item
+
+              _this2.spawners[_this2.items[itemId].spawnerId].removeObject(itemId);
+            }
+          }
+        });
         socket.on("monsterAttacked", function (monsterId) {
           // update the spawner
           if (_this2.monsters[monsterId]) {
             var _this2$monsters$monst = _this2.monsters[monsterId],
                 gold = _this2$monsters$monst.gold,
-                attack = _this2$monsters$monst.attack; // subtract health monster model
+                attack = _this2$monsters$monst.attack;
+            var playerAttackValue = _this2.players[socket.id].attack; // subtract health monster model
 
-            _this2.monsters[monsterId].loseHealth(); // check the monsters health, and if dead remove that object
+            _this2.monsters[monsterId].loseHealth(playerAttackValue); // check the monsters health, and if dead remove that object
 
 
             if (_this2.monsters[monsterId].health <= 0) {
@@ -207,12 +227,12 @@ var GameManager = /*#__PURE__*/function () {
               _this2.io.emit("monsterRemoved", monsterId); // add bonus health to the player
 
 
-              _this2.players[socket.id].updateHealth(2);
+              _this2.players[socket.id].updateHealth(15);
 
               _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health);
             } else {
               // update the players health
-              _this2.players[socket.id].updateHealth(-attack);
+              _this2.players[socket.id].playerAttacked(attack);
 
               _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health); // update the monsters health
 
@@ -236,9 +256,10 @@ var GameManager = /*#__PURE__*/function () {
         socket.on("attackedPlayer", function (attackedPlayerId) {
           if (_this2.players[attackedPlayerId]) {
             // get required info from attacked player
-            var gold = _this2.players[attackedPlayerId].gold; // subtract health from attacked player
+            var gold = _this2.players[attackedPlayerId].gold;
+            var playerAttackValue = _this2.players[socket.id].attack; // subtract health from attacked player
 
-            _this2.players[attackedPlayerId].updateHealth(-1); // check attacked players health, if dead send gold to other player
+            _this2.players[attackedPlayerId].playerAttacked(playerAttackValue); // check attacked players health, if dead send gold to other player
 
 
             if (_this2.players[attackedPlayerId].health <= 0) {
@@ -258,7 +279,7 @@ var GameManager = /*#__PURE__*/function () {
               _this2.io.to("".concat(attackedPlayerId)).emit("updateScore", _this2.players[attackedPlayerId].gold); // add bonus health to the player
 
 
-              _this2.players[socket.id].updateHealth(2);
+              _this2.players[socket.id].updateHealth(15);
 
               _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health);
             } else {
@@ -294,13 +315,30 @@ var GameManager = /*#__PURE__*/function () {
         config.spawnerType = _utils.SpawnerType.MONSTER;
         spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
-      });
+      }); // create items spawners
+
+      config.id = "item";
+      config.spawnerType = _utils.SpawnerType.ITEM;
+      spawner = new _Spawner["default"](config, this.itemsLocations, this.addItems.bind(this), this.deleteItems.bind(this));
+      this.spawners[spawner.id] = spawner;
     }
   }, {
     key: "spawnPlayer",
     value: function spawnPlayer(playerId, name, frame) {
       var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, name, frame);
       this.players[playerId] = player;
+    }
+  }, {
+    key: "addItems",
+    value: function addItems(itemId, item) {
+      this.items[itemId] = item;
+      this.io.emit("itemSpawned", item);
+    }
+  }, {
+    key: "deleteItems",
+    value: function deleteItems(itemId) {
+      delete this.items[itemId];
+      this.io.emit("itemRemoved", itemId);
     }
   }, {
     key: "addChest",
