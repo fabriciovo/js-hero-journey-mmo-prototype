@@ -158,6 +158,11 @@ export default class GameScene extends Phaser.Scene {
       window.alert("Token is no longer valid. Please login again.");
       window.location.reload();
     });
+
+    this.socket.on('newMessage', (messageObject)=>{
+      this.dialogWindow.addNewMessage(messageObject);
+    })
+
   }
 
   create() {
@@ -175,6 +180,37 @@ export default class GameScene extends Phaser.Scene {
 
     this.scale.on("resize", this.resize, this);
     this.resize({ height: this.scale.height, width: this.scale.width });
+
+    this.keyDownEventListener();
+
+    this.input.on('pointerdown', ()=>{
+      document.getElementById('chatInput').blur();
+    })
+  }
+
+  keyDownEventListener(){
+    this.inputMessageField = document.getElementById('chatInput');
+    window.addEventListener('keydown', (event)=>{
+      if(event.keyCode === 13) {
+        this.sendMessage();
+      }else if( event.keyCode === 32){
+       if(document.activeElement === this.inputMessageField){
+         this.inputMessageField.value = `${this.inputMessageField.value} `;
+       }
+
+      }
+    })
+  }
+
+  sendMessage(){
+    console.log("sajfaspok");
+    if( this.inputMessageField){
+      const message = this.inputMessageField.value;
+      if(message){
+        this.inputMessageField.value = "";
+        this.socket.emit('sendMessage',message,getCookie('jwt'), this.player);
+      }
+    }
   }
 
   update() {

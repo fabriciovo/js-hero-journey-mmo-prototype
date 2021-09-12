@@ -135,7 +135,7 @@ router.post('/login', /*#__PURE__*/function () {
                             refreshToken: refreshToken,
                             email: user.email,
                             _id: user._id,
-                            name: user.name
+                            name: user.username
                           }; // send the token to the user
 
                           return response.status(200).json({
