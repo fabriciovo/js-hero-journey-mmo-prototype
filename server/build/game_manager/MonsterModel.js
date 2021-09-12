@@ -31,8 +31,8 @@ var MonsterModel = /*#__PURE__*/function () {
 
   (0, _createClass2["default"])(MonsterModel, [{
     key: "loseHealth",
-    value: function loseHealth() {
-      this.health -= 1;
+    value: function loseHealth(attack) {
+      this.health -= attack;
     }
   }, {
     key: "move",

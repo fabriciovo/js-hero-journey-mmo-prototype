@@ -14,8 +14,8 @@ export default class MonsterModel {
     this.attack = attack;
   }
 
-  loseHealth() {
-    this.health -= 1;
+  loseHealth(attack) {
+    this.health -= attack;
   }
 
   move() {

@@ -14,8 +14,10 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 var PlayerModel = /*#__PURE__*/function () {
   function PlayerModel(playerId, spawnLocations, players, name, frame) {
     (0, _classCallCheck2["default"])(this, PlayerModel);
-    this.health = 10;
-    this.maxHealth = 10;
+    this.attack = 25;
+    this.defense = 10;
+    this.health = 150;
+    this.maxHealth = 150;
     this.gold = 0;
     this.id = playerId;
     this.spawnLocations = spawnLocations;
@@ -26,9 +28,37 @@ var PlayerModel = /*#__PURE__*/function () {
     this.y = location[1];
     this.playerName = name;
     this.frame = frame;
+    this.playerItems = {};
+    this.maxNumberOfItems = 5;
   }
 
   (0, _createClass2["default"])(PlayerModel, [{
+    key: "addItem",
+    value: function addItem(item) {
+      this.playerItems[item.id] = item;
+    }
+  }, {
+    key: "removeItem",
+    value: function removeItem(item) {
+      delete this.playerItems[item.id];
+    }
+  }, {
+    key: "canPickupItem",
+    value: function canPickupItem() {
+      if (Object.keys(this.playerItems).length < 5) {
+        return true;
+      }
+
+      return false;
+    }
+  }, {
+    key: "playerAttacked",
+    value: function playerAttacked(attack) {
+      var damage = this.defense - attack;
+      console.log(damage);
+      this.updateHealth(damage);
+    }
+  }, {
     key: "updateGold",
     value: function updateGold(gold) {
       this.gold += gold;
@@ -37,7 +67,7 @@ var PlayerModel = /*#__PURE__*/function () {
     key: "updateHealth",
     value: function updateHealth(health) {
       this.health += health;
-      if (this.health > 10) this.health = 10;
+      if (this.health > this.maxHealth) this.health = this.maxHealth;
     }
   }, {
     key: "respawn",

@@ -1,6 +1,8 @@
 export const SpawnerType = {
   MONSTER: 'MONSTER',
   CHEST: 'CHEST',
+  ITEM: 'ITEM',
+
 };
 
 export function randomNumber(min, max) {

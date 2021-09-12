@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "nodemon": "npx nodemon index.js --exec babel-node",
+    "nodemon": "npx nodemon src/index.js --exec babel-node",
     "mongo": "mongod --config /usr/local/etc/mongod.conf",
     "mongo:up": "docker-compose up -d",
     "mongo:down": "docker-compose down",
-    "clean": "rm -rf build && mkdir build",
+    "clean": "rd /s /q build && mkdir build",
     "build": "babel -d ./build ./src -s",
     "start": "npm run clean && npm run build && node ./build/index.js"
   },

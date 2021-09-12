@@ -2,6 +2,8 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
+var _typeof = require("@babel/runtime/helpers/typeof");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -16,6 +18,19 @@ var _utils = require("./utils");
 var _ChestModel = _interopRequireDefault(require("./ChestModel"));
 
 var _MonsterModel = _interopRequireDefault(require("./MonsterModel"));
+
+var _ItemModel = _interopRequireDefault(require("../models/ItemModel"));
+
+var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.json"));
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function getRandonValues() {
+  var bonus = [-2, -10, -3, -5, -6, -7, 0, 5, 3, 4, 7, 2, 1, 8, 10];
+  return bonus[Math.floor(Math.random() * bonus.length)];
+}
 
 var Spawner = /*#__PURE__*/function () {
   function Spawner(config, spawnLocations, addObject, deleteObject, moveObjects) {
@@ -51,7 +66,18 @@ var Spawner = /*#__PURE__*/function () {
         this.spawnChest();
       } else if (this.objectType === _utils.SpawnerType.MONSTER) {
         this.spawnMonster();
+      } else if (this.objectType === _utils.SpawnerType.ITEM) {
+        this.spawnItem();
       }
+    }
+  }, {
+    key: "spawnItem",
+    value: function spawnItem() {
+      var location = this.pickRandomLocation();
+      var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
+      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, getRandonValues(), getRandonValues(), getRandonValues());
+      this.objectsCreated.push(item);
+      this.addObject(item.id, item);
     }
   }, {
     key: "spawnChest",
@@ -65,7 +91,10 @@ var Spawner = /*#__PURE__*/function () {
     key: "spawnMonster",
     value: function spawnMonster() {
       var location = this.pickRandomLocation();
-      var monster = new _MonsterModel["default"](location[0], location[1], (0, _utils.randomNumber)(10, 20), this.id, (0, _utils.randomNumber)(0, 20), (0, _utils.randomNumber)(3, 5), 1);
+      var monster = new _MonsterModel["default"](location[0], location[1], (0, _utils.randomNumber)(10, 20), this.id, (0, _utils.randomNumber)(0, 20), // frame value
+      (0, _utils.randomNumber)(100, 150), // health value
+      (0, _utils.randomNumber)(10, 20) // attack value
+      );
       this.objectsCreated.push(monster);
       this.addObject(monster.id, monster);
     }

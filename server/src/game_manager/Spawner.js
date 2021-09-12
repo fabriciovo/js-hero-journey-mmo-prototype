@@ -1,6 +1,14 @@
-import { SpawnerType, randomNumber } from './utils';
-import ChestModel from './ChestModel';
-import MonsterModel from './MonsterModel';
+import { SpawnerType, randomNumber } from "./utils";
+import ChestModel from "./ChestModel";
+import MonsterModel from "./MonsterModel";
+import ItemModel from "../models/ItemModel";
+
+import * as itemData from "../../public/assets/level/tools.json";
+
+function getRandonValues() {
+  const bonus = [-2, -10, -3, -5, -6, -7, 0, 5, 3, 4, 7, 2, 1, 8, 10];
+  return bonus[Math.floor(Math.random() * bonus.length)];
+}
 
 export default class Spawner {
   constructor(config, spawnLocations, addObject, deleteObject, moveObjects) {
@@ -32,12 +40,39 @@ export default class Spawner {
       this.spawnChest();
     } else if (this.objectType === SpawnerType.MONSTER) {
       this.spawnMonster();
+    } else if (this.objectType === SpawnerType.ITEM) {
+      this.spawnItem();
     }
+  }
+
+  spawnItem() {
+    const location = this.pickRandomLocation();
+
+    const randomItem =
+      itemData.items[Math.floor(Math.random() * itemData.items.length)];
+
+    const item = new ItemModel(
+      location[0],
+      location[1],
+      this.id,
+      randomItem.name,
+      randomItem.frame,
+      getRandonValues(),
+      getRandonValues(),
+      getRandonValues()
+    );
+    this.objectsCreated.push(item);
+    this.addObject(item.id, item);
   }
 
   spawnChest() {
     const location = this.pickRandomLocation();
-    const chest = new ChestModel(location[0], location[1], randomNumber(10, 20), this.id);
+    const chest = new ChestModel(
+      location[0],
+      location[1],
+      randomNumber(10, 20),
+      this.id
+    );
     this.objectsCreated.push(chest);
     this.addObject(chest.id, chest);
   }
@@ -49,16 +84,19 @@ export default class Spawner {
       location[1],
       randomNumber(10, 20),
       this.id,
-      randomNumber(0, 20),
-      randomNumber(3, 5),
-      1,
+      randomNumber(0, 20), // frame value
+      randomNumber(100, 150), // health value
+      randomNumber(10, 20) // attack value
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);
   }
 
   pickRandomLocation() {
-    const location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)];
+    const location =
+      this.spawnLocations[
+        Math.floor(Math.random() * this.spawnLocations.length)
+      ];
     const invalidLocation = this.objectsCreated.some((obj) => {
       if (obj.x === location[0] && obj.y === location[1]) {
         return true;
@@ -71,7 +109,7 @@ export default class Spawner {
   }
 
   removeObject(id) {
-    this.objectsCreated = this.objectsCreated.filter(obj => obj.id !== id);
+    this.objectsCreated = this.objectsCreated.filter((obj) => obj.id !== id);
     this.deleteObject(id);
   }
 

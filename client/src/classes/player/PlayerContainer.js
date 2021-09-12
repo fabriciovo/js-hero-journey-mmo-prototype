@@ -14,7 +14,11 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     id,
     attackAudio,
     mainPlayer,
-    playerName
+    playerName,
+    gold,
+    defenseValue,
+    attackValue,
+    items
   ) {
     super(scene, x, y);
     this.scene = scene; // the scene this container will be added to
@@ -29,6 +33,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.attackAudio = attackAudio;
     this.mainPlayer = mainPlayer;
     this.playerName = playerName;
+
+    this.gold = gold;
+    this.defenseValue = defenseValue;
+    this.attackValue = attackValue;
+    this.items = items;
+
     // set a size on the container
     this.setSize(64, 64);
     // enable physics
