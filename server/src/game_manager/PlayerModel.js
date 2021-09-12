@@ -1,5 +1,5 @@
 export default class PlayerModel {
-    constructor(playerId, spawnLocations, players, name) {
+    constructor(playerId, spawnLocations, players, name, frame) {
         this.health = 10;
         this.maxHealth = 10;
         this.gold = 0;
@@ -10,7 +10,8 @@ export default class PlayerModel {
         const location = this.generateLocation(players);
         this.x = location[0];
         this.y = location[1];
-        this.playerName = name
+        this.playerName = name;
+        this.frame = frame;
     }
 
     updateGold(gold) {

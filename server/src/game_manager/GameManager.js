@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import PlayerModel from "./PlayerModel";
 import * as levelData from "../../public/assets/level/large_level.json";
 import Spawner from "./Spawner";
+import ChatModel from "../models/ChatModel";
 import { SpawnerType } from "./utils";
-
 export default class GameManager {
   constructor(io) {
     this.io = io;
@@ -61,12 +61,28 @@ export default class GameManager {
         this.io.emit("disconnected", socket.id);
       });
 
-      socket.on("newPlayer", (token) => {
+      socket.on("sendMessage", async (message, token, player) => {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const {name} = decoded.user;
+          const { name, email } = decoded.user;
+          await ChatModel.create({ email, message });
+          console.log(this.players[socket.id])
+          this.io.emit("newMessage", {
+            message,
+            name: this.players[socket.id].playerName,
+            frame: this.players[socket.id].frame,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      });
+
+      socket.on("newPlayer", (token, frame) => {
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          const { name } = decoded.user;
           // create a new Player
-          this.spawnPlayer(socket.id, name);
+          this.spawnPlayer(socket.id, name, frame);
 
           // send the players object to the new player
           socket.emit("currentPlayers", this.players);
@@ -217,7 +233,6 @@ export default class GameManager {
 
       // player connected to our game
       console.log("player connected to our game");
-      console.log(socket.id);
     });
   }
 
@@ -259,12 +274,13 @@ export default class GameManager {
     });
   }
 
-  spawnPlayer(playerId, name) {
+  spawnPlayer(playerId, name, frame) {
     const player = new PlayerModel(
       playerId,
       this.playerLocations,
       this.players,
-      name
+      name,
+      frame
     );
     this.players[playerId] = player;
   }

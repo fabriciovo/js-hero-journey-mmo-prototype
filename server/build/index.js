@@ -31,7 +31,11 @@ var app = (0, _express["default"])();
 
 var server = require('http').Server(app);
 
-var io = require("socket.io")(server);
+var io = require("socket.io")(server, {
+  cors: {
+    origin: process.env.CORS_ORIGIN
+  }
+});
 
 var gameManager = new _GameManager["default"](io);
 gameManager.setup();

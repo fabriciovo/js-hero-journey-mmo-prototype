@@ -1,9 +1,21 @@
-import * as Phaser from 'phaser';
-import Player from './Player';
-import Direction from '../../utils/direction';
+import * as Phaser from "phaser";
+import Player from "./Player";
+import Direction from "../../utils/direction";
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
-  constructor(scene, x, y, key, frame, health, maxHealth, id, attackAudio, mainPlayer) {
+  constructor(
+    scene,
+    x,
+    y,
+    key,
+    frame,
+    health,
+    maxHealth,
+    id,
+    attackAudio,
+    mainPlayer,
+    playerName
+  ) {
     super(scene, x, y);
     this.scene = scene; // the scene this container will be added to
     this.velocity = 160; // the velocity when moving our player
@@ -16,7 +28,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.id = id;
     this.attackAudio = attackAudio;
     this.mainPlayer = mainPlayer;
-
+    this.playerName = playerName;
     // set a size on the container
     this.setSize(64, 64);
     // enable physics
@@ -30,22 +42,22 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.scene.cameras.main.startFollow(this);
     }
 
-
     // create the player
     this.player = new Player(this.scene, 0, 0, key, frame);
     this.add(this.player);
 
     // create the weapon game object
-    this.weapon = this.scene.add.image(40, 0, 'items', 4);
+    this.weapon = this.scene.add.image(40, 0, "items", 4);
     this.scene.add.existing(this.weapon);
     this.weapon.setScale(1.5);
     this.scene.physics.world.enable(this.weapon);
     this.add(this.weapon);
     this.weapon.alpha = 0;
 
-
     // create the player healthbar
     this.createHealthBar();
+
+    this.createPlayerName();
   }
 
   createHealthBar() {
@@ -53,12 +65,46 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.updateHealthBar();
   }
 
+  createPlayerName() {
+    this.playerNameText = this.scene.make.text({
+      x: this.x - 32,
+      y: this.y - 60,
+      text: this.playerName,
+      style: {
+        font: "14px monospace",
+        fill: "#ffffff",
+      },
+    });
+  }
+
+  updatePlayerName() {
+    this.playerNameText.setPosition(this.x - 32, this.y - 60);
+  }
+
   updateHealthBar() {
     this.healthBar.clear();
     this.healthBar.fillStyle(0xffffff, 1);
     this.healthBar.fillRect(this.x - 32, this.y - 40, 64, 5);
     this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
-    this.healthBar.fillRect(this.x - 32, this.y - 40, 64 * (this.health / this.maxHealth), 5);
+    this.healthBar.fillRect(
+      this.x - 32,
+      this.y - 40,
+      64 * (this.health / this.maxHealth),
+      5
+    );
+  }
+
+  updateHealthBar() {
+    this.healthBar.clear();
+    this.healthBar.fillStyle(0xffffff, 1);
+    this.healthBar.fillRect(this.x - 32, this.y - 40, 64, 5);
+    this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
+    this.healthBar.fillRect(
+      this.x - 32,
+      this.y - 40,
+      64 * (this.health / this.maxHealth),
+      5
+    );
   }
 
   updateHealth(health) {
@@ -70,6 +116,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.health = playerObject.health;
     this.setPosition(playerObject.x, playerObject.y);
     this.updateHealthBar();
+    this.updatePlayerName();
   }
 
   update(cursors) {
@@ -81,7 +128,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         this.currentDirection = Direction.LEFT;
         this.player.flipX = false;
         this.flipX = false;
-
       } else if (cursors.right.isDown) {
         this.body.setVelocityX(this.velocity);
         this.currentDirection = Direction.RIGHT;
@@ -93,27 +139,31 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       if (cursors.up.isDown) {
         this.body.setVelocityY(-this.velocity);
         this.currentDirection = Direction.UP;
-
       } else if (cursors.down.isDown) {
         this.body.setVelocityY(this.velocity);
         this.currentDirection = Direction.DOWN;
-
       }
 
-      if (Phaser.Input.Keyboard.JustDown(cursors.space) && !this.playerAttacking) {
+      if (
+        Phaser.Input.Keyboard.JustDown(cursors.space) &&
+        !this.playerAttacking
+      ) {
         this.attack();
       }
     }
 
     if (this.currentDirection === Direction.UP) {
       this.weapon.setPosition(0, -40);
+      this.player.playAnimation("up");
     } else if (this.currentDirection === Direction.DOWN) {
       this.weapon.setPosition(0, 40);
+      this.player.playAnimation("down");
     } else if (this.currentDirection === Direction.RIGHT) {
       this.weapon.setPosition(40, 0);
+      this.player.playAnimation("right");
     } else if (this.currentDirection === Direction.LEFT) {
       this.weapon.setPosition(-40, 0);
-
+      this.player.playAnimation("right");
     }
 
     if (this.playerAttacking) {
@@ -138,28 +188,37 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     }
 
     this.updateHealthBar();
+    this.updatePlayerName();
+
+    if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
+      this.player.playAnimation("idle");
+    }
   }
 
   updateFlipX() {
     this.player.flipX = this.flipX;
   }
 
-
   attack() {
     this.weapon.alpha = 1;
     this.playerAttacking = true;
     if (this.mainPlayer) this.attackAudio.play();
-    this.scene.time.delayedCall(150, () => {
-      this.weapon.alpha = 0;
-      this.playerAttacking = false;
-      this.swordHit = false;
-    }, [], this);
+    this.scene.time.delayedCall(
+      150,
+      () => {
+        this.weapon.alpha = 0;
+        this.playerAttacking = false;
+        this.swordHit = false;
+      },
+      [],
+      this
+    );
   }
 
   cleanUp() {
     this.healthBar.destroy();
+    this.playerName.destroy();
     this.player.destroy();
     this.destroy();
   }
-
 }

@@ -9,6 +9,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
@@ -20,6 +24,8 @@ var _PlayerModel = _interopRequireDefault(require("./PlayerModel"));
 var levelData = _interopRequireWildcard(require("../../public/assets/level/large_level.json"));
 
 var _Spawner = _interopRequireDefault(require("./Spawner"));
+
+var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
 
 var _utils = require("./utils");
 
@@ -90,13 +96,59 @@ var GameManager = /*#__PURE__*/function () {
 
           _this2.io.emit("disconnected", socket.id);
         });
-        socket.on("newPlayer", function (token) {
+        socket.on("sendMessage", /*#__PURE__*/function () {
+          var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(message, token, player) {
+            var decoded, _decoded$user, name, email;
+
+            return _regenerator["default"].wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.prev = 0;
+                    decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
+                    _decoded$user = decoded.user, name = _decoded$user.name, email = _decoded$user.email;
+                    _context.next = 5;
+                    return _ChatModel["default"].create({
+                      email: email,
+                      message: message
+                    });
+
+                  case 5:
+                    console.log(_this2.players[socket.id]);
+
+                    _this2.io.emit("newMessage", {
+                      message: message,
+                      name: _this2.players[socket.id].playerName,
+                      frame: _this2.players[socket.id].frame
+                    });
+
+                    _context.next = 12;
+                    break;
+
+                  case 9:
+                    _context.prev = 9;
+                    _context.t0 = _context["catch"](0);
+                    console.log(_context.t0);
+
+                  case 12:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee, null, [[0, 9]]);
+          }));
+
+          return function (_x, _x2, _x3) {
+            return _ref.apply(this, arguments);
+          };
+        }());
+        socket.on("newPlayer", function (token, frame) {
           try {
             var decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
 
             var name = decoded.user.name; // create a new Player
 
-            _this2.spawnPlayer(socket.id, name); // send the players object to the new player
+            _this2.spawnPlayer(socket.id, name, frame); // send the players object to the new player
 
 
             socket.emit("currentPlayers", _this2.players); // send the monsters object to the new player
@@ -216,7 +268,6 @@ var GameManager = /*#__PURE__*/function () {
         }); // player connected to our game
 
         console.log("player connected to our game");
-        console.log(socket.id);
       });
     }
   }, {
@@ -247,8 +298,8 @@ var GameManager = /*#__PURE__*/function () {
     }
   }, {
     key: "spawnPlayer",
-    value: function spawnPlayer(playerId, name) {
-      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, name);
+    value: function spawnPlayer(playerId, name, frame) {
+      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, name, frame);
       this.players[playerId] = player;
     }
   }, {
