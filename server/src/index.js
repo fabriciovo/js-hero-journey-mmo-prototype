@@ -16,11 +16,7 @@ import GameManager from './game_manager/GameManager'
 console.log(process.env.CORS_ORIGIN)
 const app = express();
 const server = require('http').Server(app);
-const io = require("socket.io")(server, {
-    cors: {
-        origin: process.env.CORS_ORIGIN
-    }
-});
+const io = require("socket.io")(server);
 
 
 
