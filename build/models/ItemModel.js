@@ -14,8 +14,8 @@ var _uuid = require("uuid");
 /**
  * @class
  */
-var ChestModel = function ChestModel(x, y, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
-  (0, _classCallCheck2["default"])(this, ChestModel);
+var ItemModel = function ItemModel(x, y, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
+  (0, _classCallCheck2["default"])(this, ItemModel);
   this.id = "".concat(spawnerId, "-").concat((0, _uuid.v4)());
   this.spawnerId = spawnerId;
   this.x = x;
@@ -27,5 +27,5 @@ var ChestModel = function ChestModel(x, y, spawnerId, name, frame, attackValue, 
   this.healthBonus = healthValue;
 };
 
-exports["default"] = ChestModel;
+exports["default"] = ItemModel;
 //# sourceMappingURL=ItemModel.js.map

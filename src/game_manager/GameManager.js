@@ -141,15 +141,10 @@ export default class GameManager {
         }
       });
 
-      socket.on("playerDroppedItem", (itemId) => {
+      socket.on('playerDroppedItem', (itemId) => {
         this.players[socket.id].removeItem(itemId);
-        socket.emit("updateItems", this.players[socket.id]);
-
-        socket.broadcast.emit(
-          "updatePlayersItems",
-          socket.id,
-          this.players[socket.id]
-        );
+        socket.emit('updateItems', this.players[socket.id]);
+        socket.broadcast.emit('updatePlayersItems', socket.id, this.players[socket.id]);
       });
 
       socket.on("pickUpItem", (itemId) => {
