@@ -20,10 +20,16 @@ export default class PlayerModel {
 
     addItem(item){
         this.playerItems[item.id] = item;
-    }
-    removeItem(item){
-       delete this.playerItems[item.id];
+        this.attack += item.attackBonus;
+        this.defense += item.defenseBonus;
+        this.maxHealth += item.healthBonus;
 
+    }
+    removeItem(itemId){
+        this.attack -= this.playerItems[itemId].attackBonus;
+        this.defense -= this.playerItems[itemId].defenseBonus;
+        this.maxHealth -= this.playerItems[itemId].healthBonus;
+        delete this.playerItems[itemId];
     }
 
     canPickupItem() {

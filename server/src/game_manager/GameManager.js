@@ -130,20 +130,39 @@ export default class GameManager {
           // updating the players gold
           this.players[socket.id].updateGold(gold);
           socket.emit("updateScore", this.players[socket.id].gold);
+          socket.broadcast.emit(
+            "updatePlayersScore",
+            socket.id,
+            this.players[socket.id].gold
+          );
 
           // removing the chest
           this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
         }
       });
 
+      socket.on("playerDroppedItem", (itemId) => {
+        this.players[socket.id].removeItem(itemId);
+        socket.emit("updateItems", this.players[socket.id]);
 
-      socket.on('pickUpItem', (itemId) => {
+        socket.broadcast.emit(
+          "updatePlayersItems",
+          socket.id,
+          this.players[socket.id]
+        );
+      });
+
+      socket.on("pickUpItem", (itemId) => {
         // update the spawner
         if (this.items[itemId]) {
           if (this.players[socket.id].canPickupItem()) {
             this.players[socket.id].addItem(this.items[itemId]);
-            socket.emit('updateItems', this.players[socket.id]);
-            socket.broadcast.emit('updatePlayersItems', socket.id, this.players[socket.id]);
+            socket.emit("updateItems", this.players[socket.id]);
+            socket.broadcast.emit(
+              "updatePlayersItems",
+              socket.id,
+              this.players[socket.id]
+            );
 
             // removing the item
             this.spawners[this.items[itemId].spawnerId].removeObject(itemId);

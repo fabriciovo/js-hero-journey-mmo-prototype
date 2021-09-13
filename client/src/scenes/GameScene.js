@@ -108,6 +108,15 @@ export default class GameScene extends Phaser.Scene {
 
     this.socket.on("updateScore", (goldAmount) => {
       this.events.emit("updateScore", goldAmount);
+      this.player.gold = goldAmount;
+    });
+  
+    this.socket.on("updatePlayersScore", (playerId,goldAmount) => {
+      this.otherPlayers.getChildren().forEach(otherPlayer =>{
+        if(playerId === otherPlayer.id){
+          otherPlayer.gold = goldAmount;
+        }
+      })
     });
 
     this.socket.on("updateMonsterHealth", (monsterId, health) => {
@@ -165,33 +174,33 @@ export default class GameScene extends Phaser.Scene {
 
     this.socket.on("currentItems", (items) => {
       console.log(items);
-      Object.keys(items).forEach((id)=>{
+      Object.keys(items).forEach((id) => {
         this.spawnItem(items[id]);
-      })
+      });
     });
 
     this.socket.on("itemSpawned", (item) => {
       console.log(item);
-      this.spawnItem(item)
+      this.spawnItem(item);
     });
 
     this.socket.on("updateItems", (playerObject) => {
-      this.player.items = playerObject.items;
-      this.player.attackValue = playerObject.attackValue;
-      this.player.defenseValue = playerObject.defenseValue;
+      this.player.items = playerObject.playerItems;
+      this.player.attackValue = playerObject.attack;
+      this.player.defenseValue = playerObject.defense;
       this.player.maxHealth = playerObject.maxHealth;
       this.player.updateHealthBar();
     });
 
-    this.socket.on("updatePlayersItem", (playerId,playerObject) => {
+    this.socket.on("updatePlayersItem", (playerId, playerObject) => {
       console.log(playerObject);
-      this.otherPlayers.getChildren().forEach((otherPlayer)=>{
-        otherPlayer.items = playerObject.items;
+      this.otherPlayers.getChildren().forEach((otherPlayer) => {
+        otherPlayer.items = playerObject.playerItems;
         otherPlayer.attackValue = playerObject.attackValue;
         otherPlayer.defenseValue = playerObject.defenseValue;
         otherPlayer.maxHealth = playerObject.maxHealth;
         otherPlayer.updateHealthBar();
-      })
+      });
     });
 
     this.socket.on("itemRemoved", (itemId) => {
@@ -319,7 +328,11 @@ export default class GameScene extends Phaser.Scene {
       playerObject.id,
       this.playerAttackAudio,
       mainPlayer,
-      playerObject.playerName
+      playerObject.playerName,
+      playerObject.gold,
+      playerObject.defenseValue,
+      playerObject.attackValue,
+      playerObject.playerItems
     );
     console.log(playerObject.frame);
 
@@ -328,6 +341,11 @@ export default class GameScene extends Phaser.Scene {
     } else {
       this.player = newPlayerObject;
     }
+
+    newPlayerObject.setInteractive();
+    newPlayerObject.on('pointerdown', ()=>{
+      this.events.emit('showInventory', newPlayerObject, mainPlayer)
+    })
   }
 
   createGroups() {
@@ -364,7 +382,6 @@ export default class GameScene extends Phaser.Scene {
       item.makeActive();
     }
   }
-
 
   spawnChest(chestObject) {
     let chest = this.chests.getFirstDead();
@@ -491,10 +508,13 @@ export default class GameScene extends Phaser.Scene {
 
   collectItem(player, item) {
     // item pickup
-    console.log(item)
+    console.log(item);
     this.socket.emit("pickUpItem", item.id);
   }
 
+  sendDropItemMessage(itemId) {
+    this.socket.emit("playerDroppedItem", itemId);
+  }
 
   createMap() {
     // create map

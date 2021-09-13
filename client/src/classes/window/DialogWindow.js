@@ -57,11 +57,7 @@ export default class DialogWindow extends ModalWindow{
     }
   }
 
-  update() {
-    if (this.scene.cameras.main.worldView.x > 0 || this.scene.cameras.main.worldView.y > 0) {
-      this.redrawWindow();
-    }
-  }
+
 
 
   makeInteractive() {
