@@ -36,11 +36,17 @@ var PlayerModel = /*#__PURE__*/function () {
     key: "addItem",
     value: function addItem(item) {
       this.playerItems[item.id] = item;
+      this.attack += item.attackBonus;
+      this.defense += item.defenseBonus;
+      this.maxHealth += item.healthBonus;
     }
   }, {
     key: "removeItem",
-    value: function removeItem(item) {
-      delete this.playerItems[item.id];
+    value: function removeItem(itemId) {
+      this.attack -= this.playerItems[itemId].attackBonus;
+      this.defense -= this.playerItems[itemId].defenseBonus;
+      this.maxHealth -= this.playerItems[itemId].healthBonus;
+      delete this.playerItems[itemId];
     }
   }, {
     key: "canPickupItem",
