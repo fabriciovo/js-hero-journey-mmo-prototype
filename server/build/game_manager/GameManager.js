@@ -193,11 +193,11 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
-        socket.on("playerDroppedItem", function (itemId) {
+        socket.on('playerDroppedItem', function (itemId) {
           _this2.players[socket.id].removeItem(itemId);
 
-          socket.emit("updateItems", _this2.players[socket.id]);
-          socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
+          socket.emit('updateItems', _this2.players[socket.id]);
+          socket.broadcast.emit('updatePlayersItems', socket.id, _this2.players[socket.id]);
         });
         socket.on("pickUpItem", function (itemId) {
           // update the spawner

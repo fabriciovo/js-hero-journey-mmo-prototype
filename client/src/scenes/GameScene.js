@@ -192,16 +192,18 @@ export default class GameScene extends Phaser.Scene {
       this.player.updateHealthBar();
     });
 
-    this.socket.on("updatePlayersItem", (playerId, playerObject) => {
-      console.log(playerObject);
+    this.socket.on('updatePlayersItems', (playerId, playerObject) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
-        otherPlayer.items = playerObject.playerItems;
-        otherPlayer.attackValue = playerObject.attackValue;
-        otherPlayer.defenseValue = playerObject.defenseValue;
-        otherPlayer.maxHealth = playerObject.maxHealth;
-        otherPlayer.updateHealthBar();
+      if (playerId === otherPlayer.id) {
+      otherPlayer.items = playerObject.playerItems;
+      otherPlayer.maxHealth = playerObject.maxHealth;
+      otherPlayer.attackValue = playerObject.attack;
+      otherPlayer.defenseValue = playerObject.defense;
+      otherPlayer.updateHealthBar();
+      }
       });
-    });
+     });
+
 
     this.socket.on("itemRemoved", (itemId) => {
       this.items.getChildren().forEach((item) => {
@@ -330,9 +332,9 @@ export default class GameScene extends Phaser.Scene {
       mainPlayer,
       playerObject.playerName,
       playerObject.gold,
-      playerObject.defenseValue,
-      playerObject.attackValue,
-      playerObject.playerItems
+      playerObject.defense,
+      playerObject.attack,
+      playerObject.playerItems,
     );
     console.log(playerObject.frame);
 
@@ -512,6 +514,7 @@ export default class GameScene extends Phaser.Scene {
     this.socket.emit("pickUpItem", item.id);
   }
 
+   
   sendDropItemMessage(itemId) {
     this.socket.emit("playerDroppedItem", itemId);
   }

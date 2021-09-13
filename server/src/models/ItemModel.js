@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 /**
  * @class
  */
-export default class ChestModel {
+export default class ItemModel {
   constructor(x, y, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
     this.id = `${spawnerId}-${v4()}`;
     this.spawnerId = spawnerId;
