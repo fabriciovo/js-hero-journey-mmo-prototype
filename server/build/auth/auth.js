@@ -15,41 +15,53 @@ var _passportJwt = _interopRequireDefault(require("passport-jwt"));
 var _UserModel = _interopRequireDefault(require("../models/UserModel"));
 
 // handle user registration
-_passport["default"].use('signup', new _passportLocal["default"].Strategy({
-  usernameField: 'email',
-  passwordField: 'password',
+_passport["default"].use("signup", new _passportLocal["default"].Strategy({
+  usernameField: "email",
+  passwordField: "password",
   passReqToCallback: true
 }, /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(request, email, password, done) {
-    var username, user;
+    var username, player, user;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             username = request.body.username;
-            _context.next = 4;
+            player = {
+              playerName: username,
+              attack: 25,
+              defense: 10,
+              maxHealth: 150,
+              health: 150,
+              frame: 0,
+              gold: 0,
+              items: null
+            };
+            console.log(player);
+            _context.next = 6;
             return _UserModel["default"].create({
               email: email,
               password: password,
-              username: username
+              username: username,
+              player: player
             });
 
-          case 4:
+          case 6:
             user = _context.sent;
             return _context.abrupt("return", done(null, user));
 
-          case 8:
-            _context.prev = 8;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](0);
             return _context.abrupt("return", done(_context.t0));
 
-          case 11:
+          case 13:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 8]]);
+    }, _callee, null, [[0, 10]]);
   }));
 
   return function (_x, _x2, _x3, _x4) {
@@ -58,9 +70,9 @@ _passport["default"].use('signup', new _passportLocal["default"].Strategy({
 }())); // handle user login
 
 
-_passport["default"].use('login', new _passportLocal["default"].Strategy({
-  usernameField: 'email',
-  passwordField: 'password'
+_passport["default"].use("login", new _passportLocal["default"].Strategy({
+  usernameField: "email",
+  passwordField: "password"
 }, /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(email, password, done) {
     var user, valid;
@@ -82,36 +94,44 @@ _passport["default"].use('login', new _passportLocal["default"].Strategy({
               break;
             }
 
-            return _context2.abrupt("return", done(new Error('user not found'), false));
+            return _context2.abrupt("return", done(new Error("user not found"), false));
 
           case 6:
-            _context2.next = 8;
-            return user.isValidPassword(password);
-
-          case 8:
-            valid = _context2.sent;
-
-            if (valid) {
-              _context2.next = 11;
+            if (user.player) {
+              _context2.next = 8;
               break;
             }
 
-            return _context2.abrupt("return", done(new Error('invalid password'), false));
+            return _context2.abrupt("return", done(new Error("user not found"), false));
 
-          case 11:
+          case 8:
+            _context2.next = 10;
+            return user.isValidPassword(password);
+
+          case 10:
+            valid = _context2.sent;
+
+            if (valid) {
+              _context2.next = 13;
+              break;
+            }
+
+            return _context2.abrupt("return", done(new Error("invalid password"), false));
+
+          case 13:
             return _context2.abrupt("return", done(null, user));
 
-          case 14:
-            _context2.prev = 14;
+          case 16:
+            _context2.prev = 16;
             _context2.t0 = _context2["catch"](0);
             return _context2.abrupt("return", done(_context2.t0));
 
-          case 17:
+          case 19:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 14]]);
+    }, _callee2, null, [[0, 16]]);
   }));
 
   return function (_x5, _x6, _x7) {

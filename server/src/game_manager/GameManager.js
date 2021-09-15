@@ -6,6 +6,9 @@ import * as itemData from "../../public/assets/level/tools.json";
 import Spawner from "./Spawner";
 import ChatModel from "../models/ChatModel";
 import { SpawnerType } from "./utils";
+import UserModel from "../models/UserModel";
+import mongoose from "mongoose";
+import { async } from "regenerator-runtime";
 export default class GameManager {
   constructor(io) {
     this.io = io;
@@ -57,8 +60,53 @@ export default class GameManager {
   setupEventListeners() {
     this.io.on("connection", (socket) => {
       // player disconnected
+
+      /*socket.on("disconnect", async () => {
+        // delete user data from server
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          const { data } = decoded.user;
+          console.log(data)
+          await UserModel.save({ data });
+          console.log(this.players[socket.id]);
+
+          delete this.players[socket.id];
+
+          // emit a message to all players to remove this player
+          this.io.emit("disconnected", socket.id);
+        } catch (error) {
+          console.log(error);
+        }
+      });*/
+
+      socket.on("savePlayerData", async (token) => {
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          const { _id } = decoded.user;
+          console.log(this.players[socket.id]);
+
+          if(!this.players[socket.id].items){
+            this.players[socket.id].items = null
+          }
+
+          await UserModel.updateOne(
+            { _id: _id },
+            {
+              $set: {
+                player: this.players[socket.id],
+              },
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      });
+
       socket.on("disconnect", () => {
         // delete user data from server
+
+        console.log("disconnect");
+
         delete this.players[socket.id];
 
         // emit a message to all players to remove this player
@@ -70,7 +118,6 @@ export default class GameManager {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
           const { name, email } = decoded.user;
           await ChatModel.create({ email, message });
-          console.log(this.players[socket.id]);
           this.io.emit("newMessage", {
             message,
             name: this.players[socket.id].playerName,
@@ -81,12 +128,14 @@ export default class GameManager {
         }
       });
 
-      socket.on("newPlayer", (token, frame) => {
+      socket.on("newPlayer", async (token, frame) => {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { name } = decoded.user;
+          const { name, _id } = decoded.user;
+
+          const playerSchema = await UserModel.findById(_id);
           // create a new Player
-          this.spawnPlayer(socket.id, name, frame);
+          this.spawnPlayer(socket.id, name, frame, playerSchema.player);
 
           // send the players object to the new player
           socket.emit("currentPlayers", this.players);
@@ -102,6 +151,12 @@ export default class GameManager {
 
           // inform the other players of the new player that joined
           socket.broadcast.emit("spawnPlayer", this.players[socket.id]);
+          socket.emit("updateItems", this.players[socket.id]);
+          socket.broadcast.emit(
+            "updatePlayersItems",
+            socket.id,
+            this.players[socket.id]
+          );
         } catch (error) {
           console.log(error);
           socket.emit("invalidToken");
@@ -135,16 +190,19 @@ export default class GameManager {
             socket.id,
             this.players[socket.id].gold
           );
-
           // removing the chest
           this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
         }
       });
 
-      socket.on('playerDroppedItem', (itemId) => {
+      socket.on("playerDroppedItem", (itemId) => {
         this.players[socket.id].removeItem(itemId);
-        socket.emit('updateItems', this.players[socket.id]);
-        socket.broadcast.emit('updatePlayersItems', socket.id, this.players[socket.id]);
+        socket.emit("updateItems", this.players[socket.id]);
+        socket.broadcast.emit(
+          "updatePlayersItems",
+          socket.id,
+          this.players[socket.id]
+        );
       });
 
       socket.on("pickUpItem", (itemId) => {
@@ -321,19 +379,20 @@ export default class GameManager {
     );
     this.spawners[spawner.id] = spawner;
   }
-
-  spawnPlayer(playerId, name, frame) {
+  spawnPlayer(playerId, name, frame, playerSchema) {
     const player = new PlayerModel(
       playerId,
       this.playerLocations,
       this.players,
       name,
-      frame
+      frame,
+      playerSchema
     );
     this.players[playerId] = player;
   }
 
   addItems(itemId, item) {
+    
     this.items[itemId] = item;
     this.io.emit("itemSpawned", item);
   }

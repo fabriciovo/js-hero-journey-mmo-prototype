@@ -34,7 +34,6 @@ export default class TitleScene extends Phaser.Scene {
   }
 
   resize(gameSize){ 
-    console.log(gameSize)
     const {width,height} = gameSize;
     this.cameras.resize(width, height)
     this.titleText.setPosition(width/2, height/2);

@@ -38,7 +38,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.defenseValue = defenseValue;
     this.attackValue = attackValue;
     this.items = items;
-
+    console.log(this.items)
     // set a size on the container
     this.setSize(64, 64);
     // enable physics

@@ -1,39 +1,49 @@
+
 export default class PlayerModel {
-    constructor(playerId, spawnLocations, players, name, frame) {
-        this.attack = 25;
-        this.defense = 10;
-        this.health = 150;
-        this.maxHealth = 150;
-        this.gold = 0;
+    constructor(playerId, spawnLocations, players, name, frame, playerSchema) {
+        this.attack = playerSchema.attack;
+        this.defense = playerSchema.defense;
+        this.health = playerSchema.health;
+        this.maxHealth = playerSchema.maxHealth;
+        this.gold = playerSchema.gold;
         this.id = playerId;
+        this.playerName = name;
+        this.frame = frame;
+        this.items = playerSchema.items || {};
+        //this.playerItems =  {};
+
+        this.maxNumberOfItems = 5;
+
         this.spawnLocations = spawnLocations;
         this.playerAttacking = false;
         this.flipX = true;
         const location = this.generateLocation(players);
         this.x = location[0];
         this.y = location[1];
-        this.playerName = name;
-        this.frame = frame;
-        this.playerItems = {};
-        this.maxNumberOfItems = 5;
+
+        console.log(playerSchema)
+        console.log(this.items)
     }
 
     addItem(item){
-        this.playerItems[item.id] = item;
+        console.log(item)
+        console.log(this.items)
+        this.items[item.id] = item;
         this.attack += item.attackBonus;
         this.defense += item.defenseBonus;
         this.maxHealth += item.healthBonus;
+        console.log(this.items)
 
     }
     removeItem(itemId){
-        this.attack -= this.playerItems[itemId].attackBonus;
-        this.defense -= this.playerItems[itemId].defenseBonus;
-        this.maxHealth -= this.playerItems[itemId].healthBonus;
-        delete this.playerItems[itemId];
+        this.attack -= this.items[itemId].attackBonus;
+        this.defense -= this.items[itemId].defenseBonus;
+        this.maxHealth -= this.items[itemId].healthBonus;
+        delete this.items[itemId];
     }
 
     canPickupItem() {
-        if (Object.keys(this.playerItems).length < 5) {
+        if (Object.keys(this.items).length < 5) {
           return true;
         }
         return false;
@@ -42,7 +52,6 @@ export default class PlayerModel {
 
     playerAttacked (attack){
         const damage = this.defense - attack;
-        console.log(damage)
         this.updateHealth(damage);
     }
 

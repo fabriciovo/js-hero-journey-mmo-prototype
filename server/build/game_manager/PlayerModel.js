@@ -12,46 +12,52 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
 var PlayerModel = /*#__PURE__*/function () {
-  function PlayerModel(playerId, spawnLocations, players, name, frame) {
+  function PlayerModel(playerId, spawnLocations, players, name, frame, playerSchema) {
     (0, _classCallCheck2["default"])(this, PlayerModel);
-    this.attack = 25;
-    this.defense = 10;
-    this.health = 150;
-    this.maxHealth = 150;
-    this.gold = 0;
+    this.attack = playerSchema.attack;
+    this.defense = playerSchema.defense;
+    this.health = playerSchema.health;
+    this.maxHealth = playerSchema.maxHealth;
+    this.gold = playerSchema.gold;
     this.id = playerId;
+    this.playerName = name;
+    this.frame = frame;
+    this.items = playerSchema.items || {}; //this.playerItems =  {};
+
+    this.maxNumberOfItems = 5;
     this.spawnLocations = spawnLocations;
     this.playerAttacking = false;
     this.flipX = true;
     var location = this.generateLocation(players);
     this.x = location[0];
     this.y = location[1];
-    this.playerName = name;
-    this.frame = frame;
-    this.playerItems = {};
-    this.maxNumberOfItems = 5;
+    console.log(playerSchema);
+    console.log(this.items);
   }
 
   (0, _createClass2["default"])(PlayerModel, [{
     key: "addItem",
     value: function addItem(item) {
-      this.playerItems[item.id] = item;
+      console.log(item);
+      console.log(this.items);
+      this.items[item.id] = item;
       this.attack += item.attackBonus;
       this.defense += item.defenseBonus;
       this.maxHealth += item.healthBonus;
+      console.log(this.items);
     }
   }, {
     key: "removeItem",
     value: function removeItem(itemId) {
-      this.attack -= this.playerItems[itemId].attackBonus;
-      this.defense -= this.playerItems[itemId].defenseBonus;
-      this.maxHealth -= this.playerItems[itemId].healthBonus;
-      delete this.playerItems[itemId];
+      this.attack -= this.items[itemId].attackBonus;
+      this.defense -= this.items[itemId].defenseBonus;
+      this.maxHealth -= this.items[itemId].healthBonus;
+      delete this.items[itemId];
     }
   }, {
     key: "canPickupItem",
     value: function canPickupItem() {
-      if (Object.keys(this.playerItems).length < 5) {
+      if (Object.keys(this.items).length < 5) {
         return true;
       }
 
@@ -61,7 +67,6 @@ var PlayerModel = /*#__PURE__*/function () {
     key: "playerAttacked",
     value: function playerAttacked(attack) {
       var damage = this.defense - attack;
-      console.log(damage);
       this.updateHealth(damage);
     }
   }, {
