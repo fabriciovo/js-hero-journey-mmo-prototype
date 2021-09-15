@@ -15,13 +15,41 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 
+var _PlayerModel = _interopRequireDefault(require("../game_manager/PlayerModel"));
+
 /* eslint-disable func-names */
 var Schema = _mongoose["default"].Schema;
+var PlayerSchema = new Schema({
+  playerName: {
+    type: String
+  },
+  attack: {
+    type: Number
+  },
+  defense: {
+    type: Number
+  },
+  maxHealth: {
+    type: Number
+  },
+  health: {
+    type: Number
+  },
+  frame: {
+    type: Number
+  },
+  gold: {
+    type: Number
+  },
+  items: {
+    type: Object
+  }
+});
 var UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unqiue: true
+    unique: true
   },
   password: {
     type: String,
@@ -29,16 +57,20 @@ var UserSchema = new Schema({
   },
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   resetToken: {
     type: String
   },
   resetTokenExp: {
     type: Date
+  },
+  player: {
+    type: PlayerSchema
   }
 });
-UserSchema.pre('save', /*#__PURE__*/function () {
+UserSchema.pre("save", /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(next) {
     var hash;
     return _regenerator["default"].wrap(function _callee$(_context) {
@@ -94,7 +126,7 @@ UserSchema.methods.isValidPassword = /*#__PURE__*/function () {
   };
 }();
 
-var UserModel = _mongoose["default"].model('user', UserSchema);
+var UserModel = _mongoose["default"].model("user", UserSchema);
 
 var _default = UserModel;
 exports["default"] = _default;
