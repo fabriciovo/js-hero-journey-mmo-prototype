@@ -80,10 +80,8 @@ export default class GameManager {
       });*/
 
       socket.on("savePlayerData", async () => {
-        console.log("savePlayerData")
 
         try {
-          console.log(this.players[socket.id]);
 
           if(!this.players[socket.id].items){
             this.players[socket.id].items = null

@@ -31,20 +31,15 @@ var PlayerModel = /*#__PURE__*/function () {
     var location = this.generateLocation(players);
     this.x = location[0];
     this.y = location[1];
-    console.log(playerSchema);
-    console.log(this.items);
   }
 
   (0, _createClass2["default"])(PlayerModel, [{
     key: "addItem",
     value: function addItem(item) {
-      console.log(item);
-      console.log(this.items);
       this.items[item.id] = item;
       this.attack += item.attackBonus;
       this.defense += item.defenseBonus;
       this.maxHealth += item.healthBonus;
-      console.log(this.items);
     }
   }, {
     key: "removeItem",
@@ -67,6 +62,8 @@ var PlayerModel = /*#__PURE__*/function () {
     key: "playerAttacked",
     value: function playerAttacked(attack) {
       var damage = this.defense - attack;
+      console.log(damage);
+      if (damage > 0) damage = 0;
       this.updateHealth(damage);
     }
   }, {
