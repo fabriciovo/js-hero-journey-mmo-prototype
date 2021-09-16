@@ -121,15 +121,13 @@ var GameManager = /*#__PURE__*/function () {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  console.log("savePlayerData");
-                  _context.prev = 1;
-                  console.log(_this2.players[socket.id]);
+                  _context.prev = 0;
 
                   if (!_this2.players[socket.id].items) {
                     _this2.players[socket.id].items = null;
                   }
 
-                  _context.next = 6;
+                  _context.next = 4;
                   return _UserModel["default"].updateOne({
                     username: _this2.players[socket.id].playerName
                   }, {
@@ -138,21 +136,21 @@ var GameManager = /*#__PURE__*/function () {
                     }
                   });
 
-                case 6:
-                  _context.next = 11;
+                case 4:
+                  _context.next = 9;
                   break;
 
-                case 8:
-                  _context.prev = 8;
-                  _context.t0 = _context["catch"](1);
+                case 6:
+                  _context.prev = 6;
+                  _context.t0 = _context["catch"](0);
                   console.log(_context.t0);
 
-                case 11:
+                case 9:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[1, 8]]);
+          }, _callee, null, [[0, 6]]);
         })));
         socket.on("disconnect", function () {
           // delete user data from server

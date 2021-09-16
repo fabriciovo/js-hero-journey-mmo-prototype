@@ -184,8 +184,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updateItems", (playerObject) => {
-      console.log("updateItems")
-      console.log(playerObject)
+
       this.player.items = playerObject.items;
       this.player.attackValue = playerObject.attack;
       this.player.defenseValue = playerObject.defense;
@@ -194,9 +193,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on('updatePlayersItems', (playerId, playerObject) => {
-      console.log(playerId)
 
-      console.log(playerObject)
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
       if (playerId === otherPlayer.id) {
       otherPlayer.items = playerObject.items;
@@ -204,7 +201,7 @@ export default class GameScene extends Phaser.Scene {
       otherPlayer.attackValue = playerObject.attack;
       otherPlayer.defenseValue = playerObject.defense;
       otherPlayer.updateHealthBar();
-      console.log(playerObject)
+
       }
       });
      });
@@ -245,7 +242,6 @@ export default class GameScene extends Phaser.Scene {
 
     setInterval(()=>{
       this.socket.emit("savePlayerData")
-      console.log("timer")
     },1000)
   }
 
@@ -333,7 +329,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer(playerObject, mainPlayer) {
-    console.log(playerObject)
     const newPlayerObject = new PlayerContainer(
       this,
       playerObject.x * 2,

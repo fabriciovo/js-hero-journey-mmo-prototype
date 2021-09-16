@@ -38,7 +38,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.defenseValue = defenseValue;
     this.attackValue = attackValue;
     this.items = items;
-    console.log(this.items)
     // set a size on the container
     this.setSize(64, 64);
     // enable physics
@@ -68,8 +67,13 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.createHealthBar();
 
     this.createPlayerName();
+
+
+    //set actions
+    this.actionA = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
   }
 
+  
   createHealthBar() {
     this.healthBar = this.scene.add.graphics();
     this.updateHealthBar();
@@ -155,7 +159,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       }
 
       if (
-        Phaser.Input.Keyboard.JustDown(cursors.space) &&
+        Phaser.Input.Keyboard.JustDown(this.actionA) &&
         !this.playerAttacking
       ) {
         this.attack();

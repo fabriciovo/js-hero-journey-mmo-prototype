@@ -38,9 +38,21 @@ export default class UiScene extends Phaser.Scene {
       textAlpha: 1,
       windowColor: 0X000000,
     });
+  
+    //create equiped weapons icons
+    this.actionA = this.add.image(50  , this.scale.height - 50, 'inventoryButton');
+    this.actionB = this.add.image(150  , this.scale.height - 50, 'inventoryButton');
 
+    this.potionA = this.add.image(50  , this.scale.height - 150, 'inventoryButton');
+    this.potionB = this.add.image(150  , this.scale.height - 150, 'inventoryButton');
+
+
+    this.actionA.setScale(3);
+    this.actionB.setScale(3);
+    this.potionA.setScale(3);
+    this.potionB.setScale(3);
     // create inventory button
-    this.inventoryButton = this.add.image(50, this.scale.height - 50, 'inventoryButton').setInteractive();
+    this.inventoryButton = this.add.image(this.scale.width - 360  , this.scale.height - 50, 'inventoryButton').setInteractive();
     this.inventoryButton.setScale(2);
     this.inventoryButton.on('pointerdown', () => {
       this.toggleInventory(this.gameScene.player, true);
@@ -49,6 +61,11 @@ export default class UiScene extends Phaser.Scene {
     this.input.on('pointerdown', (pointer, gameObjects) => {
       if (!gameObjects.includes(this.inventoryWindow.rect)
         && !gameObjects.includes(this.inventoryButton)
+        && !gameObjects.includes(this.inventoryWindow.inventoryItems[0].item)
+        && !gameObjects.includes(this.inventoryWindow.inventoryItems[1].item)
+        && !gameObjects.includes(this.inventoryWindow.inventoryItems[2].item)
+        && !gameObjects.includes(this.inventoryWindow.inventoryItems[3].item)
+        && !gameObjects.includes(this.inventoryWindow.inventoryItems[4].item)
         && !gameObjects.includes(this.inventoryWindow.inventoryItems[0].discardButton)
         && !gameObjects.includes(this.inventoryWindow.inventoryItems[1].discardButton)
         && !gameObjects.includes(this.inventoryWindow.inventoryItems[2].discardButton)
