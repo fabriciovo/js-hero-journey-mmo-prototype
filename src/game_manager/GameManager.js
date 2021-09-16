@@ -79,10 +79,10 @@ export default class GameManager {
         }
       });*/
 
-      socket.on("savePlayerData", async (token) => {
+      socket.on("savePlayerData", async () => {
+        console.log("savePlayerData")
+
         try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { _id } = decoded.user;
           console.log(this.players[socket.id]);
 
           if(!this.players[socket.id].items){
@@ -90,7 +90,7 @@ export default class GameManager {
           }
 
           await UserModel.updateOne(
-            { _id: _id },
+            { username: this.players[socket.id].playerName },
             {
               $set: {
                 player: this.players[socket.id],

@@ -116,48 +116,44 @@ var GameManager = /*#__PURE__*/function () {
             console.log(error);
           }
         });*/
-        socket.on("savePlayerData", /*#__PURE__*/function () {
-          var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(token) {
-            var decoded, _id;
+        socket.on("savePlayerData", /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
+          return _regenerator["default"].wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  console.log("savePlayerData");
+                  _context.prev = 1;
+                  console.log(_this2.players[socket.id]);
 
-            return _regenerator["default"].wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    _context.prev = 0;
-                    decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
-                    _id = decoded.user._id;
-                    console.log(_this2.players[socket.id]);
-                    _context.next = 6;
-                    return _UserModel["default"].updateOne({
-                      _id: _id
-                    }, {
-                      $set: {
-                        player: _this2.players[socket.id]
-                      }
-                    });
+                  if (!_this2.players[socket.id].items) {
+                    _this2.players[socket.id].items = null;
+                  }
 
-                  case 6:
-                    _context.next = 11;
-                    break;
+                  _context.next = 6;
+                  return _UserModel["default"].updateOne({
+                    username: _this2.players[socket.id].playerName
+                  }, {
+                    $set: {
+                      player: _this2.players[socket.id]
+                    }
+                  });
 
-                  case 8:
-                    _context.prev = 8;
-                    _context.t0 = _context["catch"](0);
-                    console.log(_context.t0);
+                case 6:
+                  _context.next = 11;
+                  break;
 
-                  case 11:
-                  case "end":
-                    return _context.stop();
-                }
+                case 8:
+                  _context.prev = 8;
+                  _context.t0 = _context["catch"](1);
+                  console.log(_context.t0);
+
+                case 11:
+                case "end":
+                  return _context.stop();
               }
-            }, _callee, null, [[0, 8]]);
-          }));
-
-          return function (_x) {
-            return _ref.apply(this, arguments);
-          };
-        }());
+            }
+          }, _callee, null, [[1, 8]]);
+        })));
         socket.on("disconnect", function () {
           // delete user data from server
           console.log("disconnect");
@@ -205,7 +201,7 @@ var GameManager = /*#__PURE__*/function () {
             }, _callee2, null, [[0, 8]]);
           }));
 
-          return function (_x2, _x3, _x4) {
+          return function (_x, _x2, _x3) {
             return _ref2.apply(this, arguments);
           };
         }());
@@ -258,7 +254,7 @@ var GameManager = /*#__PURE__*/function () {
             }, _callee3, null, [[0, 16]]);
           }));
 
-          return function (_x5, _x6) {
+          return function (_x4, _x5) {
             return _ref3.apply(this, arguments);
           };
         }());
