@@ -13,7 +13,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // add the player to our existing scene
     this.scene.add.existing(this);
 
-/*    this.scene.anims.create({
+    this.scene.anims.create({
       key: "idle",
       frames: this.scene.anims.generateFrameNumbers("characters", {
         frames: [1],
@@ -49,10 +49,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: -1,
     });
 
-    this.play("idle");*/
+    this.play("idle");
   }
 
   playAnimation(key, children = true) {
-    //this.play(key, children);
+    this.play(key, children);
   }
 }

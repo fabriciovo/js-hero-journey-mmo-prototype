@@ -203,6 +203,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
       this.player.playAnimation("idle");
     }
+    
   }
 
   updateFlipX() {

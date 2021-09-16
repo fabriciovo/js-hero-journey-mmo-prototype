@@ -218,9 +218,7 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    this.socket.on("savePlayerData", (token) => {
-      console.log("AaA");
-    });
+
   }
 
   create() {
@@ -244,19 +242,24 @@ export default class GameScene extends Phaser.Scene {
     this.input.on("pointerdown", () => {
       document.getElementById("chatInput").blur();
     });
+
+    setInterval(()=>{
+      this.socket.emit("savePlayerData")
+      console.log("timer")
+    },1000)
   }
 
   keyDownEventListener() {
     this.inputMessageField = document.getElementById("chatInput");
     window.addEventListener("keydown", (event) => {
       if (event.keyCode === 13) {
-        this.sendMessage();
-        
-
-      } else if (event.keyCode === 32) {
+       this.sendMessage();
+       
+      } else if (event.key === 32) {
         if (document.activeElement === this.inputMessageField) {
           this.inputMessageField.value = `${this.inputMessageField.value} `;
         }
+        
       }
     });
   }
@@ -301,7 +304,7 @@ export default class GameScene extends Phaser.Scene {
         flipX: this.player.flipX,
         playerAttacking: this.player.playerAttacking,
       };
-      this.socket.emit("savePlayerData",getCookie("jwt"));
+      
 
     }
   }
