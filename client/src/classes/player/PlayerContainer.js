@@ -68,12 +68,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     this.createPlayerName();
 
-
     //set actions
-    this.actionA = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+    this.actionA = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.Z
+    );
   }
 
-  
   createHealthBar() {
     this.healthBar = this.scene.add.graphics();
     this.updateHealthBar();
@@ -207,7 +207,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
       this.player.playAnimation("idle");
     }
-    
   }
 
   updateFlipX() {
@@ -231,6 +230,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   cleanUp() {
+    this.setActive(false);
+    this.setVisible(false);
+    this.healthBar.setVisible(false);
+    this.playerNameText.setText("")
     this.healthBar.destroy();
     this.playerName.destroy();
     this.player.destroy();

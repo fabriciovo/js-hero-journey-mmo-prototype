@@ -10,6 +10,21 @@ export default class InventoryWindow extends ModalWindow {
     this.graphics.setDepth(3);
     this.createWindow();
     this.hideWindow();
+
+    this.descriptionDialog = new DialogText(
+      this.scene,
+      {
+        windowWidth: 120,
+        windowHeight: 360,
+        borderAlpha: 0,
+        windowAlpha: 0,
+        debug: false,
+        textAlpha: 1,
+        windowColor: 0x000000,
+      },
+      "fdspokpaosfk"
+    );
+  
   }
 
   calculateWindowDimension() {
@@ -170,23 +185,18 @@ export default class InventoryWindow extends ModalWindow {
         .setInteractive();
       this.itemsContainer.add(this.inventoryItems[x].item);
 
-      this.inventoryItems[x].item.on("pointerdown", () => {
+      this.inventoryItems[x].item.on("pointerover", () => {
         console.log("adasdas");
         console.log(this.inventoryItems[x].item);
 
-        this.descriptionDialog = new DialogText(
-          this.scene,
-          {
-            windowWidth: 120,
-            windowHeight: 360,
-            borderAlpha: 1,
-            windowAlpha: 1,
-            debug: true,
-            textAlpha: 1,
-            windowColor: 0x000000,
-          },
-          "fdspokpaosfk"
-        );
+        this.descriptionDialog.windowAlpha = 1;
+      });
+      
+      this.inventoryItems[x].item.on("pointerout", () => {
+        console.log("adasdas");
+        console.log(this.inventoryItems[x].item);
+
+        this.descriptionDialog.windowAlpha = 0;
       });
 
       // create discard item button

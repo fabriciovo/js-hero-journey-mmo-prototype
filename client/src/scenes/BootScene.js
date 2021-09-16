@@ -6,6 +6,7 @@ export default class BootScene extends Phaser.Scene {
   }
 
   preload() {
+
     // load images
     this.loadImages();
     // load spritesheets
