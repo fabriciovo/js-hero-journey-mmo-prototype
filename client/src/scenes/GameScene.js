@@ -250,8 +250,7 @@ export default class GameScene extends Phaser.Scene {
     window.addEventListener("keydown", (event) => {
       if (event.keyCode === 13) {
        this.sendMessage();
-       
-      } else if (event.key === 32) {
+      } else if (event.keyCode === 32) {
         if (document.activeElement === this.inputMessageField) {
           this.inputMessageField.value = `${this.inputMessageField.value} `;
         }
