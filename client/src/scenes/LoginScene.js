@@ -29,7 +29,7 @@ export default class LoginScene extends CredentialsBaseScene {
       .then((response) => {
         if (response.status === 200) {
           refreshTokenInterval();
-          this.startScene("CharacterSelection");
+          this.startScene("Game");
         } else {
           console.log(response.error);
           window.alert("Invalid Username or Password!");
