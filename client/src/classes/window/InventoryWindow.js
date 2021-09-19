@@ -1,5 +1,4 @@
 import ModalWindow from "./ModalWindow";
-import DialogText from "./DialogText";
 export default class InventoryWindow extends ModalWindow {
   constructor(scene, opts) {
     super(scene, opts);
@@ -10,21 +9,6 @@ export default class InventoryWindow extends ModalWindow {
     this.graphics.setDepth(3);
     this.createWindow();
     this.hideWindow();
-
-    this.descriptionDialog = new DialogText(
-      this.scene,
-      {
-        windowWidth: 120,
-        windowHeight: 360,
-        borderAlpha: 0,
-        windowAlpha: 0,
-        debug: false,
-        textAlpha: 1,
-        windowColor: 0x000000,
-      },
-      "fdspokpaosfk"
-    );
-  
   }
 
   calculateWindowDimension() {
@@ -56,8 +40,7 @@ export default class InventoryWindow extends ModalWindow {
       this.inventoryContainer.setSize(rectWidth - 1, rectHeight - 1);
 
       // center the title text
-      this.titleText.setPosition(this.inventoryContainer.width / 2, 20);
-      this.itemsText.setPosition(this.inventoryContainer.width / 2, 140);
+      this.itemsText.setPosition(this.inventoryContainer.width / 2, 15);
 
       // update inventory container positions
       this.updateInventoryContainerPositions();
@@ -76,63 +59,13 @@ export default class InventoryWindow extends ModalWindow {
       this.inventoryContainer.setDepth(3);
       this.inventoryContainer.setAlpha(this.textAlpha);
 
-      // create inventory title
-      this.titleText = this.scene.add.text(
-        this.inventoryContainer.width / 2,
-        20,
-        "Player Stats",
-        { fontSize: "22px", fill: "#ffffff", align: "center" }
-      );
-      this.titleText.setOrigin(0.5);
-      this.inventoryContainer.add(this.titleText);
-
-      // create inventory stats
-      this.createInventoryStats();
-
       // create inventory slots
       this.createInventorySlots();
     }
   }
 
-  createInventoryStats() {
-    this.statsContainer = this.scene.add.container(0, 80);
-    this.inventoryContainer.add(this.statsContainer);
-
-    const textOptions = {
-      fontSize: "22px",
-      fill: "#ffffff",
-    };
-
-    // create attack stats information
-    this.swordIcon = this.scene.add.image(0, 0, "inventorySword").setScale(1.5);
-    this.statsContainer.add(this.swordIcon);
-    this.swordStatText = this.scene.add.text(0, 0, "100", textOptions);
-    this.statsContainer.add(this.swordStatText);
-
-    // create defense stats information
-    this.shieldIcon = this.scene.add
-      .image(90, 0, "inventoryShield")
-      .setScale(1.5);
-    this.statsContainer.add(this.shieldIcon);
-    this.shieldStatText = this.scene.add.text(90, 0, "100", textOptions);
-    this.statsContainer.add(this.shieldStatText);
-
-    // create gold stats information
-    this.goldIcon = this.scene.add.image(180, 0, "inventoryGold").setScale(1.5);
-    this.statsContainer.add(this.goldIcon);
-    this.goldStatText = this.scene.add.text(180, 0, "100", textOptions);
-    this.statsContainer.add(this.goldStatText);
-  }
-
   updateInventoryContainerPositions() {
     this.inventoryContainer.setSize(this.inventoryContainer.width - 40, 80);
-    this.swordIcon.x = this.inventoryContainer.width * 0.1;
-    this.swordStatText.x = this.inventoryContainer.width * 0.1 + 30;
-    this.shieldIcon.x = this.inventoryContainer.width * 0.5;
-    this.shieldStatText.x = this.inventoryContainer.width * 0.5 + 30;
-    this.goldIcon.x = this.inventoryContainer.width * 0.85;
-    this.goldStatText.x = this.inventoryContainer.width * 0.85 + 30;
-
     for (let x = 0; x < 5; x += 1) {
       this.inventoryItems[x].item.x = this.inventoryContainer.width * 0.1;
       this.inventoryItems[x].discardButton.x = this.inventoryContainer.width;
@@ -151,11 +84,14 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   createInventorySlots() {
+    this.statsContainer = this.scene.add.container(0, 80);
+    this.inventoryContainer.add(this.statsContainer);
+
     // create items title
     this.itemsText = this.scene.add.text(
       this.inventoryContainer.width / 2,
       140,
-      "Player Inventory",
+      "Inventory",
       { fontSize: "22px", fill: "#ffffff", align: "center" }
     );
     this.itemsText.setOrigin(0.5);
@@ -164,7 +100,6 @@ export default class InventoryWindow extends ModalWindow {
     // create containter
     this.itemsContainer = this.scene.add.container(0, 120);
     this.statsContainer.add(this.itemsContainer);
-
     this.createInventoryItems();
   }
 
@@ -174,6 +109,7 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   createInventoryItems() {
+    
     for (let x = 0; x < 5; x += 1) {
       const yPos = 0 + 55 * x;
 
@@ -186,17 +122,15 @@ export default class InventoryWindow extends ModalWindow {
       this.itemsContainer.add(this.inventoryItems[x].item);
 
       this.inventoryItems[x].item.on("pointerover", () => {
-        console.log("adasdas");
-        console.log(this.inventoryItems[x].item);
-
-        this.descriptionDialog.windowAlpha = 1;
+        this.showItemDescription(this.inventoryItems[x]);
+        this.scene.descriptionWindow.showWindow();
       });
-      
+
       this.inventoryItems[x].item.on("pointerout", () => {
         console.log("adasdas");
         console.log(this.inventoryItems[x].item);
 
-        this.descriptionDialog.windowAlpha = 0;
+        this.scene.descriptionWindow.hideWindow();
       });
 
       // create discard item button
@@ -206,7 +140,6 @@ export default class InventoryWindow extends ModalWindow {
         .setInteractive();
       this.itemsContainer.add(this.inventoryItems[x].discardButton);
       this.inventoryItems[x].discardButton.on("pointerdown", () => {
-        console.log("apoSDKPOADSkapsodk");
         this.removeItem(x);
       });
 
@@ -276,17 +209,12 @@ export default class InventoryWindow extends ModalWindow {
     this.graphics.setAlpha(0);
   }
 
-  showWindow(playerObject, mainPlayer) {
-    this.mainPlayer = mainPlayer;
+  showWindow(playerObject) {
+    this.mainPlayer = true;
     this.playerObject = playerObject;
     this.rect.setInteractive();
     this.inventoryContainer.setAlpha(1);
     this.graphics.setAlpha(1);
-
-    // update player stats
-    this.swordStatText.setText(playerObject.attackValue);
-    this.shieldStatText.setText(playerObject.defenseValue);
-    this.goldStatText.setText(playerObject.gold);
 
     // hide inventory items that are not needed
     for (let i = Object.keys(playerObject.items).length; i < 5; i += 1) {
@@ -353,5 +281,9 @@ export default class InventoryWindow extends ModalWindow {
     }
 
     this.showInventoryItem(itemNumber);
+  }
+
+  showItemDescription(item) {
+    console.log(item.attackIconText);
   }
 }

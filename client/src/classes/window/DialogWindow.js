@@ -167,4 +167,14 @@ export default class DialogWindow extends ModalWindow {
 
     document.body.appendChild(this.input);
   }
+
+  hideWindow() {
+    this.rect.disableInteractive();
+    this.graphics.setAlpha(0);
+  }
+
+  showWindow() {
+    this.rect.setInteractive();
+    this.graphics.setAlpha(1);
+  }
 }

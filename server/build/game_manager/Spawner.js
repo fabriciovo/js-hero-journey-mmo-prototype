@@ -75,7 +75,7 @@ var Spawner = /*#__PURE__*/function () {
     value: function spawnItem() {
       var location = this.pickRandomLocation();
       var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
-      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, getRandonValues(), getRandonValues(), getRandonValues());
+      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, getRandonValues(), getRandonValues(), getRandonValues(), _utils.WeaponTypes.MELEE, "Description");
       this.objectsCreated.push(item);
       this.addObject(item.id, item);
     }

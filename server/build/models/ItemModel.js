@@ -14,7 +14,7 @@ var _uuid = require("uuid");
 /**
  * @class
  */
-var ItemModel = function ItemModel(x, y, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
+var ItemModel = function ItemModel(x, y, spawnerId, name, frame, attackValue, defenseValue, healthValue, type, description) {
   (0, _classCallCheck2["default"])(this, ItemModel);
   this.id = "".concat(spawnerId, "-").concat((0, _uuid.v4)());
   this.spawnerId = spawnerId;
@@ -25,6 +25,8 @@ var ItemModel = function ItemModel(x, y, spawnerId, name, frame, attackValue, de
   this.attackBonus = attackValue;
   this.defenseBonus = defenseValue;
   this.healthBonus = healthValue;
+  this.type = type;
+  this.description = description;
 };
 
 exports["default"] = ItemModel;

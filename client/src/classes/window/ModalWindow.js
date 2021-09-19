@@ -68,15 +68,5 @@ export default class ModalWindow {
     }
   }
 
-  hideWindow() {
-    this.borderAlpha = 0;
-    this.windowAlpha = 0;
-    this.textAlpha = 0;
-  }
 
-  showWindow() {
-    this.borderAlpha = 0.3;
-    this.windowAlpha = 0.4;
-    this.textAlpha = 0.2;
-  }
 }

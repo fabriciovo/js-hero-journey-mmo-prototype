@@ -80,7 +80,7 @@ export default class UiSceneMobile extends Phaser.Scene {
 
     this.mobileActionA.setScale(2);
 
-    this.moveUp.on("pointerdown", () => {
+    this.moveUp.on("pointerover", () => {
       this.gameScene.player.mobileUp = true;
     });
 
@@ -88,7 +88,7 @@ export default class UiSceneMobile extends Phaser.Scene {
       this.gameScene.player.mobileUp = false;
     });
 
-    this.moveDown.on("pointerdown", () => {
+    this.moveDown.on("pointerover", () => {
       this.gameScene.player.mobileDown = true;
     });
 
@@ -96,7 +96,7 @@ export default class UiSceneMobile extends Phaser.Scene {
       this.gameScene.player.mobileDown = false;
     });
 
-    this.moveLeft.on("pointerdown", () => {
+    this.moveLeft.on("pointerover", () => {
       this.gameScene.player.mobileLeft = true;
     });
 
@@ -104,7 +104,7 @@ export default class UiSceneMobile extends Phaser.Scene {
       this.gameScene.player.mobileLeft = false;
     });
 
-    this.moveRight.on("pointerdown", () => {
+    this.moveRight.on("pointerover", () => {
       this.gameScene.player.mobileRight = true;
     });
     this.moveRight.on("pointerout", () => {
