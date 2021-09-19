@@ -207,7 +207,7 @@ export default class InventoryWindow extends ModalWindow {
         0,
         yPos - 10,
         "-5",
-        { fontSize: "14px", fill: "#ff0000" }
+        {         S fontSize: "14px", fill: "#ff0000" }
       );
       this.itemsContainer.add(this.inventoryItems[x].attackIconText);
       this.itemsContainer.add(this.inventoryItems[x].defenseIconText);
@@ -241,6 +241,18 @@ export default class InventoryWindow extends ModalWindow {
         .setInteractive();
 
       this.itemsContainer.add(this.inventoryItems[x].item);
+
+      this.inventoryItems[x].item.on("pointerover", () => {
+        this.showItemDescription(this.inventoryItems[x]);
+        this.scene.descriptionWindow.showWindow();
+      });
+
+      this.inventoryItems[x].item.on("pointerout", () => {
+        console.log("adasdas");
+        console.log(this.inventoryItems[x]);
+
+        this.scene.descriptionWindow.hideWindow();
+      });
     }
   }
 
@@ -310,11 +322,11 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   updateInventoryItem(item, itemNumber) {
-      this.inventoryItems[itemNumber].item.setFrame(item.frame);
-    // this.inventoryItems[itemNumber].itemName.setText(item.name);
-    // this.inventoryItems[itemNumber].attackIconText.setText(item.attackBonus);
-    // this.inventoryItems[itemNumber].defenseIconText.setText(item.defenseBonus);
-    // this.inventoryItems[itemNumber].healthIconText.setText(item.healthBonus);
+    this.inventoryItems[itemNumber].item.setFrame(item.frame);
+    this.inventoryItems[itemNumber].itemName = item.name;
+    this.inventoryItems[itemNumber].attack = item.attackBonus;
+    this.inventoryItems[itemNumber].defense= item.defenseBonus;
+    this.inventoryItems[itemNumber].health = (item.healthBonus);
 
     // if (item.attackBonus > 0) {
     //   this.inventoryItems[itemNumber].attackIconText.setFill("#00ff00");
