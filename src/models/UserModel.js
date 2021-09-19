@@ -29,6 +29,9 @@ const PlayerSchema = new Schema({
   items: {
     type:Object
   },
+  equipedItems:{
+    type:Object
+  }
 });
 
 const UserSchema = new Schema({

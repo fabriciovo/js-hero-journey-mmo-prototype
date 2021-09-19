@@ -36,7 +36,8 @@ _passport["default"].use("signup", new _passportLocal["default"].Strategy({
               health: 150,
               frame: 0,
               gold: 0,
-              items: null
+              items: null,
+              equipedItems: null
             };
             _context.next = 5;
             return _UserModel["default"].create({

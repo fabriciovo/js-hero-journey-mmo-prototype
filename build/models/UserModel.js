@@ -43,6 +43,9 @@ var PlayerSchema = new Schema({
   },
   items: {
     type: Object
+  },
+  equipedItems: {
+    type: Object
   }
 });
 var UserSchema = new Schema({

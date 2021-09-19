@@ -127,7 +127,11 @@ var GameManager = /*#__PURE__*/function () {
                     _this2.players[socket.id].items = null;
                   }
 
-                  _context.next = 4;
+                  if (!_this2.players[socket.id].equipedItems) {
+                    _this2.players[socket.id].equipedItems = null;
+                  }
+
+                  _context.next = 5;
                   return _UserModel["default"].updateOne({
                     username: _this2.players[socket.id].playerName
                   }, {
@@ -136,21 +140,21 @@ var GameManager = /*#__PURE__*/function () {
                     }
                   });
 
-                case 4:
-                  _context.next = 9;
+                case 5:
+                  _context.next = 10;
                   break;
 
-                case 6:
-                  _context.prev = 6;
+                case 7:
+                  _context.prev = 7;
                   _context.t0 = _context["catch"](0);
                   console.log(_context.t0);
 
-                case 9:
+                case 10:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[0, 6]]);
+          }, _callee, null, [[0, 7]]);
         })));
         socket.on("disconnect", function () {
           // delete user data from server
@@ -296,6 +300,16 @@ var GameManager = /*#__PURE__*/function () {
               socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]); // removing the item
 
               _this2.spawners[_this2.items[itemId].spawnerId].removeObject(itemId);
+            }
+          }
+        });
+        socket.on("equipedItem", function (itemId) {
+          if (_this2.items[itemId]) {
+            if (_this2.players[socket.id].canEquipItem()) {
+              _this2.players[socket.id].equipItem(_this2.items[itemId]);
+
+              socket.emit("updateItems", _this2.players[socket.id]);
+              socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
             }
           }
         });
