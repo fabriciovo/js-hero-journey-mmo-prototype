@@ -29,6 +29,9 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('inventorySword', 'assets/images/infusion.png');
     this.load.image('inventoryRemove', 'assets/images/prompt_no.png');
     this.load.image('inventoryHeart', 'assets/images/regeneration_new.png');
+    this.load.image('slot', 'assets/images/windows/InventoryWindow/slot.png');
+    this.load.image('equipment_sheet', 'assets/images/windows/PlayerWindow/equipment_sheet.png');
+
   }
 
   loadSpriteSheets() {

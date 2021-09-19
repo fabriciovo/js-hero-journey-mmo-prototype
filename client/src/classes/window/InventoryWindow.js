@@ -6,6 +6,7 @@ export default class InventoryWindow extends ModalWindow {
     this.playerObject = {};
     this.mainPlayer = false;
     this.inventoryItems = {};
+    this.inventorySlots = {};
     this.graphics.setDepth(3);
     this.createWindow();
     this.hideWindow();
@@ -67,19 +68,20 @@ export default class InventoryWindow extends ModalWindow {
   updateInventoryContainerPositions() {
     this.inventoryContainer.setSize(this.inventoryContainer.width - 40, 80);
     for (let x = 0; x < 5; x += 1) {
-      this.inventoryItems[x].item.x = this.inventoryContainer.width * 0.1;
-      this.inventoryItems[x].discardButton.x = this.inventoryContainer.width;
-      this.inventoryItems[x].itemName.x = this.inventoryContainer.width * 0.18;
-      this.inventoryItems[x].attackIcon.x = this.inventoryContainer.width * 0.5;
-      this.inventoryItems[x].defenseIcon.x =
-        this.inventoryContainer.width * 0.65;
-      this.inventoryItems[x].healthIcon.x = this.inventoryContainer.width * 0.8;
-      this.inventoryItems[x].attackIconText.x =
-        this.inventoryContainer.width * 0.5 + 15;
-      this.inventoryItems[x].defenseIconText.x =
-        this.inventoryContainer.width * 0.65 + 15;
-      this.inventoryItems[x].healthIconText.x =
-        this.inventoryContainer.width * 0.8 + 15;
+       //this.inventorySlots[x].item.x = this.inventoryContainer.width * 0.1;
+       //this.inventoryItems[x].item.x = this.inventoryContainer.width * 0.1;
+      // this.inventoryItems[x].discardButton.x = this.inventoryContainer.width;
+      // this.inventoryItems[x].itemName.x = this.inventoryContainer.width * 0.18;
+      // this.inventoryItems[x].attackIcon.x = this.inventoryContainer.width * 0.5;
+      // this.inventoryItems[x].defenseIcon.x =
+      //   this.inventoryContainer.width * 0.65;
+      // this.inventoryItems[x].healthIcon.x = this.inventoryContainer.width * 0.8;
+      // this.inventoryItems[x].attackIconText.x =
+      //   this.inventoryContainer.width * 0.5 + 15;
+      // this.inventoryItems[x].defenseIconText.x =
+      //   this.inventoryContainer.width * 0.65 + 15;
+      // this.inventoryItems[x].healthIconText.x =
+      //   this.inventoryContainer.width * 0.8 + 15;
     }
   }
 
@@ -98,7 +100,7 @@ export default class InventoryWindow extends ModalWindow {
     this.inventoryContainer.add(this.itemsText);
 
     // create containter
-    this.itemsContainer = this.scene.add.container(0, 120);
+    this.itemsContainer = this.scene.add.container(0, 20);
     this.statsContainer.add(this.itemsContainer);
     this.createInventoryItems();
   }
@@ -109,16 +111,38 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   createInventoryItems() {
-    
-    for (let x = 0; x < 5; x += 1) {
-      const yPos = 0 + 55 * x;
+    // for (let x = 0; x < 10; x += 1) {
+    //   const yPos = 0;
+    //   const xPos = 90 * x;
+    //   this.inventoryItems[x] = {};
+    //   this.inventoryItems[x].item = this.scene.add
+    //     .image(90+xPos, yPos, "slot", 0)
+    //     .setScale(2)
+    //     .setInteractive();
+    //     this.itemsContainer.add(this.inventoryItems[x].item);
 
+    //   }
+
+    // for (let x = 0; x < 5; x += 1) {
+    //   const yPos = 0 + 55 * x;
+    //   this.inventoryItems[x] = {};
+    //   this.inventoryItems[x].item = this.scene.add
+    //     .image(0, yPos, "slot", 0)
+    //     .setScale(1.5)
+    //     .setInteractive();
+    //     this.itemsContainer.add(this.inventoryItems[x].item);
+
+    //   }
+
+    /*
       // create inventory item icon
       this.inventoryItems[x] = {};
+
       this.inventoryItems[x].item = this.scene.add
-        .image(0, yPos, "tools", 0)
+        .image(0, yPos, "tools", 2)
         .setScale(1.5)
         .setInteractive();
+
       this.itemsContainer.add(this.inventoryItems[x].item);
 
       this.inventoryItems[x].item.on("pointerover", () => {
@@ -189,6 +213,35 @@ export default class InventoryWindow extends ModalWindow {
       this.itemsContainer.add(this.inventoryItems[x].defenseIconText);
       this.itemsContainer.add(this.inventoryItems[x].healthIconText);
     }
+    */
+
+    for (let x = 0; x < 10; x += 1) {
+      const yPos = 0;
+      const xPos = 90 * x;
+      this.inventorySlots[x] = {};
+      this.inventorySlots[x].item = this.scene.add
+        .image(90+xPos, yPos, "slot", 0)
+        .setScale(3)
+        .setInteractive();
+        this.itemsContainer.add(this.inventorySlots[x].item);
+
+      }
+
+
+    for (let x = 0; x < 5; x += 1) {
+       const yPos =  90 * x
+       const xPos = 90 * x;
+
+      //create inventory item icon
+      this.inventoryItems[x] = {};
+      console.log(xPos);
+      this.inventoryItems[x].item = this.scene.add
+        .image(xPos+90, 0, "tools", 0)
+        .setScale(2)
+        .setInteractive();
+
+      this.itemsContainer.add(this.inventoryItems[x].item);
+    }
   }
 
   resize(gameSize) {
@@ -229,56 +282,55 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   hideInventoryItem(itemNumber) {
-    this.inventoryItems[itemNumber].item.setAlpha(0);
-    this.inventoryItems[itemNumber].discardButton.setAlpha(0);
-    this.inventoryItems[itemNumber].itemName.setAlpha(0);
-    this.inventoryItems[itemNumber].attackIcon.setAlpha(0);
-    this.inventoryItems[itemNumber].attackIconText.setAlpha(0);
-    this.inventoryItems[itemNumber].defenseIcon.setAlpha(0);
-    this.inventoryItems[itemNumber].defenseIconText.setAlpha(0);
-    this.inventoryItems[itemNumber].healthIcon.setAlpha(0);
-    this.inventoryItems[itemNumber].healthIconText.setAlpha(0);
+      this.inventoryItems[itemNumber].item.setAlpha(0);
+    // this.inventoryItems[itemNumber].discardButton.setAlpha(0);
+    // this.inventoryItems[itemNumber].itemName.setAlpha(0);
+    // this.inventoryItems[itemNumber].attackIcon.setAlpha(0);
+    // this.inventoryItems[itemNumber].attackIconText.setAlpha(0);
+    // this.inventoryItems[itemNumber].defenseIcon.setAlpha(0);
+    // this.inventoryItems[itemNumber].defenseIconText.setAlpha(0);
+    // this.inventoryItems[itemNumber].healthIcon.setAlpha(0);
+    // this.inventoryItems[itemNumber].healthIconText.setAlpha(0);
   }
 
   showInventoryItem(itemNumber) {
     this.inventoryItems[itemNumber].item.setAlpha(1);
-    this.inventoryItems[itemNumber].itemName.setAlpha(1);
-    this.inventoryItems[itemNumber].attackIcon.setAlpha(1);
-    this.inventoryItems[itemNumber].attackIconText.setAlpha(1);
-    this.inventoryItems[itemNumber].defenseIcon.setAlpha(1);
-    this.inventoryItems[itemNumber].defenseIconText.setAlpha(1);
-    this.inventoryItems[itemNumber].healthIcon.setAlpha(1);
-    this.inventoryItems[itemNumber].healthIconText.setAlpha(1);
-
-    if (this.mainPlayer) {
-      this.inventoryItems[itemNumber].discardButton.setAlpha(1);
-    } else {
-      this.inventoryItems[itemNumber].discardButton.setAlpha(0);
-    }
+    // this.inventoryItems[itemNumber].itemName.setAlpha(1);
+    // this.inventoryItems[itemNumber].attackIcon.setAlpha(1);
+    // this.inventoryItems[itemNumber].attackIconText.setAlpha(1);
+    // this.inventoryItems[itemNumber].defenseIcon.setAlpha(1);
+    // this.inventoryItems[itemNumber].defenseIconText.setAlpha(1);
+    // this.inventoryItems[itemNumber].healthIcon.setAlpha(1);
+    // this.inventoryItems[itemNumber].healthIconText.setAlpha(1);
+    // if (this.mainPlayer) {
+    //   this.inventoryItems[itemNumber].discardButton.setAlpha(1);
+    // } else {
+    //   this.inventoryItems[itemNumber].discardButton.setAlpha(0);
+    // }
   }
 
   updateInventoryItem(item, itemNumber) {
-    this.inventoryItems[itemNumber].item.setFrame(item.frame);
-    this.inventoryItems[itemNumber].itemName.setText(item.name);
-    this.inventoryItems[itemNumber].attackIconText.setText(item.attackBonus);
-    this.inventoryItems[itemNumber].defenseIconText.setText(item.defenseBonus);
-    this.inventoryItems[itemNumber].healthIconText.setText(item.healthBonus);
+      this.inventoryItems[itemNumber].item.setFrame(item.frame);
+    // this.inventoryItems[itemNumber].itemName.setText(item.name);
+    // this.inventoryItems[itemNumber].attackIconText.setText(item.attackBonus);
+    // this.inventoryItems[itemNumber].defenseIconText.setText(item.defenseBonus);
+    // this.inventoryItems[itemNumber].healthIconText.setText(item.healthBonus);
 
-    if (item.attackBonus > 0) {
-      this.inventoryItems[itemNumber].attackIconText.setFill("#00ff00");
-    } else {
-      this.inventoryItems[itemNumber].attackIconText.setFill("#ff0000");
-    }
-    if (item.defenseBonus > 0) {
-      this.inventoryItems[itemNumber].defenseIconText.setFill("#00ff00");
-    } else {
-      this.inventoryItems[itemNumber].defenseIconText.setFill("#ff0000");
-    }
-    if (item.healthBonus > 0) {
-      this.inventoryItems[itemNumber].healthIconText.setFill("#00ff00");
-    } else {
-      this.inventoryItems[itemNumber].healthIconText.setFill("#ff0000");
-    }
+    // if (item.attackBonus > 0) {
+    //   this.inventoryItems[itemNumber].attackIconText.setFill("#00ff00");
+    // } else {
+    //   this.inventoryItems[itemNumber].attackIconText.setFill("#ff0000");
+    // }
+    // if (item.defenseBonus > 0) {
+    //   this.inventoryItems[itemNumber].defenseIconText.setFill("#00ff00");
+    // } else {
+    //   this.inventoryItems[itemNumber].defenseIconText.setFill("#ff0000");
+    // }
+    // if (item.healthBonus > 0) {
+    //   this.inventoryItems[itemNumber].healthIconText.setFill("#00ff00");
+    // } else {
+    //   this.inventoryItems[itemNumber].healthIconText.setFill("#ff0000");
+    // }
 
     this.showInventoryItem(itemNumber);
   }
