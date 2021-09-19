@@ -38,7 +38,7 @@ export default class UiScene extends Phaser.Scene {
 
     // create playerStats modal
     this.playerStatsWindow = new PlayerWindow(this, {
-      windowWidth: this.scale.width / 2 - 200,
+      windowWidth: this.scale.width / 4 - 100,
       windowHeight: this.scale.height * 0.8,
       borderAlpha: 1,
       windowAlpha: 0.9,
@@ -50,8 +50,8 @@ export default class UiScene extends Phaser.Scene {
 
     // create inventory modal
     this.inventoryWindow = new InventoryWindow(this, {
-      windowWidth: this.scale.width / 2,
-      windowHeight: this.scale.height * 0.8,
+      windowWidth: this.scale.width / 4 - 300,
+      windowHeight: this.scale.height * 0.3,
       borderAlpha: 1,
       windowAlpha: 0.9,
       debug: false,

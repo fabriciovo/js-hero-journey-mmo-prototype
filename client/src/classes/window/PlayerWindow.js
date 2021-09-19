@@ -14,7 +14,7 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   calculateWindowDimension() {
-    let x = this.x + this.scene.scale.width / 4;
+    let x = this.x + this.scene.scale.width / 4 - 400;
     let y = this.y + this.scene.scale.height * 0.1;
 
     if (this.scene.scale.width < 750) {
@@ -64,9 +64,9 @@ export default class PlayerWindow extends ModalWindow {
 
       // create inventory title
       this.titleText = this.scene.add.text(
-        this.inventoryContainer.width / 2,
+        this.inventoryContainer.width / 2 + 200,
         20,
-        "Player Stats",
+        "Stats",
         { fontSize: "22px", fill: "#ffffff", align: "center" }
       );
       this.titleText.setOrigin(0.5);
@@ -88,23 +88,23 @@ export default class PlayerWindow extends ModalWindow {
     };
 
     // create attack stats information
-    this.swordIcon = this.scene.add.image(0, 0, "inventorySword").setScale(1.5);
+    this.swordIcon = this.scene.add.image(90, this.scene.scale.height / 2 + 150, "inventorySword").setScale(1.5);
     this.statsContainer.add(this.swordIcon);
-    this.swordStatText = this.scene.add.text(0, 0, "100", textOptions);
+    this.swordStatText = this.scene.add.text(90, this.scene.scale.height / 2 + 150, "100", textOptions);
     this.statsContainer.add(this.swordStatText);
 
     // create defense stats information
     this.shieldIcon = this.scene.add
-      .image(90, 0, "inventoryShield")
+      .image(180, this.scene.scale.height / 2 + 150, "inventoryShield")
       .setScale(1.5);
     this.statsContainer.add(this.shieldIcon);
-    this.shieldStatText = this.scene.add.text(90, 0, "100", textOptions);
+    this.shieldStatText = this.scene.add.text(180, this.scene.scale.height / 2 + 150, "100", textOptions);
     this.statsContainer.add(this.shieldStatText);
 
     // create gold stats information
-    this.goldIcon = this.scene.add.image(180, 0, "inventoryGold").setScale(1.5);
+    this.goldIcon = this.scene.add.image(270, this.scene.scale.height / 2 + 150, "inventoryGold").setScale(1.5);
     this.statsContainer.add(this.goldIcon);
-    this.goldStatText = this.scene.add.text(180, 0, "100", textOptions);
+    this.goldStatText = this.scene.add.text(290, this.scene.scale.height / 2 + 150, "100", textOptions);
     this.statsContainer.add(this.goldStatText);
   }
 

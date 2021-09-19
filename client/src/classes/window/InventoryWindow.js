@@ -40,7 +40,7 @@ export default class InventoryWindow extends ModalWindow {
       this.inventoryContainer.setSize(rectWidth - 1, rectHeight - 1);
 
       // center the title text
-      this.itemsText.setPosition(this.inventoryContainer.width / 2, 15);
+      this.itemsText.setPosition(this.inventoryContainer.width / 2, 20);
 
       // update inventory container positions
       this.updateInventoryContainerPositions();
