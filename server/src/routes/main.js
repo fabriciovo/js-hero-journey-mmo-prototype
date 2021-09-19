@@ -35,7 +35,7 @@ router.post('/login', async (request, response, next) => {
         return next(error);
       }
       if (!user) {
-        return next(new Error('email and password are required'));
+        return next(new Error('Username and password are required'));
       }
 
       request.login(user, { session: false }, (err) => {

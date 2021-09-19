@@ -40,6 +40,8 @@ export default class UiScene extends Phaser.Scene {
     });
   
     //create equiped weapons icons
+    console.log(this.game.mobile)
+
     this.actionA = this.add.image(50  , this.scale.height - 50, 'inventoryButton');
     this.actionB = this.add.image(150  , this.scale.height - 50, 'inventoryButton');
 
@@ -94,7 +96,9 @@ export default class UiScene extends Phaser.Scene {
 
     if (gameSize.width < 560) {
       this.inventoryButton.y = gameSize.height - 250;
-    } else {
+    }else if(gameSize.width <= 560){
+      this.inventoryButton.y = gameSize.height - 10;
+    }else {
       this.inventoryButton.y = gameSize.height - 50;
     }
   }

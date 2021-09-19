@@ -11,7 +11,7 @@ export default class ForgotPasswordScene extends CredentialsBaseScene {
       "Reset Password",
       this.resetPassword.bind(this),
       "back",
-      this.startScene.bind(this, "Title")
+      this.startScene.bind(this, "Login")
     );
     this.passwordInput.parentNode.removeChild(this.passwordInput);
     this.passwordLabel.parentNode.removeChild(this.passwordLabel);
@@ -26,7 +26,7 @@ export default class ForgotPasswordScene extends CredentialsBaseScene {
       })
         .then((response) => {
           window.alert(response.message);
-          this.startScene("Title");
+          this.startScene("Login");
         })
         .catch((error) => {
           console.log(error);

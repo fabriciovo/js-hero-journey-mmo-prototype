@@ -17,7 +17,7 @@ export default class ResetPasswordScene extends CredentialsBaseScene {
       "Update Password",
       this.updatePassword.bind(this),
       "back",
-      this.startScene.bind(this, "Title")
+      this.startScene.bind(this, "Login")
     );
 
 
@@ -65,7 +65,7 @@ export default class ResetPasswordScene extends CredentialsBaseScene {
           window.alert(response.message);
 
           if (response.status === 200) {
-            this.startScene("Title");
+            this.startScene("Login");
           }
         })
         .catch((error) => {

@@ -35,13 +35,18 @@ body {
 }
 
 .chat-bottom {
-  left: px;
+  left: 100px;
   width: 100%;
 }
 
 .chat-sidebar {
   right: 0px;
   width: 300px;
+}
+
+.chat-mobile {
+  right: 0px;
+  width: 100%;
 }
 
 @media screen and (max-height: 600px) {

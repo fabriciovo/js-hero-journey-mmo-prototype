@@ -28,7 +28,7 @@ var _GameManager = _interopRequireDefault(require("./game_manager/GameManager"))
 
 var app = (0, _express["default"])();
 
-var server = require('http').Server(app); //const io = require("socket.io")(server);
+var server = require("http").Server(app); //const io = require("socket.io")(server);
 
 
 var io = require("socket.io")(server, {
@@ -50,12 +50,12 @@ if (process.env.MONGO_USER_NAME && process.env.MONGO_PASSWORD) {
   mongoConfig.auth = {};
   mongoConfig.auth.username = process.env.MONGO_USER_NAME;
   mongoConfig.auth.password = process.env.MONGO_PASSWORD;
-} //TODO  
+} //TODO
 
 
 _mongoose["default"].connect(uri, mongoConfig);
 
-_mongoose["default"].connection.on('error', function (error) {
+_mongoose["default"].connection.on("error", function (error) {
   console.log(error);
   process.exit(1);
 });
@@ -70,25 +70,25 @@ app.use((0, _cors["default"])({
   origin: process.env.CORS_ORIGIN
 }));
 
-require('./auth/auth');
+require("./auth/auth");
 
-app.get('/game.html', _passport["default"].authenticate('jwt', {
+app.get("/game.html", _passport["default"].authenticate("jwt", {
   session: false
 }), function (request, response) {
   response.status(200).json(request.user);
 });
-app.use(_express["default"]["static"](_path["default"].join(__dirname, '/../public')));
-app.get('/', function (request, response) {
-  response.send(_path["default"].join(__dirname, '/../index.html'));
+app.use(_express["default"]["static"](_path["default"].join(__dirname, "/../public")));
+app.get("/", function (request, response) {
+  response.send(_path["default"].join(__dirname, "/../index.html"));
 });
-app.use('/', _main["default"]);
-app.use('/', _password["default"]);
-app.use('/', _passport["default"].authenticate('jwt', {
+app.use("/", _main["default"]);
+app.use("/", _password["default"]);
+app.use("/", _passport["default"].authenticate("jwt", {
   session: false
 }), _secure["default"]);
 app.use(function (request, response) {
   response.status(404).json({
-    message: '404 - Not Found',
+    message: "404 - Not Found",
     status: 404
   });
 });
@@ -100,9 +100,9 @@ app.use(function (error, request, response, next) {
   });
 });
 
-_mongoose["default"].connection.on('connected', function () {
+_mongoose["default"].connection.on("connected", function () {
   server.listen(port, function () {
-    console.log('Connected');
+    console.log("Connected");
   });
 });
 //# sourceMappingURL=index.js.map

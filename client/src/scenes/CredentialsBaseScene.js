@@ -83,6 +83,7 @@ export default class CredentialsBaseScene extends Phaser.Scene {
 
     document.body.appendChild(this.div);
   }
+  
   startScene(targetScene) {
     this.scale.removeListener("resize", this.resize);
 

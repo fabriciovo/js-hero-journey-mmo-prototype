@@ -12,7 +12,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.scene.launch("Ui");
+    if (!this.game.mobile) {
+      this.scene.launch("Ui");
+    } else {
+      this.scene.launch("UiMobile");
+    }
 
     this.socket = this.sys.game.globals.socket;
 
@@ -50,7 +54,6 @@ export default class GameScene extends Phaser.Scene {
     // spawn player game object
     this.socket.on("spawnPlayer", (player) => {
       this.createPlayer(player, false);
-
     });
 
     // a player has moved
@@ -109,13 +112,13 @@ export default class GameScene extends Phaser.Scene {
       this.events.emit("updateScore", goldAmount);
       this.player.gold = goldAmount;
     });
-  
-    this.socket.on("updatePlayersScore", (playerId,goldAmount) => {
-      this.otherPlayers.getChildren().forEach(otherPlayer =>{
-        if(playerId === otherPlayer.id){
+
+    this.socket.on("updatePlayersScore", (playerId, goldAmount) => {
+      this.otherPlayers.getChildren().forEach((otherPlayer) => {
+        if (playerId === otherPlayer.id) {
           otherPlayer.gold = goldAmount;
         }
-      })
+      });
     });
 
     this.socket.on("updateMonsterHealth", (monsterId, health) => {
@@ -162,8 +165,6 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-
-
     this.socket.on("invalidToken", () => {
       window.alert("Token is no longer valid. Please login again.");
       window.location.reload();
@@ -184,7 +185,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updateItems", (playerObject) => {
-
       this.player.items = playerObject.items;
       this.player.attackValue = playerObject.attack;
       this.player.defenseValue = playerObject.defense;
@@ -192,20 +192,17 @@ export default class GameScene extends Phaser.Scene {
       this.player.updateHealthBar();
     });
 
-    this.socket.on('updatePlayersItems', (playerId, playerObject) => {
-
+    this.socket.on("updatePlayersItems", (playerId, playerObject) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
-      if (playerId === otherPlayer.id) {
-      otherPlayer.items = playerObject.items;
-      otherPlayer.maxHealth = playerObject.maxHealth;
-      otherPlayer.attackValue = playerObject.attack;
-      otherPlayer.defenseValue = playerObject.defense;
-      otherPlayer.updateHealthBar();
-
-      }
+        if (playerId === otherPlayer.id) {
+          otherPlayer.items = playerObject.items;
+          otherPlayer.maxHealth = playerObject.maxHealth;
+          otherPlayer.attackValue = playerObject.attack;
+          otherPlayer.defenseValue = playerObject.defense;
+          otherPlayer.updateHealthBar();
+        }
       });
-     });
-
+    });
 
     this.socket.on("itemRemoved", (itemId) => {
       this.items.getChildren().forEach((item) => {
@@ -214,8 +211,6 @@ export default class GameScene extends Phaser.Scene {
         }
       });
     });
-
-
   }
 
   create() {
@@ -240,21 +235,20 @@ export default class GameScene extends Phaser.Scene {
       document.getElementById("chatInput").blur();
     });
 
-    setInterval(()=>{
-      this.socket.emit("savePlayerData")
-    },1000)
+    setInterval(() => {
+      this.socket.emit("savePlayerData");
+    }, 1000);
   }
 
   keyDownEventListener() {
     this.inputMessageField = document.getElementById("chatInput");
     window.addEventListener("keydown", (event) => {
       if (event.keyCode === 13) {
-       this.sendMessage();
+        this.sendMessage();
       } else if (event.keyCode === 32) {
         if (document.activeElement === this.inputMessageField) {
           this.inputMessageField.value = `${this.inputMessageField.value} `;
         }
-        
       }
     });
   }
@@ -299,8 +293,6 @@ export default class GameScene extends Phaser.Scene {
         flipX: this.player.flipX,
         playerAttacking: this.player.playerAttacking,
       };
-      
-
     }
   }
 
@@ -343,7 +335,7 @@ export default class GameScene extends Phaser.Scene {
       playerObject.gold,
       playerObject.defense,
       playerObject.attack,
-      playerObject.items,
+      playerObject.items
     );
 
     if (!mainPlayer) {
@@ -353,9 +345,9 @@ export default class GameScene extends Phaser.Scene {
     }
 
     newPlayerObject.setInteractive();
-    newPlayerObject.on('pointerdown', ()=>{
-      this.events.emit('showInventory', newPlayerObject, mainPlayer)
-    })
+    newPlayerObject.on("pointerdown", () => {
+      this.events.emit("showInventory", newPlayerObject, mainPlayer);
+    });
   }
 
   createGroups() {
@@ -521,7 +513,6 @@ export default class GameScene extends Phaser.Scene {
     this.socket.emit("pickUpItem", item.id);
   }
 
-   
   sendDropItemMessage(itemId) {
     this.socket.emit("playerDroppedItem", itemId);
   }

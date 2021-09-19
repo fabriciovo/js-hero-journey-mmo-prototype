@@ -38,6 +38,14 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.defenseValue = defenseValue;
     this.attackValue = attackValue;
     this.items = items;
+
+    //Mobile
+    this.mobileUp = false;
+    this.mobileDown = false;
+    this.mobileLeft = false;
+    this.mobileRight = false;
+    this.mobileActionA = false;
+
     // set a size on the container
     this.setSize(64, 64);
     // enable physics
@@ -137,12 +145,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.body.setVelocity(0);
 
     if (this.mainPlayer) {
-      if (cursors.left.isDown) {
+      if (cursors.left.isDown || this.mobileLeft) {
         this.body.setVelocityX(-this.velocity);
         this.currentDirection = Direction.LEFT;
         this.player.flipX = false;
         this.flipX = false;
-      } else if (cursors.right.isDown) {
+      } else if (cursors.right.isDown || this.mobileRight) {
         this.body.setVelocityX(this.velocity);
         this.currentDirection = Direction.RIGHT;
         this.player.flipX = true;
@@ -150,16 +158,16 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         this.flipX = true;
       }
 
-      if (cursors.up.isDown) {
+      if (cursors.up.isDown || this.mobileUp) {
         this.body.setVelocityY(-this.velocity);
         this.currentDirection = Direction.UP;
-      } else if (cursors.down.isDown) {
+      } else if (cursors.down.isDown || this.mobileDown) {
         this.body.setVelocityY(this.velocity);
         this.currentDirection = Direction.DOWN;
       }
 
       if (
-        Phaser.Input.Keyboard.JustDown(this.actionA) &&
+        (Phaser.Input.Keyboard.JustDown(this.actionA) || this.mobileActionA)&&
         !this.playerAttacking
       ) {
         this.attack();
@@ -216,6 +224,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   attack() {
     this.weapon.alpha = 1;
     this.playerAttacking = true;
+    this.mobileActionA = false;
     if (this.mainPlayer) this.attackAudio.play();
     this.scene.time.delayedCall(
       150,

@@ -7,11 +7,13 @@ import SignUpScene from "./SignUpScene";
 import ForgotPasswordScene from "./ForgotPasswordScene";
 import ResetPasswordScene from "./ResetPasswordScene";
 import CharacterSelectionScene from "./CharacterSelectionScene";
+import UiSceneMobile from "./UiSceneMobile";
 export default [
   BootScene,
   TitleScene,
   GameScene,
   UiScene,
+  UiSceneMobile,
   SignUpScene,
   LoginScene,
   ForgotPasswordScene,

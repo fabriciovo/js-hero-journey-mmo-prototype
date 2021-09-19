@@ -71,10 +71,10 @@ _passport["default"].use("signup", new _passportLocal["default"].Strategy({
 
 
 _passport["default"].use("login", new _passportLocal["default"].Strategy({
-  usernameField: "email",
+  usernameField: "username",
   passwordField: "password"
 }, /*#__PURE__*/function () {
-  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(email, password, done) {
+  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(username, password, done) {
     var user, valid;
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
@@ -83,7 +83,7 @@ _passport["default"].use("login", new _passportLocal["default"].Strategy({
             _context2.prev = 0;
             _context2.next = 3;
             return _UserModel["default"].findOne({
-              email: email
+              username: username
             });
 
           case 3:

@@ -100,7 +100,7 @@ router.post('/login', /*#__PURE__*/function () {
                           break;
                         }
 
-                        return _context2.abrupt("return", next(new Error('email and password are required')));
+                        return _context2.abrupt("return", next(new Error('Username and password are required')));
 
                       case 5:
                         request.login(user, {

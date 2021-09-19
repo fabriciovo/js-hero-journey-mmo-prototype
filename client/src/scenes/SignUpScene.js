@@ -16,7 +16,7 @@ export default class SignUpScene extends CredentialsBaseScene {
       "Sign Up",
       this.singUp.bind(this),
       "Back",
-      this.startScene.bind(this, "Title")
+      this.startScene.bind(this, "Login")
     );
 
     this.createUserNameInput();
