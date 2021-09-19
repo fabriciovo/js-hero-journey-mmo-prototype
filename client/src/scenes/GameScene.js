@@ -66,10 +66,10 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.setPosition(player.x, player.y);
           otherPlayer.updateHealthBar();
           otherPlayer.updateFlipX();
-          otherPlayer.playerAttacking = player.playerAttacking;
+          otherPlayer.actionAActive = player.actionAActive;
           otherPlayer.currentDirection = player.currentDirection;
-          if (player.playerAttacking) {
-            otherPlayer.attack();
+          if (player.actionAActive) {
+            otherPlayer.actionA();
           }
         }
       });
@@ -280,19 +280,19 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.player) {
       // emit player movement to the server
-      const { x, y, flipX, playerAttacking, currentDirection } = this.player;
+      const { x, y, flipX, actionAActive, currentDirection } = this.player;
       if (
         this.player.oldPosition &&
         (x != this.player.oldPosition.x ||
           y !== this.player.oldPosition.y ||
           flipX != this.player.oldPosition.flipX ||
-          playerAttacking !== this.player.oldPosition.playerAttacking)
+          actionAActive !== this.player.oldPosition.actionAActive)
       ) {
         this.socket.emit("playerMovement", {
           x,
           y,
           flipX,
-          playerAttacking,
+          actionAActive,
           currentDirection,
         });
       }
@@ -301,7 +301,7 @@ export default class GameScene extends Phaser.Scene {
         x: this.player.x,
         y: this.player.y,
         flipX: this.player.flipX,
-        playerAttacking: this.player.playerAttacking,
+        actionAActive: this.player.actionAActive,
       };
     }
   }
@@ -468,7 +468,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.monsters, this.gameMap.blockedLayer);
     // check for overlaps between the player's weapon and monster game objects
     this.physics.add.overlap(
-      this.player.weapon,
+      this.player.actionA,
       this.monsters,
       this.enemyOverlap,
       null,
@@ -484,7 +484,7 @@ export default class GameScene extends Phaser.Scene {
     );*/
     // check for overlaps between the player's weapon and other player game objects
     this.physics.add.overlap(
-      this.player.weapon,
+      this.player.actionA,
       this.otherPlayers,
       this.weaponOverlapEnemy,
       false,
@@ -507,14 +507,14 @@ export default class GameScene extends Phaser.Scene {
   }
 
   weaponOverlapEnemy(player, enemyPlayer) {
-    if (this.player.playerAttacking && !this.player.swordHit) {
-      this.player.swordHit = true;
+    if (this.player.actionAActive && !this.player.hitbox) {
+      this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
   }
   enemyOverlap(weapon, enemy) {
-    if (this.player.playerAttacking && !this.player.swordHit) {
-      this.player.swordHit = true;
+    if (this.player.actionAActive && !this.player.hitbox) {
+      this.player.hitbox = true;
       this.socket.emit("monsterAttacked", enemy.id);
     }
   }
