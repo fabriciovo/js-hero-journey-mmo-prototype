@@ -27,10 +27,12 @@ body {
 }
 
 .chat-invisible {
+  display: none;
   opacity: 0;
 }
 
 .chat-visible {
+  display: block;
   opacity: 0.4;
 }
 

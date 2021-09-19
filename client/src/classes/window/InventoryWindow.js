@@ -113,16 +113,15 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   removeItem(itemNumber) {
-    if (itemNumber >=0 ) {
-      debugger
-      this.selectedItem.item.setTint(0xffffff)
+    if (itemNumber >= 0) {
+      debugger;
+      this.selectedItem.item.setTint(0xffffff);
       this.selectedItem = undefined;
       this.playerObject.dropItem(itemNumber);
       this.updateInventory(this.playerObject);
       this.showWindow(this.playerObject);
       this.selectedItemNumber = undefined;
     }
-
   }
 
   createInventoryItems() {
@@ -237,7 +236,7 @@ export default class InventoryWindow extends ModalWindow {
       this.inventorySlots[x].item = this.scene.add
         .image(90 + xPos, yPos, "slot", 0)
         .setScale(3)
-        .setInteractive({ cursor: 'url(assets/images/mouse/hover.cur), pointer' });
+        .setInteractive();
       this.itemsContainer.add(this.inventorySlots[x].item);
     }
 
@@ -299,7 +298,7 @@ export default class InventoryWindow extends ModalWindow {
 
   hideWindow() {
     if (this.selectedItem) {
-      this.selectedItem.item.setTint(0xffffff)
+      this.selectedItem.item.setTint(0xffffff);
       this.selectedItem = undefined;
       this.selectedItemNumber = undefined;
     }
@@ -353,6 +352,7 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   updateInventoryItem(item, itemNumber) {
+    this.inventoryItems[itemNumber].id = item.id;
     this.inventoryItems[itemNumber].item.setFrame(item.frame);
     this.inventoryItems[itemNumber].itemName = item.name;
     this.inventoryItems[itemNumber].attack = item.attackBonus;
@@ -384,7 +384,7 @@ export default class InventoryWindow extends ModalWindow {
     }
     this.selectedItem = item;
     this.selectedItemNumber = x;
-    console.log(this.selectedItemNumber)
+    console.log(this.selectedItemNumber);
     this.selectedItem.item.setTint(0xff0000);
   }
 
@@ -409,7 +409,7 @@ export default class InventoryWindow extends ModalWindow {
         "inventoryEquip",
         0
       )
-      .setScale(.1)
+      .setScale(0.1)
       .setOrigin(0.5)
       .setInteractive();
 
@@ -420,7 +420,7 @@ export default class InventoryWindow extends ModalWindow {
         "inventoryRemove",
         0
       )
-      .setScale(.1)
+      .setScale(0.1)
       .setOrigin(0.5)
       .setInteractive();
 
@@ -428,11 +428,13 @@ export default class InventoryWindow extends ModalWindow {
     this.inventoryContainer.add(this.discardButton);
 
     this.discardButton.on("pointerdown", () => {
-      console.log(this.selectedItemNumber)
+      console.log(this.selectedItemNumber);
       this.removeItem(this.selectedItemNumber);
     });
 
     this.equipButton.on("pointerdown", () => {
+      console.log(this.scene.gameScene)
+      this.scene.gameScene.equipedItem(this.selectedItem.id);
       console.log("Equip Button");
     });
   }

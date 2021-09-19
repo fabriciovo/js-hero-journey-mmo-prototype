@@ -22,7 +22,8 @@ var PlayerModel = /*#__PURE__*/function () {
     this.id = playerId;
     this.playerName = name;
     this.frame = frame;
-    this.items = playerSchema.items || {}; //this.playerItems =  {};
+    this.items = playerSchema.items || {};
+    this.equipedItems = playerSchema.equipedItems || {}; //this.playerItems =  {};
 
     this.maxNumberOfItems = 5;
     this.spawnLocations = spawnLocations;
@@ -37,22 +38,45 @@ var PlayerModel = /*#__PURE__*/function () {
     key: "addItem",
     value: function addItem(item) {
       this.items[item.id] = item;
-      this.attack += item.attackBonus;
-      this.defense += item.defenseBonus;
-      this.maxHealth += item.healthBonus;
+    }
+  }, {
+    key: "equipItem",
+    value: function equipItem(item) {
+      this.equipedItems[item.id] = item;
+      this.attack += this.equipedItems[item.id].attackBonus;
+      this.defense += this.equipedItems[item.id].defenseBonus;
+      this.maxHealth += this.equipedItems[item.id].healthBonus;
+      this.removeItem(item.id);
+    }
+  }, {
+    key: "removeEquipedItem",
+    value: function removeEquipedItem(itemId) {
+      this.attack -= this.equipedItems[itemId].attackBonus;
+      this.defense -= this.equipedItems[itemId].defenseBonus;
+      this.maxHealth -= this.equipedItems[itemId].healthBonus;
+      delete this.equipedItems[itemId];
     }
   }, {
     key: "removeItem",
     value: function removeItem(itemId) {
-      this.attack -= this.items[itemId].attackBonus;
-      this.defense -= this.items[itemId].defenseBonus;
-      this.maxHealth -= this.items[itemId].healthBonus;
+      // this.attack -= this.items[itemId].attackBonus;
+      // this.defense -= this.items[itemId].defenseBonus;
+      // this.maxHealth -= this.items[itemId].healthBonus;
       delete this.items[itemId];
     }
   }, {
     key: "canPickupItem",
     value: function canPickupItem() {
       if (Object.keys(this.items).length < 5) {
+        return true;
+      }
+
+      return false;
+    }
+  }, {
+    key: "canEquipItem",
+    value: function canEquipItem() {
+      if (Object.keys(this.equipedItems).length < 5) {
         return true;
       }
 

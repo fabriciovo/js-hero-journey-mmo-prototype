@@ -113,6 +113,7 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("updateScore", (goldAmount) => {
       this.events.emit("updateScore", goldAmount);
       this.player.gold = goldAmount;
+      this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     });
 
     this.socket.on("updatePlayersScore", (playerId, goldAmount) => {
@@ -188,9 +189,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.socket.on("updateItems", (playerObject) => {
       this.player.items = playerObject.items;
+      this.player.equipedItems = playerObject.equipedItems;
       this.player.attackValue = playerObject.attack;
       this.player.defenseValue = playerObject.defense;
       this.player.maxHealth = playerObject.maxHealth;
+      this.player.gold = playerObject.gold;
       this.player.updateHealthBar();
       this.uiScene.inventoryWindow.updateInventory(this.player);
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
@@ -201,6 +204,7 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("updatePlayersItems", (playerId, playerObject) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
         if (playerId === otherPlayer.id) {
+          otherPlayer.equipedItems = playerObject.equipedItems;
           otherPlayer.items = playerObject.items;
           otherPlayer.maxHealth = playerObject.maxHealth;
           otherPlayer.attackValue = playerObject.attack;
@@ -341,7 +345,8 @@ export default class GameScene extends Phaser.Scene {
       playerObject.gold,
       playerObject.defense,
       playerObject.attack,
-      playerObject.items
+      playerObject.items,
+      playerObject.equipedItems
     );
 
     if (!mainPlayer) {
@@ -440,6 +445,12 @@ export default class GameScene extends Phaser.Scene {
 
   createInput() {
     this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  equipedItem(itemId) {
+    // item pickup
+    debugger
+   this.socket.emit("equipedItem", itemId);
   }
 
   addCollisions() {

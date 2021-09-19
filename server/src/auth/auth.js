@@ -25,6 +25,7 @@ passport.use(
           frame: 0,
           gold: 0,
           items: null,
+          equipedItems: null,
         };
         const user = await UserModel.create({
           email,

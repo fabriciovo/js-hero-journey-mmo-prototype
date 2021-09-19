@@ -80,11 +80,13 @@ export default class GameManager {
       });*/
 
       socket.on("savePlayerData", async () => {
-
         try {
+          if (!this.players[socket.id].items) {
+            this.players[socket.id].items = null;
+          }
 
-          if(!this.players[socket.id].items){
-            this.players[socket.id].items = null
+          if (!this.players[socket.id].equipedItems) {
+            this.players[socket.id].equipedItems = null;
           }
 
           await UserModel.updateOne(
@@ -217,6 +219,20 @@ export default class GameManager {
 
             // removing the item
             this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
+          }
+        }
+      });
+
+      socket.on("equipedItem", (itemId) => {
+        if (this.items[itemId]) {
+          if (this.players[socket.id].canEquipItem()) {
+            this.players[socket.id].equipItem(this.items[itemId]);
+            socket.emit("updateItems", this.players[socket.id]);
+            socket.broadcast.emit(
+              "updatePlayersItems",
+              socket.id,
+              this.players[socket.id]
+            );
           }
         }
       });
@@ -388,9 +404,7 @@ export default class GameManager {
     this.players[playerId] = player;
   }
 
-
   addItems(itemId, item) {
-    
     this.items[itemId] = item;
     this.io.emit("itemSpawned", item);
   }

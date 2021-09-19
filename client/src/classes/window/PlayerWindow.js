@@ -5,7 +5,7 @@ export default class PlayerWindow extends ModalWindow {
 
     this.playerObject = {};
     this.mainPlayer = false;
-    this.inventoryItems = {};
+    this.equipedItems = {};
     this.graphics.setDepth(3);
     this.createWindow();
     this.hideWindow();
@@ -59,6 +59,7 @@ export default class PlayerWindow extends ModalWindow {
       this.statsContainer.setDepth(3);
       this.statsContainer.setAlpha(this.textAlpha);
 
+
       // create inventory title
       this.titleText = this.scene.add.text(
         this.statsContainer.width / 2 + 200,
@@ -71,6 +72,7 @@ export default class PlayerWindow extends ModalWindow {
 
       // create inventory stats
       this.createInventoryStats();
+      this.createEquipmentSlots();
     }
   }
 
@@ -82,12 +84,12 @@ export default class PlayerWindow extends ModalWindow {
 
     // create attack stats information
     this.swordIcon = this.scene.add
-      .image(90, this.scene.scale.height / 2 + 250, "inventorySword")
+      .image(90, this.scene.scale.height / 2 + 240, "inventorySword")
       .setScale(1.5);
     this.statsContainer.add(this.swordIcon);
     this.swordStatText = this.scene.add.text(
       90,
-      this.scene.scale.height / 2 + 250,
+      this.scene.scale.height / 2 + 240,
       "100",
       textOptions
     );
@@ -95,12 +97,12 @@ export default class PlayerWindow extends ModalWindow {
 
     // create defense stats information
     this.shieldIcon = this.scene.add
-      .image(180, this.scene.scale.height / 2 + 250, "inventoryShield")
+      .image(180, this.scene.scale.height / 2 + 240, "inventoryShield")
       .setScale(1.5);
     this.statsContainer.add(this.shieldIcon);
     this.shieldStatText = this.scene.add.text(
       180,
-      this.scene.scale.height / 2 + 250,
+      this.scene.scale.height / 2 + 240,
       "100",
       textOptions
     );
@@ -108,12 +110,12 @@ export default class PlayerWindow extends ModalWindow {
 
     // create gold stats information
     this.goldIcon = this.scene.add
-      .image(270, this.scene.scale.height / 2 + 250, "inventoryGold")
+      .image(270, this.scene.scale.height / 2 + 240, "inventoryGold")
       .setScale(1.5);
     this.statsContainer.add(this.goldIcon);
     this.goldStatText = this.scene.add.text(
       290,
-      this.scene.scale.height / 2 + 250,
+      this.scene.scale.height / 2 + 240,
       "100",
       textOptions
     );
@@ -149,7 +151,7 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   showWindow(playerObject) {
-    console.log(playerObject)
+    console.log(playerObject);
     this.mainPlayer = true;
     this.playerObject = playerObject;
     this.rect.setInteractive();
@@ -158,6 +160,14 @@ export default class PlayerWindow extends ModalWindow {
 
     // update player stats
     this.updatePlayerStats(playerObject);
+  }
+
+  createEquipmentSlots() {
+    for (let x = 0; x < 5; x += 1) {
+      const yPos = 0;
+      const xPos = 40 * x;
+
+    }
   }
 
   hideInventoryItem(itemNumber) {}
@@ -171,7 +181,4 @@ export default class PlayerWindow extends ModalWindow {
     this.goldStatText.setText(playerObject.gold);
   }
 
-  showItemDescription(item) {
-    console.log(item);
-  }
 }
