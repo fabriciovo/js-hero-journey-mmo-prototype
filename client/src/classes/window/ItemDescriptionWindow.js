@@ -31,14 +31,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
       this.descriptionContainer.setPosition(x + 1, y + 1);
       this.descriptionContainer.setSize(rectWidth - 1, rectHeight - 1);
 
-      this.attackText = this.scene.add.text(
-        0,
-        0,
-        "5",
-        { fontSize: "14px", fill: "#00ff00" }
-      );
-      this.descriptionContainer.add(this.attackText);
-      this.attackText.setPosition(this.descriptionContainer.width / 2, 20);
+      this.createItemDescriptionText();
     } else {
       this.rect = this.scene.add.rectangle(
         x + 1,
@@ -53,7 +46,6 @@ export default class ItemDescriptionWindow extends ModalWindow {
       this.descriptionContainer = this.scene.add.container(x + 1, y + 1);
       this.descriptionContainer.setDepth(4);
       this.descriptionContainer.setAlpha(this.textAlpha);
-
     }
   }
   resize(gameSize) {
@@ -62,11 +54,13 @@ export default class ItemDescriptionWindow extends ModalWindow {
 
   hideWindow() {
     this.rect.disableInteractive();
+    this.descriptionContainer.setAlpha(0);
     this.graphics.setAlpha(0);
   }
 
   showWindow() {
     this.rect.setInteractive();
+    this.descriptionContainer.setAlpha(1);
     this.graphics.setAlpha(1);
   }
 
@@ -74,10 +68,45 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.attackText.setText(this.textValue);
   }
 
-  setItemDescription(item){
-    console.log(item.attack);
-    console.log(item.defense);
-    console.log(item.health);
-    console.log(item.type);
+  createItemDescriptionText() {
+    this.itemsText = this.scene.add.text(
+      this.descriptionContainer.width / 2,
+      140,
+      "Item Description",
+      { fontSize: "22px", fill: "#ffffff", align: "center" }
+    );
+    this.itemsText.setOrigin(0.5);
+
+    this.attackText = this.scene.add.text(0, 0, "", {
+      fontSize: "14px",
+      fill: "#00ff00",
+    });
+
+    this.defenseText = this.scene.add.text(0, 0, "", {
+      fontSize: "14px",
+      fill: "#00ff00",
+    });
+
+    this.healthText = this.scene.add.text(0, 0, "", {
+      fontSize: "14px",
+      fill: "#00ff00",
+    });
+
+    this.descriptionContainer.add(this.itemsText);
+    this.descriptionContainer.add(this.attackText);
+    this.descriptionContainer.add(this.healthText);
+    this.descriptionContainer.add(this.defenseText);
+
+    this.itemsText.setPosition(this.descriptionContainer.width / 2, 20);
+    this.attackText.setPosition(this.descriptionContainer.width / 2 - 90, 60);
+    this.healthText.setPosition(this.descriptionContainer.width / 2 + 90, 60);
+    this.defenseText.setPosition(this.descriptionContainer.width / 2, 60);
+  }
+
+  setItemDescription(item) {
+    this.attackText.setText(item.attack);
+    this.defenseText.setText(item.defense);
+    this.healthText.setText(item.health);
+    //this.attackText.setText(item.type)
   }
 }

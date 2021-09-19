@@ -113,7 +113,6 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   removeItem(itemNumber) {
-    debugger
     if (itemNumber >=0 ) {
       debugger
       this.selectedItem.item.setTint(0xffffff)
