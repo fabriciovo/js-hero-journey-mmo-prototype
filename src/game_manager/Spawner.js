@@ -1,4 +1,4 @@
-import { SpawnerType, randomNumber } from "./utils";
+import { SpawnerType, randomNumber, WeaponTypes } from "./utils";
 import ChestModel from "./ChestModel";
 import MonsterModel from "./MonsterModel";
 import ItemModel from "../models/ItemModel";
@@ -59,7 +59,9 @@ export default class Spawner {
       randomItem.frame,
       getRandonValues(),
       getRandonValues(),
-      getRandonValues()
+      getRandonValues(),
+      WeaponTypes.MELEE,
+      "Description"
     );
     this.objectsCreated.push(item);
     this.addObject(item.id, item);
