@@ -43,7 +43,6 @@ export default class PlayerModel {
 
   playerAttacked(attack) {
     let damage = this.defense - attack;
-    console.log(damage)
     if (damage > 0) damage = 0;
 
     this.updateHealth(damage);

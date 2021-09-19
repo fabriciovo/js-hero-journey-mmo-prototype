@@ -240,7 +240,6 @@ export default class GameManager {
               monsterId
             );
             this.io.emit("monsterRemoved", monsterId);
-
             // add bonus health to the player
             this.players[socket.id].updateHealth(15);
             this.io.emit(
@@ -388,6 +387,7 @@ export default class GameManager {
     );
     this.players[playerId] = player;
   }
+
 
   addItems(itemId, item) {
     

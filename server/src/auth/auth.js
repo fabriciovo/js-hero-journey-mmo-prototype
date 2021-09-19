@@ -26,7 +26,6 @@ passport.use(
           gold: 0,
           items: null,
         };
-        console.log(player)
         const user = await UserModel.create({
           email,
           password,

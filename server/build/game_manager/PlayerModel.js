@@ -62,7 +62,6 @@ var PlayerModel = /*#__PURE__*/function () {
     key: "playerAttacked",
     value: function playerAttacked(attack) {
       var damage = this.defense - attack;
-      console.log(damage);
       if (damage > 0) damage = 0;
       this.updateHealth(damage);
     }

@@ -25,12 +25,20 @@ export default class BootScene extends Phaser.Scene {
 
     this.load.image('inventoryShield', 'assets/images/condensation_shield_new.png');
     this.load.image('inventoryGold', 'assets/images/gold_pile_16.png');
-    this.load.image('inventoryButton', 'assets/images/instructions.png');
+    this.load.image('inventoryButton', 'assets/images/windows/bag.png');
     this.load.image('inventorySword', 'assets/images/infusion.png');
-    this.load.image('inventoryRemove', 'assets/images/prompt_no.png');
     this.load.image('inventoryHeart', 'assets/images/regeneration_new.png');
     this.load.image('slot', 'assets/images/windows/InventoryWindow/slot.png');
+    this.load.image('inventoryRemove', 'assets/images/windows/InventoryWindow/remove.png');
+    this.load.image('inventoryEquip', 'assets/images/windows/InventoryWindow/equip.png');
+
     this.load.image('equipment_sheet', 'assets/images/windows/PlayerWindow/equipment_sheet.png');
+
+    this.load.image('playerstats', 'assets/images/windows/playerstats.png');
+
+
+
+
 
   }
 
@@ -39,6 +47,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.spritesheet('characters', 'assets/images/characters.png', { frameWidth: 23, frameHeight: 32 });
     this.load.spritesheet('monsters', 'assets/images/monsters.png', { frameWidth: 32, frameHeight: 32 });
     this.load.spritesheet('tools', 'assets/images/tools.png', { frameWidth: 32, frameHeight: 32 });
+    this.load.spritesheet('iconset', 'assets/images/iconset.png', { frameWidth: 24, frameHeight: 24 });
 
 
     
@@ -58,6 +67,7 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
+    //this.input.setDefaultCursor('url(assets/images/mouse/default.cur), pointer');
     this.scene.start('Login');
    //this.scene.start('Game');
   }

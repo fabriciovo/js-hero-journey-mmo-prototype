@@ -38,8 +38,7 @@ _passport["default"].use("signup", new _passportLocal["default"].Strategy({
               gold: 0,
               items: null
             };
-            console.log(player);
-            _context.next = 6;
+            _context.next = 5;
             return _UserModel["default"].create({
               email: email,
               password: password,
@@ -47,21 +46,21 @@ _passport["default"].use("signup", new _passportLocal["default"].Strategy({
               player: player
             });
 
-          case 6:
+          case 5:
             user = _context.sent;
             return _context.abrupt("return", done(null, user));
 
-          case 10:
-            _context.prev = 10;
+          case 9:
+            _context.prev = 9;
             _context.t0 = _context["catch"](0);
             return _context.abrupt("return", done(_context.t0));
 
-          case 13:
+          case 12:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 10]]);
+    }, _callee, null, [[0, 9]]);
   }));
 
   return function (_x, _x2, _x3, _x4) {

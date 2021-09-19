@@ -31,6 +31,13 @@ export default class ItemDescriptionWindow extends ModalWindow {
       this.descriptionContainer.setPosition(x + 1, y + 1);
       this.descriptionContainer.setSize(rectWidth - 1, rectHeight - 1);
 
+      this.attackText = this.scene.add.text(
+        0,
+        0,
+        "5",
+        { fontSize: "14px", fill: "#00ff00" }
+      );
+      this.descriptionContainer.add(this.attackText);
       this.attackText.setPosition(this.descriptionContainer.width / 2, 20);
     } else {
       this.rect = this.scene.add.rectangle(

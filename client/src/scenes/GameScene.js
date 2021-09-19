@@ -192,7 +192,9 @@ export default class GameScene extends Phaser.Scene {
       this.player.defenseValue = playerObject.defense;
       this.player.maxHealth = playerObject.maxHealth;
       this.player.updateHealthBar();
-      this.uiScene.inventoryWindow.updateInventory(playerObject);
+      this.uiScene.inventoryWindow.updateInventory(this.player);
+      this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
+
       
     });
 

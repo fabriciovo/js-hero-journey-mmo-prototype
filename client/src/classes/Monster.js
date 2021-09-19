@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
-
+import Item from './items/Item';
+import {v4} from 'uuid';
 export default class Monster extends Phaser.Physics.Arcade.Image {
   constructor(scene, x, y, key, frame, id, health, maxHealth) {
     super(scene, x, y, key, frame);
@@ -20,6 +21,8 @@ export default class Monster extends Phaser.Physics.Arcade.Image {
     this.scene.add.existing(this);
     // update the origin
     this.setOrigin(0);
+
+    
 
     this.createHealthBar();
   }
@@ -55,6 +58,8 @@ export default class Monster extends Phaser.Physics.Arcade.Image {
     this.body.checkCollision.none = true;
     this.healthBar.clear();
   }
+
+
 
   update() {
     this.updateHealthBar();
