@@ -27,7 +27,7 @@ var PlayerModel = /*#__PURE__*/function () {
 
     this.maxNumberOfItems = 5;
     this.spawnLocations = spawnLocations;
-    this.playerAttacking = false;
+    this.actionAActive = false;
     this.flipX = true;
     var location = this.generateLocation(players);
     this.x = location[0];

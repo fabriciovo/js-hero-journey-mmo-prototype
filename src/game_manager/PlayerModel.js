@@ -15,7 +15,7 @@ export default class PlayerModel {
     this.maxNumberOfItems = 5;
 
     this.spawnLocations = spawnLocations;
-    this.playerAttacking = false;
+    this.actionAActive = false;
     this.flipX = true;
     const location = this.generateLocation(players);
     this.x = location[0];
