@@ -53,18 +53,16 @@ export default class LoginScene extends CredentialsBaseScene {
   }
 
   login() {
-    debugger
+    
     const loginValue = this.loginForm.getChildByName("username").value;
     const passwordValue = this.loginForm.getChildByName("password").value;
-    debugger;
+    
     postData(`${SERVER_URL}/login`, {
       username: loginValue,
       password: passwordValue,
     })
       .then((response) => {
-        debugger
         if (response.status === 200) {
-          debugger
           refreshTokenInterval();
           this.startScene("Game");
           

@@ -14,8 +14,10 @@ export default class GameScene extends Phaser.Scene {
   init(data) {
     if (!this.game.mobile) {
       this.scene.launch("Ui");
+      this.uiScene = this.scene.get("Ui");
     } else {
       this.scene.launch("UiMobile");
+      this.uiScene = this.scene.get("UiMobile");
     }
 
     this.socket = this.sys.game.globals.socket;
@@ -190,6 +192,8 @@ export default class GameScene extends Phaser.Scene {
       this.player.defenseValue = playerObject.defense;
       this.player.maxHealth = playerObject.maxHealth;
       this.player.updateHealthBar();
+      this.uiScene.inventoryWindow.updateInventory(playerObject);
+      
     });
 
     this.socket.on("updatePlayersItems", (playerId, playerObject) => {
@@ -510,7 +514,8 @@ export default class GameScene extends Phaser.Scene {
 
   collectItem(player, item) {
     // item pickup
-    this.socket.emit("pickUpItem", item.id);
+
+   this.socket.emit("pickUpItem", item.id);
   }
 
   sendDropItemMessage(itemId) {

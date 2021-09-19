@@ -1,26 +1,17 @@
 import ModalWindow from "./ModalWindow";
 
 export default class ItemDescriptionWindow extends ModalWindow {
-  constructor(scene, opts, text) {
+  constructor(scene, opts) {
     super(scene, opts);
 
     this.scene = scene;
-    this.text = text;
     this.graphics.setDepth(4);
     this.createWindow();
     this.hideWindow();
   }
   calculateWindowDimension() {
-
-    this.x = this.scene.gameScene.input.mousePointer.x;
-    this.y = this.scene.gameScene.input.mousePointer.y;
-
-    if (this.scene.scale.width < 750) {
-      this.x + 40;
-      this.y + 40;
-    }
-    const x = this.x;
-    const y = this.y;
+    const x = 0;
+    const y = 0;
     const rectHeight = this.windowHeight - 5;
     const rectWidth = this.windowWidth;
     return {
@@ -35,6 +26,12 @@ export default class ItemDescriptionWindow extends ModalWindow {
     if (this.rect) {
       this.rect.setPosition(x + 1, y + 1);
       this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
+
+      // update the position of our inventory container
+      this.descriptionContainer.setPosition(x + 1, y + 1);
+      this.descriptionContainer.setSize(rectWidth - 1, rectHeight - 1);
+
+      this.attackText.setPosition(this.descriptionContainer.width / 2, 20);
     } else {
       this.rect = this.scene.add.rectangle(
         x + 1,
@@ -44,11 +41,15 @@ export default class ItemDescriptionWindow extends ModalWindow {
       );
       if (this.debug) this.rect.setFillStyle(0x6666ff);
       this.rect.setOrigin(0, 0);
+
+      // create inventory container for positioning elements
+      this.descriptionContainer = this.scene.add.container(x + 1, y + 1);
+      this.descriptionContainer.setDepth(4);
+      this.descriptionContainer.setAlpha(this.textAlpha);
+
     }
   }
   resize(gameSize) {
-
-
     this.redrawWindow();
   }
 
@@ -60,5 +61,16 @@ export default class ItemDescriptionWindow extends ModalWindow {
   showWindow() {
     this.rect.setInteractive();
     this.graphics.setAlpha(1);
+  }
+
+  updateDescriptionContainer() {
+    this.attackText.setText(this.textValue);
+  }
+
+  setItemDescription(item){
+    console.log(item.attack);
+    console.log(item.defense);
+    console.log(item.health);
+    console.log(item.type);
   }
 }

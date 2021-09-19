@@ -132,9 +132,7 @@ export default class DialogWindow extends ModalWindow {
 
   resize(gameSize) {
     this.x = gameSize.width;
-    console.log(gameSize.width);
     if (this.scene.game.mobile) {
-      console.log(gameSize.width);
       this.windowWidth = 140;
       this.input.classList.remove("chat-sidebar");
       this.input.classList.add("chat-mobile");

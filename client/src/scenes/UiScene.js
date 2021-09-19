@@ -62,9 +62,9 @@ export default class UiScene extends Phaser.Scene {
     this.descriptionWindow = new ItemDescriptionWindow(
       this,
       {
-        x: this.gameScene.input.mousePointer.x,
-        y: this.gameScene.input.mousePointer.y,
-        windowWidth: 120,
+        x: this.gameScene.input.x,
+        y: this.gameScene.input.y,
+        windowWidth: 360,
         windowHeight: 120,
         borderAlpha: 1,
         windowAlpha: 1,
@@ -131,21 +131,10 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.inventoryWindow.inventoryItems[2].item) &&
         !gameObjects.includes(this.inventoryWindow.inventoryItems[3].item) &&
         !gameObjects.includes(this.inventoryWindow.inventoryItems[4].item) &&
-        !gameObjects.includes(
-          this.inventoryWindow.inventoryItems[0].discardButton
-        ) &&
-        !gameObjects.includes(
-          this.inventoryWindow.inventoryItems[1].discardButton
-        ) &&
-        !gameObjects.includes(
-          this.inventoryWindow.inventoryItems[2].discardButton
-        ) &&
-        !gameObjects.includes(
-          this.inventoryWindow.inventoryItems[3].discardButton
-        ) &&
-        !gameObjects.includes(
-          this.inventoryWindow.inventoryItems[4].discardButton
-        )
+        !gameObjects.includes(this.inventoryWindow.discardButton) &&
+        !gameObjects.includes(this.inventoryWindow.equipButton)
+
+
       ) {
         this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();
