@@ -90,6 +90,12 @@
 .container .info span .fa {
   color: #EF3B3A;
 }
+
+
+a:hover{
+  cursor: pointer;
+}
+
 body {
   background: #76b852; /* fallback for old browsers */
   background: -webkit-linear-gradient(right, #76b852, #8DC26F);
@@ -106,12 +112,10 @@ body {
 
     <div class="login-page">
         <div class="form">
-          <form class="login-form">
             <input type="text" placeholder="username" id="username" name="username"/>
             <input type="password" placeholder="password" id="password" name="password"/>
             <button name="loginButton" id="loginButton">login</button>
-            <a href="#">Forgot Password?</a></p>
-            <p class="message">Not registered? <a href="#">Create an account</a></p>
-          </form>
+            <a name="forgotPassword">Forgot Password?</a></p>
+            <p class="message">Not registered? <a name="singUp">Create an account</a></p>
         </div>
       </div>
