@@ -225,26 +225,28 @@ export default class GameManager {
       });
 
       socket.on("equipedItem", (itemId) => {
-        if (this.players[socket.id].canEquipItem()) {
-  
-          this.players[socket.id].equipItem(this.players[socket.id].items[itemId]);
-         
-          socket.emit("updateItems", this.players[socket.id]);
-          socket.broadcast.emit(
-            "updatePlayersItems",
-            socket.id,
-            this.players[socket.id]
-          );
+        if (this.players[socket.id].items[itemId]) {
+          if (this.players[socket.id].canEquipItem()) {
+            this.players[socket.id].equipItem(
+              this.players[socket.id].items[itemId]
+            );
+
+            socket.emit("updateItems", this.players[socket.id]);
+            socket.broadcast.emit(
+              "updatePlayersItems",
+              socket.id,
+              this.players[socket.id]
+            );
+          }
         }
       });
 
       socket.on("levelUp", (playerId) => {
-        console.log("levelUp")
-
+        console.log("levelUp");
       });
-  
+
       socket.on("updatePlayerExp", (playerId) => {
-        console.log("updatePlayerExp")
+        console.log("updatePlayerExp");
       });
 
       socket.on("monsterAttacked", (monsterId) => {

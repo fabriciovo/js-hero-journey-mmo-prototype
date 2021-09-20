@@ -305,11 +305,13 @@ var GameManager = /*#__PURE__*/function () {
           }
         });
         socket.on("equipedItem", function (itemId) {
-          if (_this2.players[socket.id].canEquipItem()) {
-            _this2.players[socket.id].equipItem(_this2.players[socket.id].items[itemId]);
+          if (_this2.players[socket.id].items[itemId]) {
+            if (_this2.players[socket.id].canEquipItem()) {
+              _this2.players[socket.id].equipItem(_this2.players[socket.id].items[itemId]);
 
-            socket.emit("updateItems", _this2.players[socket.id]);
-            socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
+              socket.emit("updateItems", _this2.players[socket.id]);
+              socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
+            }
           }
         });
         socket.on("levelUp", function (playerId) {
