@@ -133,11 +133,17 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.inventoryWindow.inventoryItems[3].item) &&
         !gameObjects.includes(this.inventoryWindow.inventoryItems[4].item) &&
         !gameObjects.includes(this.inventoryWindow.discardButton) &&
-        !gameObjects.includes(this.inventoryWindow.equipButton)
+        !gameObjects.includes(this.inventoryWindow.equipButton) &&
+        !gameObjects.includes(this.playerStatsWindow.rect) &&
+        !gameObjects.includes(this.playerStatsButton) 
       ) {
         this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();
         this.showInventory = false;
+        
+        this.playerStatsWindow.hideWindow();
+        this.showPlayerStats = false;
+        
       }
     });
   }
