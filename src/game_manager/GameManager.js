@@ -169,6 +169,7 @@ export default class GameManager {
           this.players[socket.id].y = playerData.y;
           this.players[socket.id].flipX = playerData.flipX;
           this.players[socket.id].actionAActive = playerData.actionAActive;
+          this.players[socket.id].actionBActive = playerData.actionBActive;
           this.players[socket.id].currentDirection =
             playerData.currentDirection;
 
