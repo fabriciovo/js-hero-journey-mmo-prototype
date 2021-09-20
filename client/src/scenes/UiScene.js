@@ -26,13 +26,6 @@ export default class UiScene extends Phaser.Scene {
   }
 
   setupUiElements() {
-    // create the score text game object
-    this.scoreText = this.add.text(35, 8, "Coins: 0", {
-      fontSize: "16px",
-      fill: "#fff",
-    });
-    // create coin icon
-    this.coinIcon = this.add.image(15, 15, "items", 3);
 
     // create playerStats modal
     this.playerStatsWindow = new PlayerWindow(this, {
@@ -68,18 +61,40 @@ export default class UiScene extends Phaser.Scene {
       windowColor: 0x000000,
     });
 
+    //Create equiped weapons text
+    this.actionAText = this.add.text(80,this.scale.height - 50, "Z",{
+      fontSize: "46px",
+      fill: "#fff",
+    
+    }).setDepth(4);
+
+    this.actionBText = this.add.text(180,this.scale.height - 50, "X",{
+      fontSize: "46px",
+      fill: "#fff",
+    
+    }).setDepth(4);
+
+    this.potionAText = this.add.text(80,this.scale.height - 150, "C",{
+      fontSize: "46px",
+      fill: "#fff",
+    
+    }).setDepth(4);
+
+    this.potionACountText = this.add.text(120,this.scale.height - 125, "0",{
+      fontSize: "26px",
+      fill: "#fff",
+    
+    }).setDepth(4);
+
     //create equiped weapons icons
+    this.actionA = this.add.image(50, this.scale.height - 50, "iconset",2);
+    this.actionB = this.add.image(150, this.scale.height - 50, "iconset", 16);
 
-    this.actionA = this.add.image(50, this.scale.height - 50, "actionA");
-    this.actionB = this.add.image(150, this.scale.height - 50, "actionB");
-
-    this.potionA = this.add.image(50, this.scale.height - 150, "potionA");
-    this.potionB = this.add.image(150, this.scale.height - 150, "potionB");
+    this.potionA = this.add.image(50, this.scale.height - 150, "iconset", 64);
 
     this.actionA.setScale(3);
     this.actionB.setScale(3);
     this.potionA.setScale(3);
-    this.potionB.setScale(3);
 
     // create playerStats button
     this.playerStatsButton = this.add
@@ -130,7 +145,7 @@ export default class UiScene extends Phaser.Scene {
   setupEvents() {
     // listen for the updateScore event from the game scene
     this.gameScene.events.on("updateScore", (score) => {
-      this.scoreText.setText(`Coins: ${score}`);
+      
     });
 
     this.gameScene.events.on("showInventory", (playerObject, mainPlayer) => {

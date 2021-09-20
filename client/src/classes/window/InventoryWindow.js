@@ -402,20 +402,20 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   createInventoryButtons() {
-    this.equipButton = this.scene.add
-      .image(
-        this.scene.scale.width / 4 + 200,
-        this.scene.scale.height / 2 + 200,
-        "inventoryEquip",
-        0
-      )
-      .setScale(0.1)
-      .setOrigin(0.5)
-      .setInteractive();
+    // this.equipButton = this.scene.add
+    //   .image(
+    //     this.scene.scale.width / 4 - 200,
+    //     this.scene.scale.height / 2 + 200,
+    //     "inventoryEquip",
+    //     0
+    //   )
+    //   .setScale(0.1)
+    //   .setOrigin(0.5)
+    //   .setInteractive();
 
     this.discardButton = this.scene.add
       .image(
-        this.scene.scale.width / 4 - 200,
+        this.scene.scale.width / 4 + 200,
         this.scene.scale.height / 2 + 200,
         "inventoryRemove",
         0
@@ -424,7 +424,7 @@ export default class InventoryWindow extends ModalWindow {
       .setOrigin(0.5)
       .setInteractive();
 
-    this.inventoryContainer.add(this.equipButton);
+    //this.inventoryContainer.add(this.equipButton);
     this.inventoryContainer.add(this.discardButton);
 
     this.discardButton.on("pointerdown", () => {
@@ -432,13 +432,13 @@ export default class InventoryWindow extends ModalWindow {
       this.removeItem(this.selectedItemNumber);
     });
 
-    this.equipButton.on("pointerdown", () => {
-      console.log(this.scene.gameScene);
-      if (this.selectedItem) {
-        this.scene.gameScene.equipedItem(this.selectedItem.id);
-      }
-      console.log("Equip Button");
-    });
+    // this.equipButton.on("pointerdown", () => {
+    //   console.log(this.scene.gameScene);
+    //   if (this.selectedItem) {
+    //     this.scene.gameScene.equipedItem(this.selectedItem.id);
+    //   }
+    //   console.log("Equip Button");
+    // });
   }
 
   updateInventory(playerObject) {

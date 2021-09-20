@@ -189,7 +189,7 @@ export default class UiSceneMobile extends Phaser.Scene {
     }
   }
 
-  toggleInventory(playerObject) {
+  toggleInventory(playerObject, mainPlayer) {
     this.showInventory = !this.showInventory;
     if (this.showInventory) {
       this.gameScene.dialogWindow.rect.disableInteractive();

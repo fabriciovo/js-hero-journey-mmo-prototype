@@ -68,12 +68,17 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.updateFlipX();
           otherPlayer.actionAActive = player.actionAActive;
           otherPlayer.actionBActive = player.actionBActive;
+          otherPlayer.potionAActive = player.potionAActive;
           otherPlayer.currentDirection = player.currentDirection;
           if (player.actionAActive) {
-            otherPlayer.actionA();
+            otherPlayer.actionAFunction();
           }
           if (player.actionBActive) {
-            otherPlayer.actionB();
+            otherPlayer.actionBFunction();
+          }
+          if (player.potionAActive) {
+            otherPlayer.potionAFunction();
+
           }
         }
       });
@@ -118,13 +123,15 @@ export default class GameScene extends Phaser.Scene {
       this.rangedAttacks.getChildren().forEach((rangedAttack) => {
         Object.keys(rangedAttacks).forEach((rangedAttacksId) => {
           if (rangedAttack.id === rangedAttacksId) {
-            this.physics.moveToObject(rangedAttack, rangedAttacks[rangedAttacksId], 40);
+            this.physics.moveToObject(
+              rangedAttack,
+              rangedAttacks[rangedAttacksId],
+              40
+            );
           }
         });
       });
     });
-
-
 
     this.socket.on("updateScore", (goldAmount) => {
       this.events.emit("updateScore", goldAmount);
@@ -254,7 +261,7 @@ export default class GameScene extends Phaser.Scene {
     this.resize({ height: this.scale.height, width: this.scale.width });
 
     this.keyDownEventListener();
- 
+
     this.input.on("pointerdown", () => {
       document.getElementById("chatInput").blur();
     });
@@ -294,22 +301,32 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.player) {
       // emit player movement to the server
-      const { x, y, flipX, actionAActive, currentDirection, actionBActive } = this.player;
+      const {
+        x,
+        y,
+        flipX,
+        actionAActive,
+        currentDirection,
+        actionBActive,
+        potionAActive,
+      } = this.player;
       if (
         this.player.oldPosition &&
         (x != this.player.oldPosition.x ||
           y !== this.player.oldPosition.y ||
           flipX != this.player.oldPosition.flipX ||
-          actionAActive !== this.player.oldPosition.actionAActive 
-          || actionBActive !== this.player.oldPosition.actionBActive)
+          actionAActive !== this.player.oldPosition.actionAActive ||
+          actionBActive !== this.player.oldPosition.actionBActive ||
+          potionAActive !== this.player.oldPosition.potionAActive)
       ) {
         this.socket.emit("playerMovement", {
           x,
           y,
           flipX,
           actionAActive,
+          actionBActive,
+          potionAActive,
           currentDirection,
-          actionBActive
         });
       }
       // save old position data
@@ -317,9 +334,10 @@ export default class GameScene extends Phaser.Scene {
         x: this.player.x,
         y: this.player.y,
         flipX: this.player.flipX,
-        currentDirection:currentDirection,
-        actionBActive: this.player.actionAActive,
+        currentDirection: currentDirection,
+        actionAActive: this.player.actionAActive,
         actionBActive: this.player.actionBActive,
+        potionAActive: this.player.potionAActive,
       };
     }
   }
@@ -523,7 +541,6 @@ export default class GameScene extends Phaser.Scene {
       this
     );
 
-    
     this.physics.add.overlap(
       this.rangedAttacks,
       this.otherPlayers,

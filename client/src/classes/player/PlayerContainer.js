@@ -40,7 +40,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.attackValue = attackValue;
     this.items = items;
     this.equipedItems = equipedItems;
-
+    this.potions = 5;
 
 
     //Mobile
@@ -62,10 +62,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     if (this.mainPlayer) {
       this.scene.cameras.main.startFollow(this);
     }
-
     // create the player
     this.player = new Player(this.scene, 0, 0, key, frame);
     this.add(this.player);
+    console.log(this.player)
 
     //Actions
     this.actionAActive = false;
@@ -86,6 +86,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.add(this.actionA);
     this.actionA.alpha = 0;
 
+    this.scene.add.existing(this.actionB)
+
     // create the player healthbar
     this.createHealthBar();
 
@@ -100,7 +102,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       Phaser.Input.Keyboard.KeyCodes.X
     );
 
-    this.actionCButton = this.scene.input.keyboard.addKey(
+    this.potionAButton = this.scene.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.C
     );
   }
@@ -198,17 +200,15 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       }
 
       if (
-        (Phaser.Input.Keyboard.JustDown(this.actionBButton) ||
-          this.mobileActionA) &&
+        (Phaser.Input.Keyboard.JustDown(this.actionBButton)) &&
         !this.actionBActive
       ) {
         this.actionBFunction();
       }
 
       if (
-        (Phaser.Input.Keyboard.JustDown(this.actionCButton) ||
-          this.mobileActionA) &&
-        !this.actionCActive
+        (Phaser.Input.Keyboard.JustDown(this.potionAButton)) &&
+        !this.potionAActive
       ) {
         this.potionAFunction();
       }
@@ -286,7 +286,16 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   } 
 
   potionAFunction() {
-    console.log("potionAFunction");
+    this.potionAActive = true;
+    if (this.mainPlayer) this.attackAudio.play();
+    this.scene.time.delayedCall(
+      500,
+      () => {
+        this.actionAActive = false;
+      },
+      [],
+      this
+    );
   }
   cleanUp() {
     this.setActive(false);
