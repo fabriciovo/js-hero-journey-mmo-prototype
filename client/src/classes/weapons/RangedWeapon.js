@@ -1,22 +1,56 @@
 import * as Phaser from "phaser";
 
-export default class RangedWeapon extends Phaser.Physics.Arcade.Group {
-  constructor(scene) {
-    this.scene = scene;
-    this.createMultiple({
-      frameQuantity: 5,
-      key: "ranged",
-      active: false,
-      visible: false,
-      classType: RangedWeapon,
-    });
-  }
+class Bullet extends Phaser.Physics.Arcade.Sprite
+{
+        constructor (scene, x, y)
+        {
+            super(scene, x, y, 'bullet');
+        }
 
-  attack(x, y) {
-    let ranged = this.getFirstDead(false);
+        fire (x, y)
+        {
+            this.body.reset(x, y);
 
-    if (ranged) {
-      ranged.fire(x, y);
+            this.setActive(true);
+            this.setVisible(true);
+
+            this.setVelocityY(-300);
+        }
+
+        preUpdate (time, delta)
+        {
+            super.preUpdate(time, delta);
+
+            if (this.y <= -32)
+            {
+                this.setActive(false);
+                this.setVisible(false);
+            }
     }
-  }
+}
+
+export default class Bullets extends Phaser.Physics.Arcade.Group
+{
+    constructor (scene)
+    {
+        super(scene.physics.world, scene);
+
+        this.createMultiple({
+            frameQuantity: 5,
+            key: 'bullet',
+            active: false,
+            visible: false,
+            classType: Bullet
+        });
+    }
+
+    fireBullet (x, y)
+    {
+        let bullet = this.getFirstDead(false);
+
+        if (bullet)
+        {
+            bullet.fire(x, y);
+        }
+    }
 }

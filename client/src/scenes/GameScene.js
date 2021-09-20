@@ -67,9 +67,13 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.updateHealthBar();
           otherPlayer.updateFlipX();
           otherPlayer.actionAActive = player.actionAActive;
+          otherPlayer.actionBActive = player.actionBActive;
           otherPlayer.currentDirection = player.currentDirection;
           if (player.actionAActive) {
             otherPlayer.actionA();
+          }
+          if (player.actionBActive) {
+            otherPlayer.actionB();
           }
         }
       });
@@ -109,6 +113,18 @@ export default class GameScene extends Phaser.Scene {
         });
       });
     });
+
+    this.socket.on("rangedAttackMovement", (rangedAttacks) => {
+      this.rangedAttacks.getChildren().forEach((rangedAttack) => {
+        Object.keys(rangedAttacks).forEach((rangedAttacksId) => {
+          if (rangedAttack.id === rangedAttacksId) {
+            this.physics.moveToObject(rangedAttack, rangedAttacks[rangedAttacksId], 40);
+          }
+        });
+      });
+    });
+
+
 
     this.socket.on("updateScore", (goldAmount) => {
       this.events.emit("updateScore", goldAmount);
@@ -197,8 +213,6 @@ export default class GameScene extends Phaser.Scene {
       this.player.updateHealthBar();
       this.uiScene.inventoryWindow.updateInventory(this.player);
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
-
-      
     });
 
     this.socket.on("updatePlayersItems", (playerId, playerObject) => {
@@ -240,7 +254,7 @@ export default class GameScene extends Phaser.Scene {
     this.resize({ height: this.scale.height, width: this.scale.width });
 
     this.keyDownEventListener();
-
+ 
     this.input.on("pointerdown", () => {
       document.getElementById("chatInput").blur();
     });
@@ -280,13 +294,14 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.player) {
       // emit player movement to the server
-      const { x, y, flipX, actionAActive, currentDirection } = this.player;
+      const { x, y, flipX, actionAActive, currentDirection, actionBActive } = this.player;
       if (
         this.player.oldPosition &&
         (x != this.player.oldPosition.x ||
           y !== this.player.oldPosition.y ||
           flipX != this.player.oldPosition.flipX ||
-          actionAActive !== this.player.oldPosition.actionAActive)
+          actionAActive !== this.player.oldPosition.actionAActive 
+          || actionBActive !== this.player.oldPosition.actionBActive)
       ) {
         this.socket.emit("playerMovement", {
           x,
@@ -294,6 +309,7 @@ export default class GameScene extends Phaser.Scene {
           flipX,
           actionAActive,
           currentDirection,
+          actionBActive
         });
       }
       // save old position data
@@ -301,7 +317,9 @@ export default class GameScene extends Phaser.Scene {
         x: this.player.x,
         y: this.player.y,
         flipX: this.player.flipX,
-        actionAActive: this.player.actionAActive,
+        currentDirection:currentDirection,
+        actionBActive: this.player.actionAActive,
+        actionBActive: this.player.actionBActive,
       };
     }
   }
@@ -373,6 +391,10 @@ export default class GameScene extends Phaser.Scene {
 
     // create a chest group
     this.items = this.physics.add.group();
+
+    // create a ranged Attacks group
+    this.rangedAttacks = this.physics.add.group();
+    this.rangedAttacks.runChildUpdate = true;
   }
   spawnItem(itemObject) {
     let item = this.items.getFirstDead();
@@ -449,8 +471,9 @@ export default class GameScene extends Phaser.Scene {
 
   equipedItem(itemId) {
     // item pickup
-    debugger
-   this.socket.emit("equipedItem", itemId);
+    debugger;
+
+    this.socket.emit("equipedItem", itemId);
   }
 
   addCollisions() {
@@ -499,6 +522,30 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     );
+
+    
+    this.physics.add.overlap(
+      this.rangedAttacks,
+      this.otherPlayers,
+      this.rangedOverlapEnemy,
+      false,
+      this
+    );
+
+    this.physics.add.overlap(
+      this.rangedAttacks,
+      this.monsters,
+      this.rangedOverlapEnemy,
+      false,
+      this
+    );
+  }
+
+  rangedOverlapEnemy(player, enemyPlayer) {
+    if (this.player.actionAActive && !this.player.hitbox) {
+      this.player.hitbox = true;
+      this.socket.emit("attackedPlayer", enemyPlayer.id);
+    }
   }
 
   pvpCollider(player, otherPlayer) {
@@ -528,7 +575,7 @@ export default class GameScene extends Phaser.Scene {
   collectItem(player, item) {
     // item pickup
 
-   this.socket.emit("pickUpItem", item.id);
+    this.socket.emit("pickUpItem", item.id);
   }
 
   sendDropItemMessage(itemId) {

@@ -229,7 +229,7 @@ export default class InventoryWindow extends ModalWindow {
     }
     */
 
-    for (let x = 0; x < 10; x += 1) {
+    for (let x = 0; x < 5; x += 1) {
       const yPos = 0;
       const xPos = 90 * x;
       this.inventorySlots[x] = {};
@@ -404,8 +404,8 @@ export default class InventoryWindow extends ModalWindow {
   createInventoryButtons() {
     this.equipButton = this.scene.add
       .image(
-        this.inventoryContainer.width + 340,
-        this.scene.scale.height / 2 + 240,
+        this.scene.scale.width / 4 + 200,
+        this.scene.scale.height / 2 + 200,
         "inventoryEquip",
         0
       )
@@ -415,8 +415,8 @@ export default class InventoryWindow extends ModalWindow {
 
     this.discardButton = this.scene.add
       .image(
-        this.inventoryContainer.width + 620,
-        this.scene.scale.height / 2 + 240,
+        this.scene.scale.width / 4 - 200,
+        this.scene.scale.height / 2 + 200,
         "inventoryRemove",
         0
       )
@@ -433,8 +433,10 @@ export default class InventoryWindow extends ModalWindow {
     });
 
     this.equipButton.on("pointerdown", () => {
-      console.log(this.scene.gameScene)
-      this.scene.gameScene.equipedItem(this.selectedItem.id);
+      console.log(this.scene.gameScene);
+      if (this.selectedItem) {
+        this.scene.gameScene.equipedItem(this.selectedItem.id);
+      }
       console.log("Equip Button");
     });
   }
