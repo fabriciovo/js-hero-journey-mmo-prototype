@@ -37,7 +37,10 @@ _passport["default"].use("signup", new _passportLocal["default"].Strategy({
               frame: 0,
               gold: 0,
               items: null,
-              equipedItems: null
+              equipedItems: null,
+              exp: 0,
+              expMax: 100,
+              level: 1
             };
             _context.next = 5;
             return _UserModel["default"].create({

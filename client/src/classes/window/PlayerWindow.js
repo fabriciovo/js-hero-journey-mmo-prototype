@@ -59,7 +59,6 @@ export default class PlayerWindow extends ModalWindow {
       this.statsContainer.setDepth(3);
       this.statsContainer.setAlpha(this.textAlpha);
 
-
       // create inventory title
       this.titleText = this.scene.add.text(
         this.statsContainer.width / 2 + 200,
@@ -160,13 +159,24 @@ export default class PlayerWindow extends ModalWindow {
 
     // update player stats
     this.updatePlayerStats(playerObject);
+    this.updateEquipment(playerObject)
   }
 
   createEquipmentSlots() {
     for (let x = 0; x < 5; x += 1) {
-      const yPos = 0;
-      const xPos = 40 * x;
+      const yPos = 90 * x;
+      const xPos = 90 * x;
 
+      //create inventory item icon
+      this.equipedItems[x] = {};
+      this.equipedItems[x].item = this.scene.add
+        .image(xPos + 90, 0, "tools", 0)
+        .setScale(2)
+        .setInteractive();
+
+      this.statsContainer.add(this.equipedItems[x].item);
+
+      //items button
     }
   }
 
@@ -181,4 +191,29 @@ export default class PlayerWindow extends ModalWindow {
     this.goldStatText.setText(playerObject.gold);
   }
 
+  updateEquipment(playerObject) {
+    // populate equipment items
+    const keys = Object.keys(playerObject.equipedItems);
+    for (let i = 0; i < keys.length; i += 1) {
+      this.updateInventoryItem(playerObject.equipedItems[keys[i]], i);
+    }
+  }
+
+  updateEquipment(playerObject) {
+    const keys = Object.keys(playerObject.equipedItems);
+    for (let i = 0; i < keys.length; i += 1) {
+      this.updateEquipmentItem(playerObject.equipedItems[keys[i]], i);
+    }
+  }
+  updateEquipmentItem(item, itemNumber) {
+    this.equipedItems[itemNumber].id = item.id;
+    this.equipedItems[itemNumber].item.setFrame(item.frame);
+    this.equipedItems[itemNumber].itemName = item.name;
+    this.equipedItems[itemNumber].attack = item.attackBonus;
+    this.equipedItems[itemNumber].defense = item.defenseBonus;
+    this.equipedItems[itemNumber].health = item.healthBonus;
+
+
+    this.showInventoryItem(itemNumber);
+  }
 }

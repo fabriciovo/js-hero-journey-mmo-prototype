@@ -92,6 +92,8 @@ export default class ItemDescriptionWindow extends ModalWindow {
       fill: "#00ff00",
     });
 
+    
+
     this.descriptionContainer.add(this.itemsText);
     this.descriptionContainer.add(this.attackText);
     this.descriptionContainer.add(this.healthText);
@@ -104,9 +106,25 @@ export default class ItemDescriptionWindow extends ModalWindow {
   }
 
   setItemDescription(item) {
+
+    if (item.attack > 0) {
+      this.attackText.setFill("#00ff00");
+    } else {
+      this.attackText.setFill("#ff0000");
+    }
+    if (item.defense > 0) {
+      this.defenseText.setFill("#00ff00");
+    } else {
+      this.defenseText.setFill("#ff0000");
+    }
+    if (item.health > 0) {
+      this.healthText.setFill("#00ff00");
+    } else {
+      this.healthText.setFill("#ff0000");
+    }
+    this.attackText.setText(item.type)
     this.attackText.setText(item.attack);
     this.defenseText.setText(item.defense);
     this.healthText.setText(item.health);
-    //this.attackText.setText(item.type)
   }
 }

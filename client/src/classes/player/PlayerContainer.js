@@ -20,7 +20,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     defenseValue,
     attackValue,
     items,
-    equipedItems
+    equipedItems,
+    exp,
+    expMax,
+    level
   ) {
     super(scene, x, y);
     this.scene = scene; // the scene this container will be added to
@@ -40,6 +43,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.attackValue = attackValue;
     this.items = items;
     this.equipedItems = equipedItems;
+    this.exp = exp;
+    this.expMax = expMax;
+    this.level = level;
+
     this.potions = 5;
 
 

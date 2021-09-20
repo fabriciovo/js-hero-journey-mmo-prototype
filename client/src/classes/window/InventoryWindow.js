@@ -359,21 +359,6 @@ export default class InventoryWindow extends ModalWindow {
     this.inventoryItems[itemNumber].defense = item.defenseBonus;
     this.inventoryItems[itemNumber].health = item.healthBonus;
 
-    // if (item.attackBonus > 0) {
-    //   this.inventoryItems[itemNumber].attackIconText.setFill("#00ff00");
-    // } else {
-    //   this.inventoryItems[itemNumber].attackIconText.setFill("#ff0000");
-    // }
-    // if (item.defenseBonus > 0) {
-    //   this.inventoryItems[itemNumber].defenseIconText.setFill("#00ff00");
-    // } else {
-    //   this.inventoryItems[itemNumber].defenseIconText.setFill("#ff0000");
-    // }
-    // if (item.healthBonus > 0) {
-    //   this.inventoryItems[itemNumber].healthIconText.setFill("#00ff00");
-    // } else {
-    //   this.inventoryItems[itemNumber].healthIconText.setFill("#ff0000");
-    // }
 
     this.showInventoryItem(itemNumber);
   }
@@ -402,16 +387,16 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   createInventoryButtons() {
-    // this.equipButton = this.scene.add
-    //   .image(
-    //     this.scene.scale.width / 4 - 200,
-    //     this.scene.scale.height / 2 + 200,
-    //     "inventoryEquip",
-    //     0
-    //   )
-    //   .setScale(0.1)
-    //   .setOrigin(0.5)
-    //   .setInteractive();
+    this.equipButton = this.scene.add
+      .image(
+        this.scene.scale.width / 4 - 200,
+        this.scene.scale.height / 2 + 200,
+        "inventoryEquip",
+        0
+      )
+      .setScale(0.1)
+      .setOrigin(0.5)
+      .setInteractive();
 
     this.discardButton = this.scene.add
       .image(
@@ -424,7 +409,7 @@ export default class InventoryWindow extends ModalWindow {
       .setOrigin(0.5)
       .setInteractive();
 
-    //this.inventoryContainer.add(this.equipButton);
+    this.inventoryContainer.add(this.equipButton);
     this.inventoryContainer.add(this.discardButton);
 
     this.discardButton.on("pointerdown", () => {
@@ -432,13 +417,17 @@ export default class InventoryWindow extends ModalWindow {
       this.removeItem(this.selectedItemNumber);
     });
 
-    // this.equipButton.on("pointerdown", () => {
-    //   console.log(this.scene.gameScene);
-    //   if (this.selectedItem) {
-    //     this.scene.gameScene.equipedItem(this.selectedItem.id);
-    //   }
-    //   console.log("Equip Button");
-    // });
+    this.equipButton.on("pointerdown", () => {
+      if (this.selectedItem) {
+        this.selectedItem.item.setTint(0xffffff);
+        const id = this.selectedItem.id;
+        this.selectedItem = undefined;
+        this.selectedItemNumber = undefined;
+        this.scene.gameScene.equipedItem(id);
+
+        this.updateInventory(this.playerObject);
+      }
+    });
   }
 
   updateInventory(playerObject) {

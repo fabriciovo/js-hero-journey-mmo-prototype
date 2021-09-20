@@ -78,7 +78,6 @@ export default class GameScene extends Phaser.Scene {
           }
           if (player.potionAActive) {
             otherPlayer.potionAFunction();
-
           }
         }
       });
@@ -212,11 +211,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.socket.on("updateItems", (playerObject) => {
       this.player.items = playerObject.items;
-      this.player.equipedItems = playerObject.equipedItems;
       this.player.attackValue = playerObject.attack;
       this.player.defenseValue = playerObject.defense;
       this.player.maxHealth = playerObject.maxHealth;
       this.player.gold = playerObject.gold;
+      this.player.equipedItems = playerObject.equipedItems;
       this.player.updateHealthBar();
       this.uiScene.inventoryWindow.updateInventory(this.player);
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
@@ -225,11 +224,12 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("updatePlayersItems", (playerId, playerObject) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
         if (playerId === otherPlayer.id) {
-          otherPlayer.equipedItems = playerObject.equipedItems;
           otherPlayer.items = playerObject.items;
           otherPlayer.maxHealth = playerObject.maxHealth;
           otherPlayer.attackValue = playerObject.attack;
           otherPlayer.defenseValue = playerObject.defense;
+          otherPlayer.equipedItems = playerObject.equipedItems;
+          this.uiScene.playerStatsWindow.updatePlayerStats(otherPlayer);
           otherPlayer.updateHealthBar();
         }
       });
@@ -309,6 +309,7 @@ export default class GameScene extends Phaser.Scene {
         currentDirection,
         actionBActive,
         potionAActive,
+        level,
       } = this.player;
       if (
         this.player.oldPosition &&
@@ -317,7 +318,8 @@ export default class GameScene extends Phaser.Scene {
           flipX != this.player.oldPosition.flipX ||
           actionAActive !== this.player.oldPosition.actionAActive ||
           actionBActive !== this.player.oldPosition.actionBActive ||
-          potionAActive !== this.player.oldPosition.potionAActive)
+          potionAActive !== this.player.oldPosition.potionAActive ||
+          level !== this.player.oldPosition.level)
       ) {
         this.socket.emit("playerMovement", {
           x,
@@ -327,6 +329,7 @@ export default class GameScene extends Phaser.Scene {
           actionBActive,
           potionAActive,
           currentDirection,
+          level
         });
       }
       // save old position data
@@ -338,6 +341,7 @@ export default class GameScene extends Phaser.Scene {
         actionAActive: this.player.actionAActive,
         actionBActive: this.player.actionBActive,
         potionAActive: this.player.potionAActive,
+        level: this.player.level
       };
     }
   }
@@ -382,7 +386,10 @@ export default class GameScene extends Phaser.Scene {
       playerObject.defense,
       playerObject.attack,
       playerObject.items,
-      playerObject.equipedItems
+      playerObject.equipedItems,
+      playerObject.exp,
+      playerObject.expMax,
+      playerObject.level
     );
 
     if (!mainPlayer) {

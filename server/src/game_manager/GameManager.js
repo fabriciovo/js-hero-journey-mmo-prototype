@@ -225,17 +225,26 @@ export default class GameManager {
       });
 
       socket.on("equipedItem", (itemId) => {
-        if (this.items[itemId]) {
-          if (this.players[socket.id].canEquipItem()) {
-            this.players[socket.id].equipItem(this.items[itemId]);
-            socket.emit("updateItems", this.players[socket.id]);
-            socket.broadcast.emit(
-              "updatePlayersItems",
-              socket.id,
-              this.players[socket.id]
-            );
-          }
+        if (this.players[socket.id].canEquipItem()) {
+  
+          this.players[socket.id].equipItem(this.players[socket.id].items[itemId]);
+         
+          socket.emit("updateItems", this.players[socket.id]);
+          socket.broadcast.emit(
+            "updatePlayersItems",
+            socket.id,
+            this.players[socket.id]
+          );
         }
+      });
+
+      socket.on("levelUp", (playerId) => {
+        console.log("levelUp")
+
+      });
+  
+      socket.on("updatePlayerExp", (playerId) => {
+        console.log("updatePlayerExp")
       });
 
       socket.on("monsterAttacked", (monsterId) => {
@@ -251,6 +260,8 @@ export default class GameManager {
             // updating the players gold
             this.players[socket.id].updateGold(gold);
             socket.emit("updateScore", this.players[socket.id].gold);
+            socket.emit("updateXp", this.players[socket.id].exp);
+            //socket.emit("dropItem", item);
 
             // removing the monster
             this.spawners[this.monsters[monsterId].spawnerId].removeObject(
