@@ -41,8 +41,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.gold = gold;
     this.defenseValue = defenseValue;
     this.attackValue = attackValue;
-    this.items = items;
-    this.equipedItems = equipedItems;
+    this.items = items || {};
+    this.equipedItems = equipedItems || {};
     this.exp = exp;
     this.expMax = expMax;
     this.level = level;
@@ -316,7 +316,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   dropItem(itemNumber) {
-    debugger;
     const keys = Object.keys(this.items);
     delete this.items[keys[itemNumber]];
     this.scene.sendDropItemMessage(keys[itemNumber]);

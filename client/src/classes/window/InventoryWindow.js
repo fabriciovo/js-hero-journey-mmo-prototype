@@ -119,6 +119,7 @@ export default class InventoryWindow extends ModalWindow {
       this.selectedItem = undefined;
       this.playerObject.dropItem(itemNumber);
       this.updateInventory(this.playerObject);
+      this.hideWindow();
       this.showWindow(this.playerObject);
       this.selectedItemNumber = undefined;
     }
@@ -236,7 +237,7 @@ export default class InventoryWindow extends ModalWindow {
       this.inventorySlots[x].item = this.scene.add
         .image(90 + xPos, yPos, "slot", 0)
         .setScale(3)
-        .setInteractive();
+        .setInteractive({ cursor: "pointer" });
       this.itemsContainer.add(this.inventorySlots[x].item);
     }
 
@@ -249,34 +250,20 @@ export default class InventoryWindow extends ModalWindow {
       this.inventoryItems[x].item = this.scene.add
         .image(xPos + 90, 0, "tools", 0)
         .setScale(2)
-        .setInteractive();
+        .setInteractive({ cursor: "pointer" });
 
       this.itemsContainer.add(this.inventoryItems[x].item);
 
       this.inventoryItems[x].item.on("pointerdown", () => {
         this.selectItem(this.inventoryItems[x], x);
-        //this.showItemDescription(this.inventoryItems[x]);
-        //this.scene.descriptionWindow.showWindow();
-        //this.scene.descriptionWindow.textValue = this.inventoryItems[x].attack.toString();
-        // this.scene.descriptionWindow.attackText = this.inventoryItems[x].defense;
-        // this.scene.descriptionWindow.attackText = this.inventoryItems[x].health;
-        // this.scene.descriptionWindow.attackText = this.inventoryItems[x].type;
       });
+
       this.inventoryItems[x].item.on("pointerover", () => {
         this.showItemDescription(this.inventoryItems[x]);
         this.scene.descriptionWindow.showWindow();
-        //this.scene.descriptionWindow.textValue = this.inventoryItems[x].attack.toString();
-        // this.scene.descriptionWindow.attackText = this.inventoryItems[x].defense;
-        // this.scene.descriptionWindow.attackText = this.inventoryItems[x].health;
-        // this.scene.descriptionWindow.attackText = this.inventoryItems[x].type;
       });
 
       this.inventoryItems[x].item.on("pointerout", () => {
-        // this.scene.descriptionWindow.attackText = "";
-        // this.scene.descriptionWindow.attackText = "";
-        // this.scene.descriptionWindow.attackText = "";
-        // this.scene.descriptionWindow.attackText = "";
-
         this.scene.descriptionWindow.hideWindow();
       });
 
@@ -359,7 +346,6 @@ export default class InventoryWindow extends ModalWindow {
     this.inventoryItems[itemNumber].defense = item.defenseBonus;
     this.inventoryItems[itemNumber].health = item.healthBonus;
 
-
     this.showInventoryItem(itemNumber);
   }
 
@@ -380,7 +366,17 @@ export default class InventoryWindow extends ModalWindow {
 
   hideItemButtons() {}
 
-  equipItem() {}
+  equipItem() {
+    if (this.selectedItem && this.playerObject) {
+      this.selectedItem.item.setTint(0xffffff);
+      const id = this.selectedItem.id;
+      this.selectedItem = undefined;
+      this.selectedItemNumber = undefined;
+      this.scene.gameScene.equipedItem(id);
+      this.updateInventory(this.playerObject);
+      this.showWindow(this.playerObject);
+    }
+  }
 
   showItemDescription(item) {
     this.scene.descriptionWindow.setItemDescription(item);
@@ -396,7 +392,7 @@ export default class InventoryWindow extends ModalWindow {
       )
       .setScale(0.1)
       .setOrigin(0.5)
-      .setInteractive();
+      .setInteractive({ cursor: "pointer" });
 
     this.discardButton = this.scene.add
       .image(
@@ -407,7 +403,7 @@ export default class InventoryWindow extends ModalWindow {
       )
       .setScale(0.1)
       .setOrigin(0.5)
-      .setInteractive();
+      .setInteractive({ cursor: "pointer" });
 
     this.inventoryContainer.add(this.equipButton);
     this.inventoryContainer.add(this.discardButton);
@@ -418,20 +414,13 @@ export default class InventoryWindow extends ModalWindow {
     });
 
     this.equipButton.on("pointerdown", () => {
-      if (this.selectedItem) {
-        this.selectedItem.item.setTint(0xffffff);
-        const id = this.selectedItem.id;
-        this.selectedItem = undefined;
-        this.selectedItemNumber = undefined;
-        this.scene.gameScene.equipedItem(id);
-
-        this.updateInventory(this.playerObject);
-      }
+      this.equipItem();
     });
   }
 
   updateInventory(playerObject) {
     // populate inventory items
+    debugger
     const keys = Object.keys(playerObject.items);
     for (let i = 0; i < keys.length; i += 1) {
       this.updateInventoryItem(playerObject.items[keys[i]], i);

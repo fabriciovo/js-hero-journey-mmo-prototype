@@ -218,6 +218,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.equipedItems = playerObject.equipedItems;
       this.player.updateHealthBar();
       this.uiScene.inventoryWindow.updateInventory(this.player);
+      this.uiScene.playerStatsWindow.updateEquipment(this.player);
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     });
 
@@ -230,6 +231,7 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.defenseValue = playerObject.defense;
           otherPlayer.equipedItems = playerObject.equipedItems;
           this.uiScene.playerStatsWindow.updatePlayerStats(otherPlayer);
+          this.uiScene.playerStatsWindow.updateEquipment(otherPlayer);
           otherPlayer.updateHealthBar();
         }
       });
@@ -604,10 +606,16 @@ export default class GameScene extends Phaser.Scene {
 
   sendDropItemMessage(itemId) {
     this.socket.emit("playerDroppedItem", itemId);
+    debugger
+    this.uiScene.inventoryWindow.updateEquipment(this.player)
+    this.uiScene.inventoryWindow.hideWindow();
+    this.uiScene.inventoryWindow.showWindow(this.playerObject)
   }
 
   createMap() {
     // create map
+
+    //TODO - pra criar novas scenes isso tem q ir para um script independente
     this.gameMap = new GameMap(
       this,
       "map",

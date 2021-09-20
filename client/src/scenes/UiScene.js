@@ -100,7 +100,7 @@ export default class UiScene extends Phaser.Scene {
     this.playerStatsButton = this.add
       .image(this.scale.width / 2 - 90, this.scale.height - 50, "playerstats")
       .setScale(0.1)
-      .setInteractive();
+      .setInteractive({ cursor: 'pointer' });
 
     this.playerStatsButton.on("pointerdown", () => {
       console.log("playerStatsButton", this.gameScene.player)
@@ -115,7 +115,7 @@ export default class UiScene extends Phaser.Scene {
         "inventoryButton"
       )
       .setScale(0.1)
-      .setInteractive();
+      .setInteractive({ cursor: 'pointer' });
 
     this.inventoryButton.on("pointerdown", () => {
       console.log("inventoryButton", this.gameScene.player)
@@ -135,7 +135,12 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.inventoryWindow.discardButton) &&
         !gameObjects.includes(this.inventoryWindow.equipButton) &&
         !gameObjects.includes(this.playerStatsWindow.rect) &&
-        !gameObjects.includes(this.playerStatsButton) 
+        !gameObjects.includes(this.playerStatsButton) &&
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[0].item) &&
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[1].item) &&
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[2].item) &&
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[3].item) &&
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[4].item) 
       ) {
         this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();

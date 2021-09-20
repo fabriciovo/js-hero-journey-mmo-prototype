@@ -23,7 +23,7 @@ export default class UiButton extends Phaser.GameObjects.Container {
     // create play game button
     this.button = this.scene.add.image(0, 0, 'button1');
     // make button interactive
-    this.button.setInteractive();
+    this.button.setInteractive({ cursor: 'pointer' });
     // scale the button
     this.button.setScale(1.4);
 

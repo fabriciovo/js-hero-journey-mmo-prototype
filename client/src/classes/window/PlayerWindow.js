@@ -9,6 +9,8 @@ export default class PlayerWindow extends ModalWindow {
     this.graphics.setDepth(3);
     this.createWindow();
     this.hideWindow();
+    this.selectedItem = undefined;
+    this.selectedItemNumber = undefined;
   }
 
   calculateWindowDimension() {
@@ -69,13 +71,15 @@ export default class PlayerWindow extends ModalWindow {
       this.titleText.setOrigin(0.5);
       this.statsContainer.add(this.titleText);
 
-      // create inventory stats
-      this.createInventoryStats();
+      // create Equipment stats
+      this.createEquipmentStats();
+      this.createEquipmentButtons();
       this.createEquipmentSlots();
+
     }
   }
 
-  createInventoryStats() {
+  createEquipmentStats() {
     const textOptions = {
       fontSize: "22px",
       fill: "#ffffff",
@@ -133,10 +137,10 @@ export default class PlayerWindow extends ModalWindow {
 
   resize(gameSize) {
     if (gameSize.width < 750) {
-      //this.windowWidth = this.scene.scale.width - 80;
+      this.windowWidth = this.scene.scale.width / 2;
       this.windowHeight = this.scene.scale.height - 80;
     } else {
-      //this.windowWidth = this.scene.scale.width / 2;
+      this.windowWidth = this.scene.scale.width / 5;
       this.windowHeight = this.scene.scale.height * 0.8;
     }
 
@@ -144,6 +148,11 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   hideWindow() {
+    if (this.selectedItem) {
+      this.selectedItem.item.setTint(0xffffff);
+      this.selectedItem = undefined;
+      this.selectedItemNumber = undefined;
+    }
     this.rect.disableInteractive();
     this.statsContainer.setAlpha(0);
     this.graphics.setAlpha(0);
@@ -157,32 +166,83 @@ export default class PlayerWindow extends ModalWindow {
     this.statsContainer.setAlpha(1);
     this.graphics.setAlpha(1);
 
+    // hide inventory items that are not needed
+    for (let i = Object.keys(playerObject.items).length; i < 5; i += 1) {
+      this.hideEquipmentItem(i);
+    }
+
+
     // update player stats
     this.updatePlayerStats(playerObject);
-    this.updateEquipment(playerObject)
+    this.updateEquipment(playerObject);
+  }
+
+  createEquipmentButtons() {
+    this.removeItemButton = this.scene.add
+      .image(
+        this.statsContainer.width / 4 + 200,
+        this.statsContainer.height / 2 + 200,
+        "inventoryRemove",
+        0
+      )
+      .setScale(0.1)
+      .setOrigin(0.5)
+      .setInteractive({ cursor: "pointer" });
+
+    this.statsContainer.add(this.removeItemButton);
+
+    this.removeItemButton.on("pointerdown", () => {
+      this.removeItem(this.selectedItemNumber);
+    });
   }
 
   createEquipmentSlots() {
     for (let x = 0; x < 5; x += 1) {
-      const yPos = 90 * x;
-      const xPos = 90 * x;
+      const yPos = this.statsContainer.height;
+      const xPos = 40 * x;
 
       //create inventory item icon
       this.equipedItems[x] = {};
       this.equipedItems[x].item = this.scene.add
-        .image(xPos + 90, 0, "tools", 0)
+        .image(xPos + 90, this.statsContainer.height / 2 + 300, "tools", 0)
         .setScale(2)
-        .setInteractive();
+        .setInteractive({ cursor: "pointer" });
 
       this.statsContainer.add(this.equipedItems[x].item);
 
       //items button
+      this.equipedItems[x].item.on("pointerdown", () => {
+        this.selectItem(this.equipedItems[x], x);
+      });
+      this.equipedItems[x].item.on("pointerover", () => {
+        this.showItemDescription(this.equipedItems[x]);
+        this.scene.descriptionWindow.showWindow();
+      });
+
+      this.equipedItems[x].item.on("pointerout", () => {
+        this.scene.descriptionWindow.hideWindow();
+      });
     }
   }
 
-  hideInventoryItem(itemNumber) {}
+  hideEquipmentItem(itemNumber) {
+    this.equipedItems[itemNumber].item.setAlpha(0);
+  }
 
-  showInventoryItem(itemNumber) {}
+  showEquipmentItem(itemNumber) {
+    this.equipedItems[itemNumber].item.setAlpha(1);
+  }
+
+  removeItem(itemNumber) {
+    if (itemNumber >= 0) {
+      this.selectedItem.item.setTint(0xffffff);
+      this.selectedItem = undefined;
+      //this.playerObject.dropItem(itemNumber);
+      this.updateEquipment(this.playerObject);
+      this.showWindow(this.playerObject);
+      this.selectedItemNumber = undefined;
+    }
+  }
 
   updatePlayerStats(playerObject) {
     console.log(playerObject);
@@ -195,16 +255,10 @@ export default class PlayerWindow extends ModalWindow {
     // populate equipment items
     const keys = Object.keys(playerObject.equipedItems);
     for (let i = 0; i < keys.length; i += 1) {
-      this.updateInventoryItem(playerObject.equipedItems[keys[i]], i);
-    }
-  }
-
-  updateEquipment(playerObject) {
-    const keys = Object.keys(playerObject.equipedItems);
-    for (let i = 0; i < keys.length; i += 1) {
       this.updateEquipmentItem(playerObject.equipedItems[keys[i]], i);
     }
   }
+
   updateEquipmentItem(item, itemNumber) {
     this.equipedItems[itemNumber].id = item.id;
     this.equipedItems[itemNumber].item.setFrame(item.frame);
@@ -213,7 +267,19 @@ export default class PlayerWindow extends ModalWindow {
     this.equipedItems[itemNumber].defense = item.defenseBonus;
     this.equipedItems[itemNumber].health = item.healthBonus;
 
+    this.showEquipmentItem(itemNumber);
+  }
 
-    this.showInventoryItem(itemNumber);
+  selectItem(item, x) {
+    if (this.selectedItem) {
+      this.selectedItem.item.setTint(0xffffff);
+    }
+    this.selectedItem = item;
+    this.selectedItemNumber = x;
+    this.selectedItem.item.setTint(0xff0000);
+  }
+
+  showItemDescription(item) {
+    this.scene.descriptionWindow.setItemDescription(item);
   }
 }
