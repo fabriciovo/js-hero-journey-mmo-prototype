@@ -41,6 +41,15 @@ var PlayerSchema = new Schema({
   gold: {
     type: Number
   },
+  exp: {
+    type: Number
+  },
+  expMax: {
+    type: Number
+  },
+  level: {
+    type: Number
+  },
   items: {
     type: Object
   },

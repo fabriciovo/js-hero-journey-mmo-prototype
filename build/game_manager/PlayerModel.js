@@ -23,7 +23,10 @@ var PlayerModel = /*#__PURE__*/function () {
     this.playerName = name;
     this.frame = frame;
     this.items = playerSchema.items || {};
-    this.equipedItems = playerSchema.equipedItems || {}; //this.playerItems =  {};
+    this.equipedItems = playerSchema.equipedItems || {};
+    this.level = playerSchema.level;
+    this.exp = playerSchema.exp;
+    this.expMax = playerSchema.expMax; //this.playerItems =  {};
 
     this.maxNumberOfItems = 5;
     this.spawnLocations = spawnLocations;
