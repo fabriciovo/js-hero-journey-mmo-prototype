@@ -49,27 +49,27 @@ export default class UiSceneMobile extends Phaser.Scene {
     console.log(this.game.mobile);
 
     this.moveDown = this.add
-      .image(90, this.scale.height - 50, "inventoryButton")
+      .image(90, this.scale.height - 50, "up")
       .setInteractive();
 
     this.moveUp = this.add
-      .image(90, this.scale.height - 100, "inventoryButton")
+      .image(90, this.scale.height - 100, "down")
       .setInteractive();
 
     this.moveLeft = this.add
-      .image(40, this.scale.height - 75, "inventoryButton")
+      .image(40, this.scale.height - 75, "left")
       .setInteractive();
 
     this.moveRight = this.add
-      .image(140, this.scale.height - 75, "inventoryButton")
+      .image(140, this.scale.height - 75, "right")
       .setInteractive();
 
     this.mobileActionA = this.add
-      .image(this.scale.width * .9, this.scale.height - 50, "inventoryButton")
+      .image(this.scale.width * .9, this.scale.height - 50, "iconset", 3)
       .setInteractive();
 
     this.chatButton = this.add
-      .image(this.scale.width * .7, this.scale.height - 50, "inventoryButton")
+      .image(this.scale.width * .7, this.scale.height - 50, "chatbutton")
       .setInteractive();
 
     this.moveUp.setScale(2);
@@ -131,7 +131,7 @@ export default class UiSceneMobile extends Phaser.Scene {
     this.inventoryButton = this.add
       .image(this.scale.width *.3, this.scale.height - 30, "inventoryButton")
       .setInteractive();
-    this.inventoryButton.setScale(2);
+    this.inventoryButton.setScale(.1);
     this.inventoryButton.on("pointerdown", () => {
       this.toggleInventory(this.gameScene.player, true);
     });
