@@ -230,7 +230,6 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.attackValue = playerObject.attack;
           otherPlayer.defenseValue = playerObject.defense;
           otherPlayer.equipedItems = playerObject.equipedItems;
-          this.uiScene.playerStatsWindow.updatePlayerStats(otherPlayer);
           otherPlayer.updateHealthBar();
         }
       });
