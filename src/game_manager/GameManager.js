@@ -196,15 +196,7 @@ export default class GameManager {
         }
       });
 
-      socket.on("playerDroppedItem", (itemId) => {
-        this.players[socket.id].removeItem(itemId);
-        socket.emit("updateItems", this.players[socket.id]);
-        socket.broadcast.emit(
-          "updatePlayersItems",
-          socket.id,
-          this.players[socket.id]
-        );
-      });
+
 
       socket.on("pickUpItem", (itemId) => {
         // update the spawner
@@ -224,12 +216,45 @@ export default class GameManager {
         }
       });
 
-      socket.on("equipedItem", (itemId) => {
+      socket.on("playerDroppedItem", (itemId) => {
+        this.players[socket.id].removeItem(itemId);
+        socket.emit("updateItems", this.players[socket.id]);
+        socket.broadcast.emit(
+          "updatePlayersItems",
+          socket.id,
+          this.players[socket.id]
+        );
+      });
+
+      socket.on("playerEquipedItem", (itemId) => {
+        console.log(itemId)
+
+        console.log(this.players[socket.id].items[itemId])
         if (this.players[socket.id].items[itemId]) {
           if (this.players[socket.id].canEquipItem()) {
             this.players[socket.id].equipItem(
               this.players[socket.id].items[itemId]
             );
+
+            socket.emit("updateItems", this.players[socket.id]);
+            socket.broadcast.emit(
+              "updatePlayersItems",
+              socket.id,
+              this.players[socket.id]
+            );
+          }
+        }
+      });
+
+      socket.on("playerUnequipedItem", (itemId) => {
+        console.log(this.players[socket.id].equipedItems[itemId])
+        if (this.players[socket.id].equipedItems[itemId]) {
+          if (this.players[socket.id].canPickupItem()) {
+            this.players[socket.id].addItem(
+              this.players[socket.id].equipedItems[itemId]
+            );
+
+            this.players[socket.id].removeEquipedItem(itemId);
 
             socket.emit("updateItems", this.players[socket.id]);
             socket.broadcast.emit(

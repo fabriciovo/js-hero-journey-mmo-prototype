@@ -40,6 +40,7 @@ var PlayerModel = /*#__PURE__*/function () {
   (0, _createClass2["default"])(PlayerModel, [{
     key: "addItem",
     value: function addItem(item) {
+      console.log(item);
       this.items[item.id] = item;
     }
   }, {
