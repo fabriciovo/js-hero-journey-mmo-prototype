@@ -117,7 +117,7 @@ export default class InventoryWindow extends ModalWindow {
       debugger;
       this.selectedItem.item.setTint(0xffffff);
       this.selectedItem = undefined;
-      this.playerObject.dropItem(itemNumber);
+      this.playerObject.dropItem(this.selectedItemNumber);
       this.updateInventory(this.playerObject);
       this.hideWindow();
       this.showWindow(this.playerObject);
@@ -237,7 +237,7 @@ export default class InventoryWindow extends ModalWindow {
       this.inventorySlots[x].item = this.scene.add
         .image(90 + xPos, yPos, "slot", 0)
         .setScale(3)
-        .setInteractive({ cursor: "pointer" });
+        .setInteractive();
       this.itemsContainer.add(this.inventorySlots[x].item);
     }
 
@@ -369,11 +369,11 @@ export default class InventoryWindow extends ModalWindow {
   equipItem() {
     if (this.selectedItem && this.playerObject) {
       this.selectedItem.item.setTint(0xffffff);
-      const id = this.selectedItem.id;
       this.selectedItem = undefined;
+      this.playerObject.equipItem(this.selectedItemNumber);
       this.selectedItemNumber = undefined;
-      this.scene.gameScene.equipedItem(id);
       this.updateInventory(this.playerObject);
+      this.hideWindow();
       this.showWindow(this.playerObject);
     }
   }

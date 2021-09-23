@@ -80,33 +80,52 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.attackText = this.scene.add.text(0, 0, "", {
       fontSize: "14px",
       fill: "#00ff00",
-    });
+      align: 'center',
+    }).setOrigin(0.5);
 
     this.defenseText = this.scene.add.text(0, 0, "", {
       fontSize: "14px",
       fill: "#00ff00",
-    });
+      align: 'center',
+
+    }).setOrigin(0.5);
 
     this.healthText = this.scene.add.text(0, 0, "", {
       fontSize: "14px",
       fill: "#00ff00",
-    });
+      align: 'center',
 
-    
+    }).setOrigin(0.5);
+    this.healthIcon = this.scene.add
+      .image(0, 0, "inventoryHealth")
+      .setOrigin(.5);
+
+    this.swordIcon = this.scene.add.image(0, 0, "inventorySword").setOrigin(.5);
+
+    this.shieldIcon = this.scene.add
+      .image(0, 0, "inventoryShield")
+      .setOrigin(.5);
 
     this.descriptionContainer.add(this.itemsText);
     this.descriptionContainer.add(this.attackText);
     this.descriptionContainer.add(this.healthText);
     this.descriptionContainer.add(this.defenseText);
 
+    this.descriptionContainer.add(this.healthIcon);
+    this.descriptionContainer.add(this.swordIcon);
+    this.descriptionContainer.add(this.shieldIcon);
+
     this.itemsText.setPosition(this.descriptionContainer.width / 2, 20);
     this.attackText.setPosition(this.descriptionContainer.width / 2 - 90, 60);
     this.healthText.setPosition(this.descriptionContainer.width / 2 + 90, 60);
     this.defenseText.setPosition(this.descriptionContainer.width / 2, 60);
+
+    this.healthIcon.setPosition(this.descriptionContainer.width / 2 - 90, 90);
+    this.swordIcon.setPosition(this.descriptionContainer.width / 2 + 90, 90);
+    this.shieldIcon.setPosition(this.descriptionContainer.width / 2, 90);
   }
 
   setItemDescription(item) {
-
     if (item.attack > 0) {
       this.attackText.setFill("#00ff00");
     } else {
@@ -122,7 +141,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
     } else {
       this.healthText.setFill("#ff0000");
     }
-    this.attackText.setText(item.type)
+    this.attackText.setText(item.type);
     this.attackText.setText(item.attack);
     this.defenseText.setText(item.defense);
     this.healthText.setText(item.health);

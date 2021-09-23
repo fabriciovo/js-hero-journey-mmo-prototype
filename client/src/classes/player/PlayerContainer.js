@@ -49,7 +49,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     this.potions = 5;
 
-
     //Mobile
     this.mobileUp = false;
     this.mobileDown = false;
@@ -72,13 +71,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     // create the player
     this.player = new Player(this.scene, 0, 0, key, frame);
     this.add(this.player);
-    console.log(this.player)
+    console.log(this.player);
 
     //Actions
     this.actionAActive = false;
     this.actionBActive = false;
     this.actionCActive = false;
-
 
     // create the weapons game object
     this.actionA = this.scene.add.image(40, 0, "iconset", 2);
@@ -93,7 +91,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.add(this.actionA);
     this.actionA.alpha = 0;
 
-    this.scene.add.existing(this.actionB)
+    this.scene.add.existing(this.actionB);
 
     // create the player healthbar
     this.createHealthBar();
@@ -207,14 +205,14 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       }
 
       if (
-        (Phaser.Input.Keyboard.JustDown(this.actionBButton)) &&
+        Phaser.Input.Keyboard.JustDown(this.actionBButton) &&
         !this.actionBActive
       ) {
         this.actionBFunction();
       }
 
       if (
-        (Phaser.Input.Keyboard.JustDown(this.potionAButton)) &&
+        Phaser.Input.Keyboard.JustDown(this.potionAButton) &&
         !this.potionAActive
       ) {
         this.potionAFunction();
@@ -290,7 +288,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     //this.actionB.attack(this.x, this.y);
     //if (this.mainPlayer) this.attackAudio.play();
     this.actionB.fireBullet(this.x, this.y);
-  } 
+  }
 
   potionAFunction() {
     this.potionAActive = true;
@@ -315,9 +313,39 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.destroy();
   }
 
+  canEquipItem() {
+    if (Object.keys(this.equipedItems).length < 5) {
+      return true;
+    }
+    return false;
+  }
+
+  canUnequipItem() {
+    if (Object.keys(this.items).length < 5) {
+      return true;
+    }
+    return false;
+  }
+
   dropItem(itemNumber) {
     const keys = Object.keys(this.items);
     delete this.items[keys[itemNumber]];
     this.scene.sendDropItemMessage(keys[itemNumber]);
+  }
+
+  equipItem(itemNumber) {
+    if (this.canEquipItem()) {
+      const itemKeys = Object.keys(this.items);
+      delete this.items[itemKeys[itemNumber]];
+      this.scene.sendEquipItemMessage(itemKeys[itemNumber]);
+    }
+  }
+
+  unequipItem(itemNumber) {
+    if (this.canUnequipItem()) {
+      const keys = Object.keys(this.equipedItems);
+      delete this.equipedItems[keys[itemNumber]];
+      this.scene.sendUnequipItemMessage(keys[itemNumber]);
+    }
   }
 }

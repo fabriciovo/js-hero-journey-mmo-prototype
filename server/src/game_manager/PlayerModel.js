@@ -27,6 +27,7 @@ export default class PlayerModel {
   }
 
   addItem(item) {
+    console.log(item)
     this.items[item.id] = item;
   }
 

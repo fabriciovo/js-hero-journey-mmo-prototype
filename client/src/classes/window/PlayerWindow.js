@@ -6,6 +6,7 @@ export default class PlayerWindow extends ModalWindow {
     this.playerObject = {};
     this.mainPlayer = false;
     this.equipedItems = {};
+    this.playerSlots = {};
     this.graphics.setDepth(3);
     this.createWindow();
     this.hideWindow();
@@ -167,7 +168,7 @@ export default class PlayerWindow extends ModalWindow {
     this.graphics.setAlpha(1);
 
     // hide inventory items that are not needed
-    for (let i = Object.keys(playerObject.items).length; i < 5; i += 1) {
+    for (let i = Object.keys(playerObject.equipedItems).length; i < 5; i += 1) {
       this.hideEquipmentItem(i);
     }
 
@@ -197,14 +198,16 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   createEquipmentSlots() {
+
+
     for (let x = 0; x < 5; x += 1) {
-      const yPos = this.statsContainer.height;
-      const xPos = 40 * x;
+      const yPos = this.statsContainer.height / 2 + 300;
+      const xPos = 50 * x;
 
       //create inventory item icon
       this.equipedItems[x] = {};
       this.equipedItems[x].item = this.scene.add
-        .image(xPos + 90, this.statsContainer.height / 2 + 300, "tools", 0)
+        .image(xPos + 90, yPos, "tools", 0)
         .setScale(2)
         .setInteractive({ cursor: "pointer" });
 
@@ -237,7 +240,7 @@ export default class PlayerWindow extends ModalWindow {
     if (itemNumber >= 0) {
       this.selectedItem.item.setTint(0xffffff);
       this.selectedItem = undefined;
-      //this.playerObject.dropItem(itemNumber);
+      this.playerObject.unequipItem(itemNumber);
       this.updateEquipment(this.playerObject);
       this.showWindow(this.playerObject);
       this.selectedItemNumber = undefined;
@@ -249,6 +252,7 @@ export default class PlayerWindow extends ModalWindow {
     this.swordStatText.setText(playerObject.attackValue);
     this.shieldStatText.setText(playerObject.defenseValue);
     this.goldStatText.setText(playerObject.gold);
+    this.updateEquipment(playerObject);
   }
 
   updateEquipment(playerObject) {

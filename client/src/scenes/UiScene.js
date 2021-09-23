@@ -26,10 +26,9 @@ export default class UiScene extends Phaser.Scene {
   }
 
   setupUiElements() {
-
     // create playerStats modal
     this.playerStatsWindow = new PlayerWindow(this, {
-      windowWidth: this.scale.width / 5 ,
+      windowWidth: this.scale.width / 5,
       windowHeight: this.scale.height * 0.3,
       borderAlpha: 1,
       windowAlpha: 0.9,
@@ -62,32 +61,36 @@ export default class UiScene extends Phaser.Scene {
     });
 
     //Create equiped weapons text
-    this.actionAText = this.add.text(80,this.scale.height - 50, "Z",{
-      fontSize: "46px",
-      fill: "#fff",
-    
-    }).setDepth(4);
+    this.actionAText = this.add
+      .text(80, this.scale.height - 50, "Z", {
+        fontSize: "46px",
+        fill: "#fff",
+      })
+      .setDepth(4);
 
-    this.actionBText = this.add.text(180,this.scale.height - 50, "X",{
-      fontSize: "46px",
-      fill: "#fff",
-    
-    }).setDepth(4);
+    this.actionBText = this.add
+      .text(180, this.scale.height - 50, "X", {
+        fontSize: "46px",
+        fill: "#fff",
+      })
+      .setDepth(4);
 
-    this.potionAText = this.add.text(80,this.scale.height - 150, "C",{
-      fontSize: "46px",
-      fill: "#fff",
-    
-    }).setDepth(4);
+    this.potionAText = this.add
+      .text(80, this.scale.height - 150, "C", {
+        fontSize: "46px",
+        fill: "#fff",
+      })
+      .setDepth(4);
 
-    this.potionACountText = this.add.text(120,this.scale.height - 125, "0",{
-      fontSize: "26px",
-      fill: "#fff",
-    
-    }).setDepth(4);
+    this.potionACountText = this.add
+      .text(120, this.scale.height - 125, "0", {
+        fontSize: "26px",
+        fill: "#fff",
+      })
+      .setDepth(4);
 
     //create equiped weapons icons
-    this.actionA = this.add.image(50, this.scale.height - 50, "iconset",2);
+    this.actionA = this.add.image(50, this.scale.height - 50, "iconset", 2);
     this.actionB = this.add.image(150, this.scale.height - 50, "iconset", 16);
 
     this.potionA = this.add.image(50, this.scale.height - 150, "iconset", 64);
@@ -100,10 +103,10 @@ export default class UiScene extends Phaser.Scene {
     this.playerStatsButton = this.add
       .image(this.scale.width / 2 - 90, this.scale.height - 50, "playerstats")
       .setScale(0.1)
-      .setInteractive({ cursor: 'pointer' });
+      .setInteractive({ cursor: "pointer" });
 
     this.playerStatsButton.on("pointerdown", () => {
-      console.log("playerStatsButton", this.gameScene.player)
+      console.log("playerStatsButton", this.gameScene.player);
       this.togglePlayerStats(this.gameScene.player);
     });
 
@@ -115,10 +118,10 @@ export default class UiScene extends Phaser.Scene {
         "inventoryButton"
       )
       .setScale(0.1)
-      .setInteractive({ cursor: 'pointer' });
+      .setInteractive({ cursor: "pointer" });
 
     this.inventoryButton.on("pointerdown", () => {
-      console.log("inventoryButton", this.gameScene.player)
+      console.log("inventoryButton", this.gameScene.player);
 
       this.toggleInventory(this.gameScene.player);
     });
@@ -133,31 +136,29 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.inventoryWindow.inventoryItems[3].item) &&
         !gameObjects.includes(this.inventoryWindow.inventoryItems[4].item) &&
         !gameObjects.includes(this.inventoryWindow.discardButton) &&
-        !gameObjects.includes(this.inventoryWindow.equipButton) &&
+        !gameObjects.includes(this.inventoryWindow.equipButton) && 
         !gameObjects.includes(this.playerStatsWindow.rect) &&
+        !gameObjects.includes(this.playerStatsWindow.removeItemButton) &&
         !gameObjects.includes(this.playerStatsButton) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[0].item) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[1].item) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[2].item) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[3].item) &&
-        !gameObjects.includes(this.playerStatsWindow.equipedItems[4].item) 
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[4].item)
       ) {
         this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();
         this.showInventory = false;
-        
+
         this.playerStatsWindow.hideWindow();
         this.showPlayerStats = false;
-        
       }
     });
   }
 
   setupEvents() {
     // listen for the updateScore event from the game scene
-    this.gameScene.events.on("updateScore", (score) => {
-      
-    });
+    this.gameScene.events.on("updateScore", (score) => {});
 
     this.gameScene.events.on("showInventory", (playerObject, mainPlayer) => {
       this.toggleInventory(playerObject, mainPlayer);
@@ -168,7 +169,6 @@ export default class UiScene extends Phaser.Scene {
     if (this.inventoryWindow) this.inventoryWindow.resize(gameSize);
     if (this.playerStatsWindow) this.playerStatsWindow.resize(gameSize);
     if (this.descriptionWindow) this.descriptionWindow.resize(gameSize);
-
 
     if (gameSize.width < 560) {
       this.inventoryButton.x = gameSize.width - 350;

@@ -331,7 +331,7 @@ export default class GameScene extends Phaser.Scene {
           actionBActive,
           potionAActive,
           currentDirection,
-          level
+          level,
         });
       }
       // save old position data
@@ -343,7 +343,7 @@ export default class GameScene extends Phaser.Scene {
         actionAActive: this.player.actionAActive,
         actionBActive: this.player.actionBActive,
         potionAActive: this.player.potionAActive,
-        level: this.player.level
+        level: this.player.level,
       };
     }
   }
@@ -496,13 +496,6 @@ export default class GameScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
-  equipedItem(itemId) {
-    // item pickup
-    debugger;
-
-    this.socket.emit("equipedItem", itemId);
-  }
-
   addCollisions() {
     // check for collisions between the player and the tiled blocked layer
     this.physics.add.collider(this.player, this.gameMap.blockedLayer);
@@ -606,10 +599,34 @@ export default class GameScene extends Phaser.Scene {
 
   sendDropItemMessage(itemId) {
     this.socket.emit("playerDroppedItem", itemId);
-    debugger
-    this.uiScene.inventoryWindow.updateEquipment(this.player)
+    this.uiScene.inventoryWindow.updateInventory(this.player);
     this.uiScene.inventoryWindow.hideWindow();
-    this.uiScene.inventoryWindow.showWindow(this.playerObject)
+    this.uiScene.inventoryWindow.showWindow(this.player);
+  }
+
+  sendEquipItemMessage(itemId) {
+    this.socket.emit("playerEquipedItem", itemId);
+    debugger;
+    this.uiScene.inventoryWindow.updateInventory(this.player);
+    this.uiScene.inventoryWindow.hideWindow();
+    this.uiScene.inventoryWindow.showWindow(this.player);
+
+    this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
+    this.uiScene.playerStatsWindow.hideWindow();
+    this.uiScene.playerStatsWindow.showWindow(this.player);
+  }
+
+  sendUnequipItemMessage(itemId) {
+    this.socket.emit("playerUnequipedItem", itemId);
+    debugger;
+    
+    this.uiScene.inventoryWindow.updateInventory(this.player);
+    this.uiScene.inventoryWindow.hideWindow();
+    this.uiScene.inventoryWindow.showWindow(this.player);
+
+    this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
+    this.uiScene.playerStatsWindow.hideWindow();
+    this.uiScene.playerStatsWindow.showWindow(this.player);
   }
 
   createMap() {

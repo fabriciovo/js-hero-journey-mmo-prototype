@@ -285,12 +285,6 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
-        socket.on("playerDroppedItem", function (itemId) {
-          _this2.players[socket.id].removeItem(itemId);
-
-          socket.emit("updateItems", _this2.players[socket.id]);
-          socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
-        });
         socket.on("pickUpItem", function (itemId) {
           // update the spawner
           if (_this2.items[itemId]) {
@@ -304,10 +298,33 @@ var GameManager = /*#__PURE__*/function () {
             }
           }
         });
-        socket.on("equipedItem", function (itemId) {
+        socket.on("playerDroppedItem", function (itemId) {
+          _this2.players[socket.id].removeItem(itemId);
+
+          socket.emit("updateItems", _this2.players[socket.id]);
+          socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
+        });
+        socket.on("playerEquipedItem", function (itemId) {
+          console.log(itemId);
+          console.log(_this2.players[socket.id].items[itemId]);
+
           if (_this2.players[socket.id].items[itemId]) {
             if (_this2.players[socket.id].canEquipItem()) {
               _this2.players[socket.id].equipItem(_this2.players[socket.id].items[itemId]);
+
+              socket.emit("updateItems", _this2.players[socket.id]);
+              socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
+            }
+          }
+        });
+        socket.on("playerUnequipedItem", function (itemId) {
+          console.log(_this2.players[socket.id].equipedItems[itemId]);
+
+          if (_this2.players[socket.id].equipedItems[itemId]) {
+            if (_this2.players[socket.id].canPickupItem()) {
+              _this2.players[socket.id].addItem(_this2.players[socket.id].equipedItems[itemId]);
+
+              _this2.players[socket.id].removeEquipedItem(itemId);
 
               socket.emit("updateItems", _this2.players[socket.id]);
               socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
