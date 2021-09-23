@@ -5,7 +5,6 @@ export default class InventoryWindow extends ModalWindow {
     super(scene, opts);
 
     this.playerObject = {};
-    this.mainPlayer = false;
     this.inventoryItems = {};
     this.inventorySlots = {};
     this.graphics.setDepth(3);
@@ -289,7 +288,6 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   showWindow(playerObject) {
-    this.mainPlayer = true;
     this.playerObject = playerObject;
     this.rect.setInteractive();
     this.inventoryContainer.setAlpha(1);
