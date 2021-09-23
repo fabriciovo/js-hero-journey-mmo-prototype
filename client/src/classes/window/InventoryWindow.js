@@ -114,14 +114,11 @@ export default class InventoryWindow extends ModalWindow {
 
   removeItem(itemNumber) {
     if (itemNumber >= 0) {
-      debugger;
-      this.selectedItem.item.setTint(0xffffff);
-      this.selectedItem = undefined;
       this.playerObject.dropItem(this.selectedItemNumber);
       this.updateInventory(this.playerObject);
       this.hideWindow();
       this.showWindow(this.playerObject);
-      this.selectedItemNumber = undefined;
+      this.unselectedItem();
     }
   }
 
@@ -284,11 +281,8 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   hideWindow() {
-    if (this.selectedItem) {
-      this.selectedItem.item.setTint(0xffffff);
-      this.selectedItem = undefined;
-      this.selectedItemNumber = undefined;
-    }
+    this.unselectedItem();
+
     this.rect.disableInteractive();
     this.inventoryContainer.setAlpha(0);
     this.graphics.setAlpha(0);
@@ -355,23 +349,35 @@ export default class InventoryWindow extends ModalWindow {
     }
     this.selectedItem = item;
     this.selectedItemNumber = x;
-    console.log(this.selectedItemNumber);
     this.selectedItem.item.setTint(0xff0000);
+    this.showItemButtons();
   }
 
-  showItemButtons() {
+  unselectedItem() {
     if (this.selectedItem) {
+      this.selectedItem.item.setTint(0xffffff);
+      this.selectedItem = undefined;
+      this.selectedItemNumber = undefined;
+      this.hideItemButtons();
     }
   }
 
-  hideItemButtons() {}
+  hideItemButtons() {
+    if (!this.selectedItem) {
+      this.equipButton.disableInteractive();
+      this.equipButton.setAlpha(0);
+    }
+  }
+
+  showItemButtons() {
+    this.equipButton.setInteractive({ cursor: "pointer" });
+    this.equipButton.setAlpha(1);
+  }
 
   equipItem() {
     if (this.selectedItem && this.playerObject) {
-      this.selectedItem.item.setTint(0xffffff);
-      this.selectedItem = undefined;
       this.playerObject.equipItem(this.selectedItemNumber);
-      this.selectedItemNumber = undefined;
+      this.unselectedItem();
       this.updateInventory(this.playerObject);
       this.hideWindow();
       this.showWindow(this.playerObject);
@@ -416,11 +422,13 @@ export default class InventoryWindow extends ModalWindow {
     this.equipButton.on("pointerdown", () => {
       this.equipItem();
     });
+
+    this.hideItemButtons();
   }
 
   updateInventory(playerObject) {
     // populate inventory items
-    debugger
+    debugger;
     const keys = Object.keys(playerObject.items);
     for (let i = 0; i < keys.length; i += 1) {
       this.updateInventoryItem(playerObject.items[keys[i]], i);
