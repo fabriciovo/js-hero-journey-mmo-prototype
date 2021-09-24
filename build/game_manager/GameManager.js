@@ -353,7 +353,7 @@ var GameManager = /*#__PURE__*/function () {
               _this2.players[socket.id].updateGold(gold);
 
               socket.emit("updateScore", _this2.players[socket.id].gold);
-              socket.emit("updateXp", _this2.players[socket.id].exp); //socket.emit("dropItem", item);
+              socket.emit("updateXp", 20, socket.id); //socket.emit("dropItem", item);
               // removing the monster
 
               _this2.spawners[_this2.monsters[monsterId].spawnerId].removeObject(monsterId);
