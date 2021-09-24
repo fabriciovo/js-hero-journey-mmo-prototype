@@ -138,6 +138,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   
   updateExp(exp){
     this.exp += exp;
+    console.log(this.exp)
   }
 
   updateLevel(level){

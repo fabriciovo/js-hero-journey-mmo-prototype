@@ -138,9 +138,11 @@ export default class GameScene extends Phaser.Scene {
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     });
 
-    this.socket.on("updateXp", (playerId, exp) => {
-
+    this.socket.on("updateXp", (exp,playerId) => {
+      console.log(playerId,exp)
+      debugger
       if (this.player.id === playerId) {
+        debugger
         this.player.updateExp(exp);
         if (this.player.exp > this.player.expMax) {
           this.events.emit("levelUp");
@@ -420,6 +422,8 @@ export default class GameScene extends Phaser.Scene {
     newPlayerObject.on("pointerdown", () => {
       this.events.emit("showInventory", newPlayerObject, mainPlayer);
     });
+    this.uiScene.createPlayerBars(newPlayerObject);
+
   }
 
   createGroups() {

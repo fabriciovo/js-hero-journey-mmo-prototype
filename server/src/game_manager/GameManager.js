@@ -285,7 +285,9 @@ export default class GameManager {
             // updating the players gold
             this.players[socket.id].updateGold(gold);
             socket.emit("updateScore", this.players[socket.id].gold);
-            socket.emit("updateXp", 20, socket.id);
+            this.players[socket.id].updateExp(15);
+
+            this.io.emit("updateXp", 15, socket.id);
             //socket.emit("dropItem", item);
 
             // removing the monster

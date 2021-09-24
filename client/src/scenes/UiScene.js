@@ -154,8 +154,6 @@ export default class UiScene extends Phaser.Scene {
         this.showPlayerStats = false;
       }
     });
-
-
   }
 
   setupEvents() {
@@ -166,12 +164,6 @@ export default class UiScene extends Phaser.Scene {
 
     this.gameScene.events.on("showInventory", (playerObject, mainPlayer) => {
       this.toggleInventory(playerObject, mainPlayer);
-    });
-
-    this.gameScene.events.on("newPlayer", () => {
-      debugger
-        this.createPlayerBars(this.gameScene.player);
-      
     });
   }
 
@@ -198,21 +190,24 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerBars(playerObject) {
-    playerObject.expBar.clear();
-    playerObject.expBar.fillStyle(0xffffff, 1);
-    playerObject.expBar.fillRect(
+    debugger;
+    this.expBar = this.add.graphics();
+    this.expBar.clear();
+    this.expBar.fillStyle(0xffffff, 1);
+    this.expBar.fillRect(
       this.scale.width / 2,
       this.scale.height / 2,
       64,
       5
     );
-    playerObject.expBar.fillGradientStyle(0xff0000, 0xffffff, 4);
-    playerObject.expBar.fillRect(
-      this.x - 32,
-      this.y - 40,
-      64 * (this.exp / this.expMax),
+    this.expBar.fillGradientStyle(0xff0000, 0xffffff, 4);
+    this.expBar.fillRect(
+      this.scale.width / 2,
+      this.scale.height / 2,
+      64 * (playerObject.exp / playerObject.expMax),
       5
     );
+
   }
 
   updatePlayerBars() {}

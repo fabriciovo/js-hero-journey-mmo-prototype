@@ -99,10 +99,24 @@ var PlayerModel = /*#__PURE__*/function () {
       this.gold += gold;
     }
   }, {
+    key: "updateExp",
+    value: function updateExp(exp) {
+      this.exp += exp;
+
+      if (this.exp > this.expMax) {
+        this.level++;
+        this.exp = 0;
+      }
+    }
+  }, {
     key: "updateHealth",
-    value: function updateHealth(health) {
-      this.health += health;
-      if (this.health > this.maxHealth) this.health = this.maxHealth;
+    value: function updateHealth(exp) {
+      this.exp += exp;
+
+      if (this.exp > this.expMax) {
+        this.level++;
+        this.exp = 0;
+      }
     }
   }, {
     key: "respawn",

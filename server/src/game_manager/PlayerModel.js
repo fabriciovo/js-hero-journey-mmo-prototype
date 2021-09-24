@@ -27,7 +27,7 @@ export default class PlayerModel {
   }
 
   addItem(item) {
-    console.log(item)
+    console.log(item);
     this.items[item.id] = item;
   }
 
@@ -79,9 +79,25 @@ export default class PlayerModel {
     this.gold += gold;
   }
 
+  updateExp(exp) {
+    this.exp += exp;
+    if (this.exp > this.expMax) {
+      this.level++;
+      this.exp = 0;
+    }
+  }
+
   updateHealth(health) {
     this.health += health;
     if (this.health > this.maxHealth) this.health = this.maxHealth;
+  }
+
+  updateHealth(exp) {
+    this.exp += exp;
+    if (this.exp > this.expMax) {
+      this.level++;
+      this.exp = 0;
+    }
   }
 
   respawn(players) {
