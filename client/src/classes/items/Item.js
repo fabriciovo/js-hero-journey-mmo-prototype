@@ -5,7 +5,7 @@ export default class Item extends Phaser.Physics.Arcade.Image {
     super(scene, x, y, key, frame);
     this.scene = scene; // the scene this game object will be added to
     this.id = id;
-    debugger
+    
     // enable physics
     this.scene.physics.world.enable(this);
     // add the player to our existing scene

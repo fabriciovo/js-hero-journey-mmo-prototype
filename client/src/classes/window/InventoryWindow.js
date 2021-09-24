@@ -426,7 +426,6 @@ export default class InventoryWindow extends ModalWindow {
 
   updateInventory(playerObject) {
     // populate inventory items
-    debugger;
     const keys = Object.keys(playerObject.items);
     for (let i = 0; i < keys.length; i += 1) {
       this.updateInventoryItem(playerObject.items[keys[i]], i);

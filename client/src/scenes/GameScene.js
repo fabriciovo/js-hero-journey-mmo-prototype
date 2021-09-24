@@ -138,6 +138,24 @@ export default class GameScene extends Phaser.Scene {
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     });
 
+    this.socket.on("updateXp", (playerId, exp) => {
+
+      if (this.player.id === playerId) {
+        this.player.updateExp(exp);
+        if (this.player.exp > this.player.expMax) {
+          this.events.emit("levelUp");
+        }
+      } 
+
+
+    });
+
+    this.socket.on("levelUp", () => {
+      const calcNewExp = this.player.exp - this.player.expMax;
+      this.player.expMax = this.player.expMax * 2;
+      this.player.exp = calcNewExp;
+    });
+
     this.socket.on("updatePlayersScore", (playerId, goldAmount) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
         if (playerId === otherPlayer.id) {
@@ -604,7 +622,6 @@ export default class GameScene extends Phaser.Scene {
 
   sendEquipItemMessage(itemId) {
     this.socket.emit("playerEquipedItem", itemId);
-    debugger;
     this.uiScene.inventoryWindow.updateInventory(this.player);
     this.uiScene.inventoryWindow.hideWindow();
     this.uiScene.inventoryWindow.showWindow(this.player);
@@ -616,8 +633,7 @@ export default class GameScene extends Phaser.Scene {
 
   sendUnequipItemMessage(itemId) {
     this.socket.emit("playerUnequipedItem", itemId);
-    debugger;
-    
+
     this.uiScene.inventoryWindow.updateInventory(this.player);
     this.uiScene.inventoryWindow.hideWindow();
     this.uiScene.inventoryWindow.showWindow(this.player);

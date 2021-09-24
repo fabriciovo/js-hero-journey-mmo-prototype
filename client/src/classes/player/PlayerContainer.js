@@ -94,7 +94,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.scene.add.existing(this.actionB);
 
     // create the player healthbar
-    this.createHealthBar();
+    this.createPlayerBars();
 
     this.createPlayerName();
 
@@ -110,9 +110,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.potionAButton = this.scene.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.C
     );
+
+
   }
 
-  createHealthBar() {
+  createPlayerBars() {
+    this.expBar = this.scene.add.graphics();
     this.healthBar = this.scene.add.graphics();
     this.updateHealthBar();
   }
@@ -132,19 +135,20 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   updatePlayerName() {
     this.playerNameText.setPosition(this.x - 32, this.y - 60);
   }
-
-  updateHealthBar() {
-    this.healthBar.clear();
-    this.healthBar.fillStyle(0xffffff, 1);
-    this.healthBar.fillRect(this.x - 32, this.y - 40, 64, 5);
-    this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
-    this.healthBar.fillRect(
-      this.x - 32,
-      this.y - 40,
-      64 * (this.health / this.maxHealth),
-      5
-    );
+  
+  updateExp(exp){
+    this.exp += exp;
   }
+
+  updateLevel(level){
+    this.level = level;
+  }
+
+  updateExpMax(expMax){
+    this.expMax = expMax;
+  }
+
+
 
   updateHealthBar() {
     this.healthBar.clear();

@@ -136,7 +136,7 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.inventoryWindow.inventoryItems[3].item) &&
         !gameObjects.includes(this.inventoryWindow.inventoryItems[4].item) &&
         !gameObjects.includes(this.inventoryWindow.discardButton) &&
-        !gameObjects.includes(this.inventoryWindow.equipButton) && 
+        !gameObjects.includes(this.inventoryWindow.equipButton) &&
         !gameObjects.includes(this.playerStatsWindow.rect) &&
         !gameObjects.includes(this.playerStatsWindow.removeItemButton) &&
         !gameObjects.includes(this.playerStatsButton) &&
@@ -154,32 +154,25 @@ export default class UiScene extends Phaser.Scene {
         this.showPlayerStats = false;
       }
     });
+
+
   }
 
   setupEvents() {
     // listen for the updateScore event from the game scene
     this.gameScene.events.on("updateScore", (score) => {});
 
+    this.gameScene.events.on("updateXp", (score) => {});
+
     this.gameScene.events.on("showInventory", (playerObject, mainPlayer) => {
       this.toggleInventory(playerObject, mainPlayer);
     });
-  }
 
-  resize(gameSize) {
-    if (this.inventoryWindow) this.inventoryWindow.resize(gameSize);
-    if (this.playerStatsWindow) this.playerStatsWindow.resize(gameSize);
-    if (this.descriptionWindow) this.descriptionWindow.resize(gameSize);
-
-    if (gameSize.width < 560) {
-      this.inventoryButton.x = gameSize.width - 350;
-      this.playerStatsButton.x = gameSize.width - 450;
-    } else if (gameSize.width <= 560) {
-      this.inventoryButton.x = gameSize.width - 350;
-      this.playerStatsButton.x = gameSize.width - 450;
-    } else {
-      this.inventoryButton.x = gameSize.width - 350;
-      this.playerStatsButton.x = gameSize.width - 450;
-    }
+    this.gameScene.events.on("newPlayer", () => {
+      debugger
+        this.createPlayerBars(this.gameScene.player);
+      
+    });
   }
 
   toggleInventory(playerObject) {
@@ -201,6 +194,43 @@ export default class UiScene extends Phaser.Scene {
     } else {
       this.gameScene.dialogWindow.rect.setInteractive();
       this.playerStatsWindow.hideWindow();
+    }
+  }
+
+  createPlayerBars(playerObject) {
+    playerObject.expBar.clear();
+    playerObject.expBar.fillStyle(0xffffff, 1);
+    playerObject.expBar.fillRect(
+      this.scale.width / 2,
+      this.scale.height / 2,
+      64,
+      5
+    );
+    playerObject.expBar.fillGradientStyle(0xff0000, 0xffffff, 4);
+    playerObject.expBar.fillRect(
+      this.x - 32,
+      this.y - 40,
+      64 * (this.exp / this.expMax),
+      5
+    );
+  }
+
+  updatePlayerBars() {}
+
+  resize(gameSize) {
+    if (this.inventoryWindow) this.inventoryWindow.resize(gameSize);
+    if (this.playerStatsWindow) this.playerStatsWindow.resize(gameSize);
+    if (this.descriptionWindow) this.descriptionWindow.resize(gameSize);
+
+    if (gameSize.width < 560) {
+      this.inventoryButton.x = gameSize.width - 350;
+      this.playerStatsButton.x = gameSize.width - 450;
+    } else if (gameSize.width <= 560) {
+      this.inventoryButton.x = gameSize.width - 350;
+      this.playerStatsButton.x = gameSize.width - 450;
+    } else {
+      this.inventoryButton.x = gameSize.width - 350;
+      this.playerStatsButton.x = gameSize.width - 450;
     }
   }
 }
