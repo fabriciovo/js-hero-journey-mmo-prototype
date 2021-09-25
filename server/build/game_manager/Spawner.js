@@ -91,9 +91,9 @@ var Spawner = /*#__PURE__*/function () {
     key: "spawnMonster",
     value: function spawnMonster() {
       var location = this.pickRandomLocation();
-      var monster = new _MonsterModel["default"](location[0], location[1], (0, _utils.randomNumber)(10, 20), this.id, (0, _utils.randomNumber)(0, 20), // frame value
-      (0, _utils.randomNumber)(100, 150), // health value
-      (0, _utils.randomNumber)(10, 20) // attack value
+      var monster = new _MonsterModel["default"](location[0], location[1], (0, _utils.randomNumber)(10, 120), this.id, (0, _utils.randomNumber)(0, 20), // frame value
+      (0, _utils.randomNumber)(10, 120), // health value
+      (0, _utils.randomNumber)(10, 120) // attack value
       );
       this.objectsCreated.push(monster);
       this.addObject(monster.id, monster);

@@ -79,21 +79,11 @@ export default class GameScene extends Phaser.Scene {
           if (player.potionAActive) {
             otherPlayer.potionAFunction();
           }
+          debugger;
+          otherPlayer.playAnimation();
         }
       });
     });
-
-
-    this.socket.on("updateRangedAttack", (rangedObject) => {
-      console.log("on updateRangedAttack")
-
-      this.rangedObjects.getChildren().forEach((rangedObjectData) => {
-        if (player.id === rangedObjectData.id) {
-          rangedObjectData.setPosition(rangedObject.x, rangedObject.y);
-        }
-      });
-    });
-
 
     this.socket.on("chestSpawned", (chest) => {
       this.spawnChest(chest);
@@ -125,16 +115,6 @@ export default class GameScene extends Phaser.Scene {
         Object.keys(monsters).forEach((monsterId) => {
           if (monster.id === monsterId) {
             this.physics.moveToObject(monster, monsters[monsterId], 40);
-          }
-        });
-      });
-    });
-
-    this.socket.on("rangedAttackMovement", (rangedObjects) => {
-      this.rangedObjects.getChildren().forEach((rangedObject) => {
-        Object.keys(rangedObjects).forEach((rangedObjectId) => {
-          if (rangedObject.id === rangedObjectId) {
-            console.log("rangedAttackMovement")
           }
         });
       });
@@ -177,9 +157,7 @@ export default class GameScene extends Phaser.Scene {
           this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
 
           this.player.updateHealthBar();
-
         }
-
       }
     );
 
@@ -207,7 +185,6 @@ export default class GameScene extends Phaser.Scene {
         }
         this.player.updateHealth(health);
         this.uiScene.updatePlayerHealthBar(this.player);
-
       } else {
         this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerId) {
@@ -279,7 +256,6 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.defenseValue = playerObject.defense;
           otherPlayer.equipedItems = playerObject.equipedItems;
           otherPlayer.updateHealthBar();
-          //this.otherPlayer.playAnimation();
         }
       });
     });
@@ -445,13 +421,13 @@ export default class GameScene extends Phaser.Scene {
       this.otherPlayers.add(newPlayerObject);
     } else {
       this.player = newPlayerObject;
+      this.uiScene.createPlayersStatsUi(this.player);
     }
 
     newPlayerObject.setInteractive();
     newPlayerObject.on("pointerdown", () => {
       this.events.emit("showInventory", newPlayerObject, mainPlayer);
     });
-    this.uiScene.createPlayersStatsUi(newPlayerObject);
   }
 
   createGroups() {
@@ -547,6 +523,9 @@ export default class GameScene extends Phaser.Scene {
   addCollisions() {
     // check for collisions between the player and the tiled blocked layer
     this.physics.add.collider(this.player, this.gameMap.blockedLayer);
+
+    this.physics.add.collider(this.rangedObjects, this.gameMap.blockedLayer);
+
     // check for overlaps between player and chest game objects
     this.physics.add.overlap(
       this.player,
@@ -565,17 +544,27 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     );
-    // check for collision betwen the player and other players
-    /*this.physics.add.collider(
-      this.otherPlayers,
-      this.player,
-      this.pvpCollider,
-      false,
-      this
-    );*/
+
     // check for overlaps between the player's weapon and other player game objects
     this.physics.add.overlap(
       this.player.actionA,
+      this.otherPlayers,
+      this.weaponOverlapEnemy,
+      false,
+      this
+    );
+
+    this.physics.add.overlap(
+      this.player.actionB,
+      this.monsters,
+      this.enemyOverlap,
+      null,
+      this
+    );
+
+    // check for overlaps between the player's weapon and other player game objects
+    this.physics.add.overlap(
+      this.player.actionB,
       this.otherPlayers,
       this.weaponOverlapEnemy,
       false,
@@ -608,29 +597,52 @@ export default class GameScene extends Phaser.Scene {
     );
   }
 
-  rangedOverlapEnemy(player, enemyPlayer) {
-    console.log("asdasd")
+  rangedOverlapWalls(ranged, blocked) {
     if (this.player.actionBActive && !this.player.hitbox) {
+      this.player.hitbox = true;
+      console.log(ranged);
+      ranged.makeInactive();
+    }
+  }
+
+  rangedOverlapEnemy(player, enemyPlayer) {
+    if (
+      (this.player.actionAActive || this.player.actionBActive) &&
+      !this.player.hitbox
+    ) {
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
   }
 
-  pvpCollider(player, otherPlayer) {
-    this.player.body.setVelocity(0);
-    otherPlayer.body.setVelocity(0);
-  }
-
   weaponOverlapEnemy(player, enemyPlayer) {
-    if (this.player.actionAActive && !this.player.hitbox) {
+    if (
+      (this.player.actionAActive || this.player.actionBActive) &&
+      !this.player.hitbox
+    ) {
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
   }
   enemyOverlap(weapon, enemy) {
-    if (this.player.actionAActive && !this.player.hitbox) {
+    if (
+      (this.player.actionAActive || this.player.actionBActive) &&
+      !this.player.hitbox
+    ) {
       this.player.hitbox = true;
-      this.socket.emit("monsterAttacked", enemy.id);
+      const dis = Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        enemy.x,
+        enemy.y
+      );
+
+      if(this.player.actionB){
+        this.player.actionB.makeInactive();
+      }
+
+      this.socket.emit("monsterAttacked", enemy.id, dis);
+      
     }
   }
 

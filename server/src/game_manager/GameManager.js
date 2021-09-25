@@ -16,7 +16,6 @@ export default class GameManager {
     this.chests = {};
     this.monsters = {};
     this.players = {};
-    this.rangedObjects = {};
     this.items = {};
 
     this.playerLocations = [];
@@ -179,18 +178,6 @@ export default class GameManager {
         }
       });
 
-
-      socket.on("rangedAttackMovement", (rangedObject) => {
-        console.log("on rangedAttackMovement")
-        if (this.rangedObjects[socket.id]) {
-          this.rangedObjects[socket.id].x = rangedObject.x;
-          this.rangedObjects[socket.id].y = rangedObject.y;
-          // emit a message to all players about the player that moved
-          this.io.emit("updateRangedAttack", this.rangedObjects[socket.id]);
-        }
-      });
-
-
       socket.on("pickUpChest", (chestId) => {
         // update the spawner
         if (this.chests[chestId]) {
@@ -288,78 +275,7 @@ export default class GameManager {
           this.players[socket.id].maxHealth,
           this.players[socket.id].exp,
           this.players[socket.id].maxExp
-
         );
-      });
-
-      socket.on("updatePlayerExp", (playerId) => {
-        console.log("updatePlayerExp");
-      });
-
-      socket.on("monsterAttacked", (monsterId) => {
-        // update the spawner
-        if (this.monsters[monsterId]) {
-          const { gold, attack } = this.monsters[monsterId];
-          const playerAttackValue = this.players[socket.id].attack;
-
-          // subtract health monster model
-          this.monsters[monsterId].loseHealth(playerAttackValue);
-
-          // check the monsters health, and if dead remove that object
-          if (this.monsters[monsterId].health <= 0) {
-            // updating the players gold
-            this.players[socket.id].updateGold(gold);
-            socket.emit("updateScore", this.players[socket.id].gold);
-
-            //socket.emit("dropItem", item);
-
-            // removing the monster
-            this.spawners[this.monsters[monsterId].spawnerId].removeObject(
-              monsterId
-            );
-            this.io.emit("monsterRemoved", monsterId);
-            // add bonus health to the player
-            this.players[socket.id].updateHealth(15);
-            this.io.emit(
-              "updatePlayerHealth",
-              socket.id,
-              this.players[socket.id].health
-            );
-
-            //update xp
-            this.players[socket.id].updateExp(50);
-            this.io.emit("updateXp", 50, socket.id);
-          } else {
-            // update the players health
-            this.players[socket.id].playerAttacked(attack);
-            console.log("attacked");
-            this.io.emit(
-              "updatePlayerHealth",
-              socket.id,
-              this.players[socket.id].health
-            );
-
-            // update the monsters health
-            this.io.emit(
-              "updateMonsterHealth",
-              monsterId,
-              this.monsters[monsterId].health
-            );
-
-            // check the player's health, if below 0 have the player respawn
-            if (this.players[socket.id].health <= 0) {
-              // update the gold the player has
-              this.players[socket.id].updateGold(
-                parseInt(-this.players[socket.id].gold / 2, 10)
-              );
-              socket.emit("updateScore", this.players[socket.id].gold);
-
-              // respawn the player
-              this.players[socket.id].respawn(this.players);
-              this.io.emit("respawnPlayer", this.players[socket.id]);
-            }
-          }
-        }
       });
 
       socket.on("attackedPlayer", (attackedPlayerId) => {
@@ -403,6 +319,78 @@ export default class GameManager {
               this.players[attackedPlayerId].health
             );
           }
+        }
+      });
+
+      socket.on("monsterAttacked", (monsterId) => {
+        // update the spawner
+        if (this.monsters[monsterId]) {
+          const { gold, attack, exp } = this.monsters[monsterId];
+          const playerAttackValue = this.players[socket.id].attack;
+
+          // subtract health monster model
+          this.monsters[monsterId].loseHealth(playerAttackValue);
+
+          // check the monsters health, and if dead remove that object
+          if (this.monsters[monsterId].health <= 0) {
+            // updating the players gold
+            this.players[socket.id].updateGold(gold);
+            socket.emit("updateScore", this.players[socket.id].gold);
+
+            //socket.emit("dropItem", item);
+
+            // removing the monster
+            this.spawners[this.monsters[monsterId].spawnerId].removeObject(
+              monsterId
+            );
+            this.io.emit("monsterRemoved", monsterId);
+            // add bonus health to the player
+            this.players[socket.id].updateHealth(15);
+            this.io.emit(
+              "updatePlayerHealth",
+              socket.id,
+              this.players[socket.id].health
+            );
+
+            //update xp
+            this.players[socket.id].updateExp(exp);
+            this.io.emit("updateXp", exp, socket.id);
+          } else {
+            // update the monsters health
+            this.io.emit(
+              "updateMonsterHealth",
+              monsterId,
+              this.monsters[monsterId].health
+            );
+            if (dis < 90) {
+              socket.emit("playerHit", attack);
+            } 
+          }
+        }
+      });
+
+      socket.on("playerHit", (damage) => {
+        console.log("playerHit");
+        // update the players health
+        this.players[socket.id].playerAttacked(damage);
+        console.log("attacked");
+        this.io.emit(
+          "updatePlayerHealth",
+          socket.id,
+          this.players[socket.id].health
+        );
+
+        // check the player's health, if below 0 have the player respawn
+        if (this.players[socket.id].health <= 0) {
+          // update the gold the player has
+          this.players[socket.id].updateGold(
+            parseInt(-this.players[socket.id].gold / 2, 10)
+          );
+          socket.emit("updateScore", this.players[socket.id].gold);
+
+          // respawn the player
+          this.players[socket.id].respawn(this.players);
+          this.io.emit("respawnPlayer", this.players[socket.id]);
         }
       });
 

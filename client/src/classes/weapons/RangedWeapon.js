@@ -26,4 +26,6 @@ export default class RangedWeapon extends Phaser.Physics.Arcade.Image {
     this.setVisible(false);
     this.body.checkCollision.none = true;
   }
+
+  
 }

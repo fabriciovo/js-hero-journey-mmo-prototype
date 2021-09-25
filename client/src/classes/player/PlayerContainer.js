@@ -218,14 +218,14 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
       if (
         Phaser.Input.Keyboard.JustDown(this.actionBButton) &&
-        !this.actionBActive
+        !this.actionBActive && !this.actionAActive
       ) {
         this.actionBFunction();
       }
 
       if (
         Phaser.Input.Keyboard.JustDown(this.potionAButton) &&
-        !this.potionAActive
+        !this.potionAActive && !this.actionAActive && !this.actionBActive
       ) {
         this.potionAFunction();
       }
@@ -233,16 +233,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     if (this.currentDirection === Direction.UP) {
       this.actionA.setPosition(0, -40);
-      this.player.playAnimation("up");
     } else if (this.currentDirection === Direction.DOWN) {
       this.actionA.setPosition(0, 40);
-      this.player.playAnimation("down");
     } else if (this.currentDirection === Direction.RIGHT) {
       this.actionA.setPosition(40, 0);
-      this.player.playAnimation("right");
     } else if (this.currentDirection === Direction.LEFT) {
       this.actionA.setPosition(-40, 0);
-      this.player.playAnimation("right");
     }
 
     if (this.actionAActive) {
@@ -269,9 +265,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.updateHealthBar();
     this.updatePlayerName();
 
-    if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
-      this.player.playAnimation("idle");
-    }
+
+    this.playAnimation();
+
   }
 
   updateFlipX() {
@@ -304,7 +300,16 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionBActive = true;
     this.actionB.setPosition(this.x,this.y)
     if (this.mainPlayer) this.attackAudio.play();
-    this.actionB.body.setVelocityX(150)
+    if (this.currentDirection === Direction.UP) {
+      this.actionB.body.setVelocityY(-430)
+    } else if (this.currentDirection === Direction.DOWN) {
+      this.actionB.body.setVelocityY(430)
+    } else if (this.currentDirection === Direction.RIGHT) {
+      this.actionB.body.setVelocityX(430)
+    } else if (this.currentDirection === Direction.LEFT) {
+      this.actionB.body.setVelocityX(-430)
+    }
+
     this.scene.time.delayedCall(
       1000,
       () => {
@@ -312,7 +317,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         this.actionBActive = false;
         this.hitbox = false;
         this.actionB.body.setVelocityX(0);
-
+        this.actionB.body.setVelocityY(0)
       },
       [],
       this
@@ -379,4 +384,21 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.scene.sendUnequipItemMessage(keys[itemNumber]);
     }
   }
+
+  playAnimation(){
+    if (this.currentDirection === Direction.UP) {
+      this.player.playAnimation("up");
+    } else if (this.currentDirection === Direction.DOWN) {
+      this.player.playAnimation("down");
+    } else if (this.currentDirection === Direction.RIGHT) {
+      this.player.playAnimation("right");
+    } else if (this.currentDirection === Direction.LEFT) {
+      this.player.playAnimation("right");
+    }
+
+    if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
+      this.player.playAnimation("idle");
+    }
+  }
+  
 }
