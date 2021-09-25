@@ -193,7 +193,7 @@ export default class UiScene extends Phaser.Scene {
 
     //Create texts
     this.levelText = this.add
-      .text(40, this.scale.height / 14 + 40,`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`, {
+      .text(400, this.scale.height / 24 - 40,`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`, {
         fontSize: "26px",
         fill: "#fff",
       })

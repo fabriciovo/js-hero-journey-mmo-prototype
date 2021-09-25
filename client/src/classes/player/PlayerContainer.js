@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import Player from "./Player";
 import Direction from "../../utils/direction";
-import Bullets from "../weapons/RangedWeapon";
+import Bullet from "../weapons/RangedWeapon";
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(
@@ -80,8 +80,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     // create the weapons game object
     this.actionA = this.scene.add.image(40, 0, "iconset", 2);
-    //this.actionB =  this.scene.add.image(40, 0, "iconset", 2);//new RangedWeapon(this.scene);
-    this.actionB = new Bullets(this.scene);
+    //this.actionB = this.scene.add.image(this.x, this.y, "iconset", 5); //new RangedWeapon(this.scene);
+    this.actionB = new Bullet(this.scene,this.x,this.y);
+    //this.actionB = new Bullet(this.scene, this.x, this.y);
     // create the potion game object
     this.potionA = this.scene.add.image(40, 0, "iconset", 9);
 
@@ -293,7 +294,13 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     //this.actionBActive = true;
     //this.actionB.attack(this.x, this.y);
     //if (this.mainPlayer) this.attackAudio.play();
-    this.actionB.fireBullet(this.x, this.y);
+
+    //this.actionB.setPosition(this.x, this.y);
+    //this.actionB.body.setVelocityX(180);
+    //this.actionB.body.velocity.y = this.body.velocity.y;
+    this.actionB = new Bullet(this.scene, this.x, this.y);
+    console.log(this.scene.rangedAttacks);
+    //this.actionB.fireBullet(this.x, this.y);
   }
 
   potionAFunction() {
