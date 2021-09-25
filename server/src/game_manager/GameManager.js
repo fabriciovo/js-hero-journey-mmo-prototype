@@ -16,6 +16,7 @@ export default class GameManager {
     this.chests = {};
     this.monsters = {};
     this.players = {};
+    this.rangedObjects = {};
     this.items = {};
 
     this.playerLocations = [];
@@ -177,6 +178,18 @@ export default class GameManager {
           this.io.emit("playerMoved", this.players[socket.id]);
         }
       });
+
+
+      socket.on("rangedAttackMovement", (rangedObject) => {
+        console.log("on rangedAttackMovement")
+        if (this.rangedObjects[socket.id]) {
+          this.rangedObjects[socket.id].x = rangedObject.x;
+          this.rangedObjects[socket.id].y = rangedObject.y;
+          // emit a message to all players about the player that moved
+          this.io.emit("updateRangedAttack", this.rangedObjects[socket.id]);
+        }
+      });
+
 
       socket.on("pickUpChest", (chestId) => {
         // update the spawner

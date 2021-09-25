@@ -1,56 +1,29 @@
-import * as Phaser from "phaser";
+import * as Phaser from 'phaser';
 
-class Bullet extends Phaser.Physics.Arcade.Sprite
-{
-        constructor (scene, x, y)
-        {
-            super(scene, x, y, 'bullet');
-        }
+export default class RangedWeapon extends Phaser.Physics.Arcade.Image {
+  constructor(scene, x, y, key, frame, damage, id) {
+    super(scene, x, y, key, frame);
+    this.scene = scene; // the scene this game object will be added to
+    this.damage = damage; 
+    this.id = id;
 
-        fire (x, y)
-        {
-            this.body.reset(x, y);
+    // enable physics
+    this.scene.physics.world.enable(this);
+    // add the player to our existing scene
+    this.scene.add.existing(this);
+    // scale the chest game object
+    this.setScale(2);
+  }
 
-            this.setActive(true);
-            this.setVisible(true);
+  makeActive() {
+    this.setActive(true);
+    this.setVisible(true);
+    this.body.checkCollision.none = false;
+  }
 
-            this.setVelocityY(-300);
-        }
-
-        preUpdate (time, delta)
-        {
-            super.preUpdate(time, delta);
-
-            if (this.y <= -32)
-            {
-                this.setActive(false);
-                this.setVisible(false);
-            }
-    }
-}
-
-export default class Bullets extends Phaser.Physics.Arcade.Group
-{
-    constructor (scene)
-    {
-        super(scene.physics.world, scene);
-
-        this.createMultiple({
-            frameQuantity: 5,
-            key: 'bullet',
-            active: false,
-            visible: false,
-            classType: Bullet
-        });
-    }
-
-    fireBullet (x, y)
-    {
-        let bullet = this.getFirstDead(false);
-
-        if (bullet)
-        {
-            bullet.fire(x, y);
-        }
-    }
+  makeInactive() {
+    this.setActive(false);
+    this.setVisible(false);
+    this.body.checkCollision.none = true;
+  }
 }

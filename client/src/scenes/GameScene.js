@@ -83,6 +83,18 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
+
+    this.socket.on("updateRangedAttack", (rangedObject) => {
+      console.log("on updateRangedAttack")
+
+      this.rangedObjects.getChildren().forEach((rangedObjectData) => {
+        if (player.id === rangedObjectData.id) {
+          rangedObjectData.setPosition(rangedObject.x, rangedObject.y);
+        }
+      });
+    });
+
+
     this.socket.on("chestSpawned", (chest) => {
       this.spawnChest(chest);
     });
@@ -118,15 +130,11 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    this.socket.on("rangedAttackMovement", (rangedAttacks) => {
-      this.rangedAttacks.getChildren().forEach((rangedAttack) => {
-        Object.keys(rangedAttacks).forEach((rangedAttacksId) => {
-          if (rangedAttack.id === rangedAttacksId) {
-            this.physics.moveToObject(
-              rangedAttack,
-              rangedAttacks[rangedAttacksId],
-              40
-            );
+    this.socket.on("rangedAttackMovement", (rangedObjects) => {
+      this.rangedObjects.getChildren().forEach((rangedObject) => {
+        Object.keys(rangedObjects).forEach((rangedObjectId) => {
+          if (rangedObject.id === rangedObjectId) {
+            console.log("rangedAttackMovement")
           }
         });
       });
@@ -271,6 +279,7 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.defenseValue = playerObject.defense;
           otherPlayer.equipedItems = playerObject.equipedItems;
           otherPlayer.updateHealthBar();
+          //this.otherPlayer.playAnimation();
         }
       });
     });
@@ -459,8 +468,8 @@ export default class GameScene extends Phaser.Scene {
     this.items = this.physics.add.group();
 
     // create a ranged Attacks group
-    this.rangedAttacks = this.physics.add.group();
-    this.rangedAttacks.runChildUpdate = true;
+    this.rangedObjects = this.physics.add.group();
+    this.rangedObjects.runChildUpdate = true;
   }
   spawnItem(itemObject) {
     let item = this.items.getFirstDead();
@@ -583,7 +592,7 @@ export default class GameScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(
-      this.rangedAttacks,
+      this.rangedObjects,
       this.otherPlayers,
       this.rangedOverlapEnemy,
       false,
@@ -591,7 +600,7 @@ export default class GameScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(
-      this.rangedAttacks,
+      this.rangedObjects,
       this.monsters,
       this.rangedOverlapEnemy,
       false,
@@ -600,7 +609,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   rangedOverlapEnemy(player, enemyPlayer) {
-    if (this.player.actionAActive && !this.player.hitbox) {
+    console.log("asdasd")
+    if (this.player.actionBActive && !this.player.hitbox) {
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
