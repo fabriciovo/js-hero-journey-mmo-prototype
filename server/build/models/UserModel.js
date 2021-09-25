@@ -44,7 +44,7 @@ var PlayerSchema = new Schema({
   exp: {
     type: Number
   },
-  expMax: {
+  maxExp: {
     type: Number
   },
   level: {

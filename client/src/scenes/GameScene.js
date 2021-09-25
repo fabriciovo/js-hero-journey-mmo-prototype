@@ -138,25 +138,42 @@ export default class GameScene extends Phaser.Scene {
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     });
 
-    this.socket.on("updateXp", (exp,playerId) => {
-      console.log(playerId,exp)
-      debugger
+    this.socket.on("updateXp", (exp, playerId) => {
+      console.log(playerId, exp);
+
       if (this.player.id === playerId) {
-        debugger
         this.player.updateExp(exp);
-        if (this.player.exp > this.player.expMax) {
-          this.events.emit("levelUp");
+        this.uiScene.updatePlayerExpBar(this.player);
+        if (this.player.exp > this.player.maxExp) {
+          this.socket.emit("levelUp", this.player);
         }
-      } 
-
-
+      }
     });
 
-    this.socket.on("levelUp", () => {
-      const calcNewExp = this.player.exp - this.player.expMax;
-      this.player.expMax = this.player.expMax * 2;
-      this.player.exp = calcNewExp;
-    });
+    this.socket.on(
+      "updatePlayerStats",
+      (playerId, level, attack, defense, maxHealth, exp, maxExp) => {
+        if (this.player.id === playerId) {
+          this.player.updateStats(
+            level,
+            attack,
+            defense,
+            maxHealth,
+            exp,
+            maxExp
+          );
+
+          //Update stats
+          this.uiScene.updatePlayerExpBar(this.player);
+          this.uiScene.updatePlayerHealthBar(this.player);
+          this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
+
+          this.player.updateHealthBar();
+
+        }
+
+      }
+    );
 
     this.socket.on("updatePlayersScore", (playerId, goldAmount) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
@@ -175,11 +192,14 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updatePlayerHealth", (playerId, health) => {
+      debugger;
       if (this.player.id === playerId) {
         if (health < this.player.health) {
           this.playerDamageAudio.play();
         }
         this.player.updateHealth(health);
+        this.uiScene.updatePlayerHealthBar(this.player);
+
       } else {
         this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerId) {
@@ -408,7 +428,7 @@ export default class GameScene extends Phaser.Scene {
       playerObject.items,
       playerObject.equipedItems,
       playerObject.exp,
-      playerObject.expMax,
+      playerObject.maxExp,
       playerObject.level
     );
 
@@ -422,8 +442,7 @@ export default class GameScene extends Phaser.Scene {
     newPlayerObject.on("pointerdown", () => {
       this.events.emit("showInventory", newPlayerObject, mainPlayer);
     });
-    this.uiScene.createPlayerBars(newPlayerObject);
-
+    this.uiScene.createPlayersStatsUi(newPlayerObject);
   }
 
   createGroups() {

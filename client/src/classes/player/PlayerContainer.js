@@ -22,7 +22,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     items,
     equipedItems,
     exp,
-    expMax,
+    maxExp,
     level
   ) {
     super(scene, x, y);
@@ -44,7 +44,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.items = items || {};
     this.equipedItems = equipedItems || {};
     this.exp = exp;
-    this.expMax = expMax;
+    this.maxExp = maxExp;
     this.level = level;
 
     this.potions = 5;
@@ -110,8 +110,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.potionAButton = this.scene.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.C
     );
-
-
   }
 
   createPlayerBars() {
@@ -135,21 +133,22 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   updatePlayerName() {
     this.playerNameText.setPosition(this.x - 32, this.y - 60);
   }
-  
-  updateExp(exp){
+
+  updateExp(exp) {
     this.exp += exp;
-    console.log(this.exp)
+    console.log(this.exp);
   }
 
-  updateLevel(level){
+  updateStats(level, attack, defense, maxHealth, exp, maxExp) {
+    console.log(level, attack, defense, maxHealth, maxExp);
     this.level = level;
+    this.attackValue = attack;
+    this.defenseValue = defense;
+    this.maxHealth = maxHealth;
+    this.health = maxHealth;
+    this.exp = exp;
+    this.maxExp = maxExp;
   }
-
-  updateExpMax(expMax){
-    this.expMax = expMax;
-  }
-
-
 
   updateHealthBar() {
     this.healthBar.clear();
@@ -166,6 +165,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
   updateHealth(health) {
     this.health = health;
+    debugger;
+
     this.updateHealthBar();
   }
 

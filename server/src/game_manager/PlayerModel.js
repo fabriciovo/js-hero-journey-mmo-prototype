@@ -12,7 +12,7 @@ export default class PlayerModel {
     this.equipedItems = playerSchema.equipedItems || {};
     this.level = playerSchema.level;
     this.exp = playerSchema.exp;
-    this.expMax = playerSchema.expMax;
+    this.maxExp = playerSchema.maxExp;
 
     //this.playerItems =  {};
 
@@ -81,23 +81,21 @@ export default class PlayerModel {
 
   updateExp(exp) {
     this.exp += exp;
-    if (this.exp > this.expMax) {
-      this.level++;
-      this.exp = 0;
-    }
+  }
+
+  levelUp() {
+    this.attack += 3;
+    this.defense += 2;
+    this.maxHealth += 1;
+    this.level++;
+    const calcNewExp = this.exp - this.maxExp;
+    this.exp = calcNewExp;
+    this.maxExp = this.maxExp * 2;
   }
 
   updateHealth(health) {
     this.health += health;
     if (this.health > this.maxHealth) this.health = this.maxHealth;
-  }
-
-  updateHealth(exp) {
-    this.exp += exp;
-    if (this.exp > this.expMax) {
-      this.level++;
-      this.exp = 0;
-    }
   }
 
   respawn(players) {

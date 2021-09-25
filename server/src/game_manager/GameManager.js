@@ -264,8 +264,19 @@ export default class GameManager {
         }
       });
 
-      socket.on("levelUp", (playerId) => {
-        console.log("levelUp");
+      socket.on("levelUp", () => {
+        this.players[socket.id].levelUp();
+        this.io.emit(
+          "updatePlayerStats",
+          socket.id,
+          this.players[socket.id].level,
+          this.players[socket.id].attack,
+          this.players[socket.id].defense,
+          this.players[socket.id].maxHealth,
+          this.players[socket.id].exp,
+          this.players[socket.id].maxExp
+
+        );
       });
 
       socket.on("updatePlayerExp", (playerId) => {
@@ -277,6 +288,7 @@ export default class GameManager {
         if (this.monsters[monsterId]) {
           const { gold, attack } = this.monsters[monsterId];
           const playerAttackValue = this.players[socket.id].attack;
+
           // subtract health monster model
           this.monsters[monsterId].loseHealth(playerAttackValue);
 
@@ -285,9 +297,7 @@ export default class GameManager {
             // updating the players gold
             this.players[socket.id].updateGold(gold);
             socket.emit("updateScore", this.players[socket.id].gold);
-            this.players[socket.id].updateExp(15);
 
-            this.io.emit("updateXp", 15, socket.id);
             //socket.emit("dropItem", item);
 
             // removing the monster
@@ -302,9 +312,14 @@ export default class GameManager {
               socket.id,
               this.players[socket.id].health
             );
+
+            //update xp
+            this.players[socket.id].updateExp(50);
+            this.io.emit("updateXp", 50, socket.id);
           } else {
             // update the players health
             this.players[socket.id].playerAttacked(attack);
+            console.log("attacked");
             this.io.emit(
               "updatePlayerHealth",
               socket.id,

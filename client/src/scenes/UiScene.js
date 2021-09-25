@@ -157,11 +157,6 @@ export default class UiScene extends Phaser.Scene {
   }
 
   setupEvents() {
-    // listen for the updateScore event from the game scene
-    this.gameScene.events.on("updateScore", (score) => {});
-
-    this.gameScene.events.on("updateXp", (score) => {});
-
     this.gameScene.events.on("showInventory", (playerObject, mainPlayer) => {
       this.toggleInventory(playerObject, mainPlayer);
     });
@@ -189,25 +184,82 @@ export default class UiScene extends Phaser.Scene {
     }
   }
 
-  createPlayerBars(playerObject) {
-    debugger;
+  createPlayersStatsUi(playerObject) {
+
+    //Create Bars
+    this.createPlayerExpBar(playerObject)
+    this.createPlayerHealthBar(playerObject)
+
+
+    //Create texts
+    this.levelText = this.add
+      .text(40, this.scale.height / 14 + 40,`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`, {
+        fontSize: "26px",
+        fill: "#fff",
+      })
+      .setDepth(4);
+
+      this.healtText = this.add
+      .text(40, this.scale.height / 24 - 40,`Health: ${playerObject.health} /  ${playerObject.maxHealth}`, {
+        fontSize: "26px",
+        fill: "#fff",
+      })
+      .setDepth(4);
+
+  }
+
+  createPlayerExpBar(playerObject){
     this.expBar = this.add.graphics();
     this.expBar.clear();
     this.expBar.fillStyle(0xffffff, 1);
+    this.expBar.fillRect(40, this.scale.height / 14, 300, 12);
+    this.expBar.fillGradientStyle(0x0000ff, 0xffffff, 4);
     this.expBar.fillRect(
-      this.scale.width / 2,
-      this.scale.height / 2,
-      64,
-      5
+      40,
+      this.scale.height / 14,
+      300 * (playerObject.exp / playerObject.maxExp),
+      12
     );
-    this.expBar.fillGradientStyle(0xff0000, 0xffffff, 4);
-    this.expBar.fillRect(
-      this.scale.width / 2,
-      this.scale.height / 2,
-      64 * (playerObject.exp / playerObject.expMax),
-      5
-    );
+  }
 
+  updatePlayerExpBar(playerObject) {
+    this.expBar.clear();
+    this.expBar.fillStyle(0xffffff, 1);
+    this.expBar.fillRect(40, this.scale.height / 14, 300, 12);
+    this.expBar.fillGradientStyle(0x0000ff, 0xffffff, 4);
+    this.expBar.fillRect(
+      40,
+      this.scale.height / 14,
+      300 * (playerObject.exp / playerObject.maxExp),
+      12
+    );
+  }
+
+  createPlayerHealthBar(playerObject) {
+    this.healthBar = this.add.graphics();
+    this.healthBar.clear();
+    this.healthBar.fillStyle(0xffffff, 1);
+    this.healthBar.fillRect(40, this.scale.height / 24, 300, 12);
+    this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
+    this.healthBar.fillRect(
+      40,
+      this.scale.height / 24,
+      300 * (playerObject.health / playerObject.maxHealth),
+      12
+    );
+  }
+
+  updatePlayerHealthBar(playerObject) {
+    this.healthBar.clear();
+    this.healthBar.fillStyle(0xffffff, 1);
+    this.healthBar.fillRect(40, this.scale.height / 24, 300, 12);
+    this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
+    this.healthBar.fillRect(
+      40,
+      this.scale.height / 24,
+      300 * (playerObject.health / playerObject.maxHealth),
+      12
+    );
   }
 
   updatePlayerBars() {}

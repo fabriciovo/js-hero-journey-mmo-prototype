@@ -39,7 +39,7 @@ _passport["default"].use("signup", new _passportLocal["default"].Strategy({
               items: null,
               equipedItems: null,
               exp: 0,
-              expMax: 100,
+              maxExp: 100,
               level: 1
             };
             _context.next = 5;
