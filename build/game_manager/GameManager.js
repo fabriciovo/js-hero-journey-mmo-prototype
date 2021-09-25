@@ -49,6 +49,7 @@ var GameManager = /*#__PURE__*/function () {
     this.chests = {};
     this.monsters = {};
     this.players = {};
+    this.rangedObjects = {};
     this.items = {};
     this.playerLocations = [];
     this.chestLocations = {};
@@ -270,6 +271,16 @@ var GameManager = /*#__PURE__*/function () {
             _this2.players[socket.id].currentDirection = playerData.currentDirection; // emit a message to all players about the player that moved
 
             _this2.io.emit("playerMoved", _this2.players[socket.id]);
+          }
+        });
+        socket.on("rangedAttackMovement", function (rangedObject) {
+          console.log("on rangedAttackMovement");
+
+          if (_this2.rangedObjects[socket.id]) {
+            _this2.rangedObjects[socket.id].x = rangedObject.x;
+            _this2.rangedObjects[socket.id].y = rangedObject.y; // emit a message to all players about the player that moved
+
+            _this2.io.emit("updateRangedAttack", _this2.rangedObjects[socket.id]);
           }
         });
         socket.on("pickUpChest", function (chestId) {
