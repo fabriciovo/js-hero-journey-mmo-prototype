@@ -84,11 +84,11 @@ export default class Spawner {
     const monster = new MonsterModel(
       location[0],
       location[1],
-      randomNumber(10, 20),
+      randomNumber(10, 120),
       this.id,
       randomNumber(0, 20), // frame value
-      randomNumber(100, 150), // health value
-      randomNumber(10, 20) // attack value
+      randomNumber(10, 120), // health value
+      randomNumber(10, 120) // attack value
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);

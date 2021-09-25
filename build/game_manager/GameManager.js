@@ -49,7 +49,6 @@ var GameManager = /*#__PURE__*/function () {
     this.chests = {};
     this.monsters = {};
     this.players = {};
-    this.rangedObjects = {};
     this.items = {};
     this.playerLocations = [];
     this.chestLocations = {};
@@ -273,16 +272,6 @@ var GameManager = /*#__PURE__*/function () {
             _this2.io.emit("playerMoved", _this2.players[socket.id]);
           }
         });
-        socket.on("rangedAttackMovement", function (rangedObject) {
-          console.log("on rangedAttackMovement");
-
-          if (_this2.rangedObjects[socket.id]) {
-            _this2.rangedObjects[socket.id].x = rangedObject.x;
-            _this2.rangedObjects[socket.id].y = rangedObject.y; // emit a message to all players about the player that moved
-
-            _this2.io.emit("updateRangedAttack", _this2.rangedObjects[socket.id]);
-          }
-        });
         socket.on("pickUpChest", function (chestId) {
           // update the spawner
           if (_this2.chests[chestId]) {
@@ -347,8 +336,39 @@ var GameManager = /*#__PURE__*/function () {
 
           _this2.io.emit("updatePlayerStats", socket.id, _this2.players[socket.id].level, _this2.players[socket.id].attack, _this2.players[socket.id].defense, _this2.players[socket.id].maxHealth, _this2.players[socket.id].exp, _this2.players[socket.id].maxExp);
         });
-        socket.on("updatePlayerExp", function (playerId) {
-          console.log("updatePlayerExp");
+        socket.on("attackedPlayer", function (attackedPlayerId) {
+          if (_this2.players[attackedPlayerId]) {
+            // get required info from attacked player
+            var gold = _this2.players[attackedPlayerId].gold;
+            var playerAttackValue = _this2.players[socket.id].attack; // subtract health from attacked player
+
+            _this2.players[attackedPlayerId].playerAttacked(playerAttackValue); // check attacked players health, if dead send gold to other player
+
+
+            if (_this2.players[attackedPlayerId].health <= 0) {
+              // get the amount of gold, and update player object
+              _this2.players[socket.id].updateGold(gold); // respawn attacked player
+
+
+              _this2.players[attackedPlayerId].respawn(_this2.players);
+
+              _this2.io.emit("respawnPlayer", _this2.players[attackedPlayerId]); // send update gold message to player
+
+
+              socket.emit("updateScore", _this2.players[socket.id].gold); // reset the attacked players gold
+
+              _this2.players[attackedPlayerId].updateGold(-gold);
+
+              _this2.io.to("".concat(attackedPlayerId)).emit("updateScore", _this2.players[attackedPlayerId].gold); // add bonus health to the player
+
+
+              _this2.players[socket.id].updateHealth(15);
+
+              _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health);
+            } else {
+              _this2.io.emit("updatePlayerHealth", attackedPlayerId, _this2.players[attackedPlayerId].health);
+            }
+          }
         });
         socket.on("monsterAttacked", function (monsterId) {
           // update the spawner
@@ -382,62 +402,32 @@ var GameManager = /*#__PURE__*/function () {
 
               _this2.io.emit("updateXp", 50, socket.id);
             } else {
-              // update the players health
-              _this2.players[socket.id].playerAttacked(attack);
+              // update the monsters health
+              _this2.io.emit("updateMonsterHealth", monsterId, _this2.monsters[monsterId].health);
 
-              console.log("attacked");
-
-              _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health); // update the monsters health
-
-
-              _this2.io.emit("updateMonsterHealth", monsterId, _this2.monsters[monsterId].health); // check the player's health, if below 0 have the player respawn
-
-
-              if (_this2.players[socket.id].health <= 0) {
-                // update the gold the player has
-                _this2.players[socket.id].updateGold(parseInt(-_this2.players[socket.id].gold / 2, 10));
-
-                socket.emit("updateScore", _this2.players[socket.id].gold); // respawn the player
-
-                _this2.players[socket.id].respawn(_this2.players);
-
-                _this2.io.emit("respawnPlayer", _this2.players[socket.id]);
-              }
+              socket.emit("playerHit", attack);
             }
           }
         });
-        socket.on("attackedPlayer", function (attackedPlayerId) {
-          if (_this2.players[attackedPlayerId]) {
-            // get required info from attacked player
-            var gold = _this2.players[attackedPlayerId].gold;
-            var playerAttackValue = _this2.players[socket.id].attack; // subtract health from attacked player
+        socket.on("playerHit", function (damage) {
+          console.log("playerHit"); // update the players health
 
-            _this2.players[attackedPlayerId].playerAttacked(playerAttackValue); // check attacked players health, if dead send gold to other player
+          _this2.players[socket.id].playerAttacked(damage);
 
+          console.log("attacked");
 
-            if (_this2.players[attackedPlayerId].health <= 0) {
-              // get the amount of gold, and update player object
-              _this2.players[socket.id].updateGold(gold); // respawn attacked player
+          _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health); // check the player's health, if below 0 have the player respawn
 
 
-              _this2.players[attackedPlayerId].respawn(_this2.players);
+          if (_this2.players[socket.id].health <= 0) {
+            // update the gold the player has
+            _this2.players[socket.id].updateGold(parseInt(-_this2.players[socket.id].gold / 2, 10));
 
-              _this2.io.emit("respawnPlayer", _this2.players[attackedPlayerId]); // send update gold message to player
+            socket.emit("updateScore", _this2.players[socket.id].gold); // respawn the player
 
+            _this2.players[socket.id].respawn(_this2.players);
 
-              socket.emit("updateScore", _this2.players[socket.id].gold); // reset the attacked players gold
-
-              _this2.players[attackedPlayerId].updateGold(-gold);
-
-              _this2.io.to("".concat(attackedPlayerId)).emit("updateScore", _this2.players[attackedPlayerId].gold); // add bonus health to the player
-
-
-              _this2.players[socket.id].updateHealth(15);
-
-              _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health);
-            } else {
-              _this2.io.emit("updatePlayerHealth", attackedPlayerId, _this2.players[attackedPlayerId].health);
-            }
+            _this2.io.emit("respawnPlayer", _this2.players[socket.id]);
           }
         }); // player connected to our game
 
