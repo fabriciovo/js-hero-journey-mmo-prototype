@@ -87,8 +87,9 @@ export default class Spawner {
       randomNumber(10, 120),
       this.id,
       randomNumber(0, 20), // frame value
-      randomNumber(10, 120), // health value
-      randomNumber(10, 120) // attack value
+      randomNumber(110, 320), // health value
+      randomNumber(30, 320), // attack value
+      randomNumber(10, 120) // exp value
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);

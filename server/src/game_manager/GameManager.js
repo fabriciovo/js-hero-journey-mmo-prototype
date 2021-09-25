@@ -322,12 +322,12 @@ export default class GameManager {
         }
       });
 
-      socket.on("monsterAttacked", (monsterId) => {
+      socket.on("monsterAttacked", (monsterId, dis) => {
         // update the spawner
         if (this.monsters[monsterId]) {
           const { gold, attack, exp } = this.monsters[monsterId];
           const playerAttackValue = this.players[socket.id].attack;
-
+          console.log(attack);
           // subtract health monster model
           this.monsters[monsterId].loseHealth(playerAttackValue);
 
@@ -344,13 +344,6 @@ export default class GameManager {
               monsterId
             );
             this.io.emit("monsterRemoved", monsterId);
-            // add bonus health to the player
-            this.players[socket.id].updateHealth(15);
-            this.io.emit(
-              "updatePlayerHealth",
-              socket.id,
-              this.players[socket.id].health
-            );
 
             //update xp
             this.players[socket.id].updateExp(exp);
@@ -362,37 +355,36 @@ export default class GameManager {
               monsterId,
               this.monsters[monsterId].health
             );
+            console.log(dis);
+
             if (dis < 90) {
-              socket.emit("playerHit", attack);
-            } 
+              // update the players health
+              this.players[socket.id].playerAttacked(attack);
+              console.log("attacked");
+              this.io.emit(
+                "updatePlayerHealth",
+                socket.id,
+                this.players[socket.id].health
+              );
+
+              // check the player's health, if below 0 have the player respawn
+              if (this.players[socket.id].health <= 0) {
+                // update the gold the player has
+                this.players[socket.id].updateGold(
+                  parseInt(-this.players[socket.id].gold / 2, 10)
+                );
+                socket.emit("updateScore", this.players[socket.id].gold);
+
+                // respawn the player
+                this.players[socket.id].respawn(this.players);
+                this.io.emit("respawnPlayer", this.players[socket.id]);
+              }
+            }
           }
         }
       });
 
-      socket.on("playerHit", (damage) => {
-        console.log("playerHit");
-        // update the players health
-        this.players[socket.id].playerAttacked(damage);
-        console.log("attacked");
-        this.io.emit(
-          "updatePlayerHealth",
-          socket.id,
-          this.players[socket.id].health
-        );
-
-        // check the player's health, if below 0 have the player respawn
-        if (this.players[socket.id].health <= 0) {
-          // update the gold the player has
-          this.players[socket.id].updateGold(
-            parseInt(-this.players[socket.id].gold / 2, 10)
-          );
-          socket.emit("updateScore", this.players[socket.id].gold);
-
-          // respawn the player
-          this.players[socket.id].respawn(this.players);
-          this.io.emit("respawnPlayer", this.players[socket.id]);
-        }
-      });
+      socket.on("playerHit", (damage) => {});
 
       // player connected to our game
       console.log("player connected to our game");

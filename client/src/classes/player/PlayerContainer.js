@@ -374,6 +374,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       const itemKeys = Object.keys(this.items);
       delete this.items[itemKeys[itemNumber]];
       this.scene.sendEquipItemMessage(itemKeys[itemNumber]);
+    }else{
+      this.scene.uiScene.popup.showWindow();
+      this.scene.uiScene.popup.equipmentFull();
     }
   }
 

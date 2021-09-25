@@ -132,8 +132,11 @@ export default class GameScene extends Phaser.Scene {
       if (this.player.id === playerId) {
         this.player.updateExp(exp);
         this.uiScene.updatePlayerExpBar(this.player);
+        this.uiScene.updatePlayerStatsUi(this.player);
+
         if (this.player.exp > this.player.maxExp) {
           this.socket.emit("levelUp", this.player);
+          this.uiScene.popup.levelUp(this.player);
         }
       }
     });
@@ -152,11 +155,12 @@ export default class GameScene extends Phaser.Scene {
           );
 
           //Update stats
+          this.player.updateHealthBar();
+
           this.uiScene.updatePlayerExpBar(this.player);
           this.uiScene.updatePlayerHealthBar(this.player);
+          this.uiScene.updatePlayerStatsUi(this.player);
           this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
-
-          this.player.updateHealthBar();
         }
       }
     );
@@ -178,7 +182,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updatePlayerHealth", (playerId, health) => {
-      debugger;
+      console.log(playerId, health);
       if (this.player.id === playerId) {
         if (health < this.player.health) {
           this.playerDamageAudio.play();
@@ -198,6 +202,12 @@ export default class GameScene extends Phaser.Scene {
       if (this.player.id === playerObject.id) {
         this.playerDeathAudio.play();
         this.player.respawn(playerObject);
+        this.uiScene.updatePlayerStatsUi(playerObject);
+        this.uiScene.updatePlayerHealthBar(playerObject);
+        this.uiScene.updatePlayerExpBar(playerObject);
+
+
+
       } else {
         this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerObject.id) {
@@ -637,12 +647,11 @@ export default class GameScene extends Phaser.Scene {
         enemy.y
       );
 
-      if(this.player.actionB){
+      if (this.player.actionB) {
         this.player.actionB.makeInactive();
       }
 
       this.socket.emit("monsterAttacked", enemy.id, dis);
-      
     }
   }
 

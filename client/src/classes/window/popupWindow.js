@@ -8,10 +8,11 @@ export default class PopupWindow extends ModalWindow {
     this.graphics.setDepth(5);
     this.createWindow();
     this.hideWindow();
+
   }
   calculateWindowDimension() {
-    const x = 0;
-    const y = 0;
+    const x = this.x;
+    const y = this.y;
     const rectHeight = this.windowHeight - 5;
     const rectWidth = this.windowWidth;
     return {
@@ -28,10 +29,10 @@ export default class PopupWindow extends ModalWindow {
       this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
 
       // update the position of our inventory container
-      this.descriptionContainer.setPosition(x + 1, y + 1);
-      this.descriptionContainer.setSize(rectWidth - 1, rectHeight - 1);
+      this.popupContainer.setPosition(x + 1, y + 1);
+      this.popupContainer.setSize(rectWidth - 1, rectHeight - 1);
 
-      this.createItemDescriptionText();
+      this.createPopupText();
     } else {
       this.rect = this.scene.add.rectangle(
         x + 1,
@@ -43,9 +44,11 @@ export default class PopupWindow extends ModalWindow {
       this.rect.setOrigin(0, 0);
 
       // create inventory container for positioning elements
-      this.descriptionContainer = this.scene.add.container(x + 1, y + 1);
-      this.descriptionContainer.setDepth(4);
-      this.descriptionContainer.setAlpha(this.textAlpha);
+      this.popupContainer = this.scene.add.container(x + 1, y + 1);
+      this.popupContainer.setDepth(5);
+      this.popupContainer.setAlpha(this.textAlpha);
+      this.createPopupText();
+
     }
   }
   resize(gameSize) {
@@ -54,77 +57,53 @@ export default class PopupWindow extends ModalWindow {
 
   hideWindow() {
     this.rect.disableInteractive();
-    this.descriptionContainer.setAlpha(0);
+    this.popupContainer.setAlpha(0);
     this.graphics.setAlpha(0);
   }
 
   showWindow() {
     this.rect.setInteractive();
-    this.descriptionContainer.setAlpha(1);
+    this.popupContainer.setAlpha(1);
     this.graphics.setAlpha(1);
   }
 
-  updateDescriptionContainer() {
-    this.attackText.setText(this.textValue);
+  updatePopupContainer() {
+    this.popupText.setText(this.textValue);
   }
 
-  createItemDescriptionText() {
-    this.itemsText = this.scene.add.text(
-      this.descriptionContainer.width / 2,
+  createPopupText() {
+    this.popupTitle = this.scene.add.text(
+      this.popupContainer.width / 2,
       140,
-      "Item Description",
+      "PopUp",
       { fontSize: "22px", fill: "#ffffff", align: "center" }
-    );
-    this.itemsText.setOrigin(0.5);
+    ).setOrigin(0.5);
 
-    this.attackText = this.scene.add.text(0, 0, "", {
+   
+    this.popupText = this.scene.add.text(0, 0, "", {
       fontSize: "14px",
       fill: "#00ff00",
-    });
+      align: 'center',
+    }).setOrigin(0.5);
 
-    this.defenseText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-    });
+    this.popupContainer.add(this.popupTitle);
+    this.popupContainer.add(this.popupText);
 
-    this.healthText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-    });
 
-    
+    this.popupTitle.setPosition(this.popupContainer.width / 2 + 174, 20);
+    this.popupText.setPosition(this.popupContainer.width / 2 + 180, 60);
 
-    this.descriptionContainer.add(this.itemsText);
-    this.descriptionContainer.add(this.attackText);
-    this.descriptionContainer.add(this.healthText);
-    this.descriptionContainer.add(this.defenseText);
-
-    this.itemsText.setPosition(this.descriptionContainer.width / 2, 20);
-    this.attackText.setPosition(this.descriptionContainer.width / 2 - 90, 60);
-    this.healthText.setPosition(this.descriptionContainer.width / 2 + 90, 60);
-    this.defenseText.setPosition(this.descriptionContainer.width / 2, 60);
   }
 
-  setItemDescription(item) {
+  equipmentFull(){
+    this.popupText.setText("Your equipment slots is full")
+  }
 
-    if (item.attack > 0) {
-      this.attackText.setFill("#00ff00");
-    } else {
-      this.attackText.setFill("#ff0000");
-    }
-    if (item.defense > 0) {
-      this.defenseText.setFill("#00ff00");
-    } else {
-      this.defenseText.setFill("#ff0000");
-    }
-    if (item.health > 0) {
-      this.healthText.setFill("#00ff00");
-    } else {
-      this.healthText.setFill("#ff0000");
-    }
-    this.attackText.setText(item.type)
-    this.attackText.setText(item.attack);
-    this.defenseText.setText(item.defense);
-    this.healthText.setText(item.health);
+  levelUp(playerObject){
+    let oldLevel = playerObject.level;
+    this.showWindow();
+    this.popupTitle.setText("Level Up")
+    this.popupText.setText(`You advance from ${oldLevel--} to ${playerObject.level}`)
+
   }
 }

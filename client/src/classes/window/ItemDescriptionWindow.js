@@ -10,8 +10,8 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.hideWindow();
   }
   calculateWindowDimension() {
-    const x = 0;
-    const y = 0;
+    const x = this.x;
+    const y = this.y;
     const rectHeight = this.windowHeight - 5;
     const rectWidth = this.windowWidth;
     return {
@@ -64,9 +64,6 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.graphics.setAlpha(1);
   }
 
-  updateDescriptionContainer() {
-    this.attackText.setText(this.textValue);
-  }
 
   createItemDescriptionText() {
     this.itemsText = this.scene.add.text(

@@ -2,6 +2,7 @@ import * as Phaser from "phaser";
 import InventoryWindow from "../classes/window/InventoryWindow";
 import ItemDescriptionWindow from "../classes/window/ItemDescriptionWindow";
 import PlayerWindow from "../classes/window/PlayerWindow";
+import PopupWindow from "../classes/window/popupWindow";
 
 export default class UiScene extends Phaser.Scene {
   constructor() {
@@ -26,7 +27,22 @@ export default class UiScene extends Phaser.Scene {
   }
 
   setupUiElements() {
-    // create playerStats modal
+    //create Popup window
+    this.popup = new PopupWindow(this, {
+      x: this.scale.width / 2 - 174,
+      y: this.scale.height / 2 - 200,
+      windowWidth: 360,
+      windowHeight: 120,
+      borderAlpha: 1,
+      windowAlpha: 0.9,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+    });
+
+    
+
+    // create playerStats window
     this.playerStatsWindow = new PlayerWindow(this, {
       windowWidth: this.scale.width / 5,
       windowHeight: this.scale.height * 0.3,
@@ -49,8 +65,8 @@ export default class UiScene extends Phaser.Scene {
     });
 
     this.descriptionWindow = new ItemDescriptionWindow(this, {
-      x: this.gameScene.input.x,
-      y: this.gameScene.input.y,
+      x: this.gameScene.input.mousePointer.x,
+      y: this.gameScene.input.mousePointer.y,
       windowWidth: 360,
       windowHeight: 120,
       borderAlpha: 1,
@@ -152,6 +168,10 @@ export default class UiScene extends Phaser.Scene {
 
         this.playerStatsWindow.hideWindow();
         this.showPlayerStats = false;
+
+
+        this.popup.hideWindow();
+
       }
     });
   }
@@ -185,30 +205,43 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayersStatsUi(playerObject) {
-
     //Create Bars
-    this.createPlayerExpBar(playerObject)
-    this.createPlayerHealthBar(playerObject)
-
+    this.createPlayerExpBar(playerObject);
+    this.createPlayerHealthBar(playerObject);
 
     //Create texts
     this.levelText = this.add
-      .text(400, this.scale.height / 24 - 40,`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`, {
-        fontSize: "26px",
-        fill: "#fff",
-      })
+      .text(
+        400,
+        this.scale.height / 24 - 40,
+        `Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`,
+        {
+          fontSize: "26px",
+          fill: "#fff",
+        }
+      )
       .setDepth(4);
 
-      this.healtText = this.add
-      .text(40, this.scale.height / 24 - 40,`Health: ${playerObject.health} /  ${playerObject.maxHealth}`, {
-        fontSize: "26px",
-        fill: "#fff",
-      })
+    this.healtText = this.add
+      .text(
+        40,
+        this.scale.height / 24 - 40,
+        `Health: ${playerObject.health} /  ${playerObject.maxHealth}`,
+        {
+          fontSize: "26px",
+          fill: "#fff",
+        }
+      )
       .setDepth(4);
-
   }
 
-  createPlayerExpBar(playerObject){
+  updatePlayerStatsUi(playerObject){
+    this.levelText.setText(`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`)
+    this.healtText.setText(`Health: ${playerObject.health} /  ${playerObject.maxHealth}`)
+  }
+
+
+  createPlayerExpBar(playerObject) {
     this.expBar = this.add.graphics();
     this.expBar.clear();
     this.expBar.fillStyle(0xffffff, 1);
