@@ -27,7 +27,7 @@ passport.use(
           items: null,
           equipedItems: null,
           exp: 0,
-          expMax: 100,
+          maxExp: 100,
           level: 1,
         };
         const user = await UserModel.create({

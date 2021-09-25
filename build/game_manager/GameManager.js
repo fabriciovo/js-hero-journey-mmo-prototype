@@ -331,8 +331,10 @@ var GameManager = /*#__PURE__*/function () {
             }
           }
         });
-        socket.on("levelUp", function (playerId) {
-          console.log("levelUp");
+        socket.on("levelUp", function () {
+          _this2.players[socket.id].levelUp();
+
+          _this2.io.emit("updatePlayerStats", socket.id, _this2.players[socket.id].level, _this2.players[socket.id].attack, _this2.players[socket.id].defense, _this2.players[socket.id].maxHealth, _this2.players[socket.id].exp, _this2.players[socket.id].maxExp);
         });
         socket.on("updatePlayerExp", function (playerId) {
           console.log("updatePlayerExp");
@@ -352,13 +354,8 @@ var GameManager = /*#__PURE__*/function () {
               // updating the players gold
               _this2.players[socket.id].updateGold(gold);
 
-              socket.emit("updateScore", _this2.players[socket.id].gold);
-
-              _this2.players[socket.id].updateExp(15);
-
-              _this2.io.emit("updateXp", 20, socket.id); //socket.emit("dropItem", item);
+              socket.emit("updateScore", _this2.players[socket.id].gold); //socket.emit("dropItem", item);
               // removing the monster
-
 
               _this2.spawners[_this2.monsters[monsterId].spawnerId].removeObject(monsterId);
 
@@ -367,10 +364,17 @@ var GameManager = /*#__PURE__*/function () {
 
               _this2.players[socket.id].updateHealth(15);
 
-              _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health);
+              _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health); //update xp
+
+
+              _this2.players[socket.id].updateExp(50);
+
+              _this2.io.emit("updateXp", 50, socket.id);
             } else {
               // update the players health
               _this2.players[socket.id].playerAttacked(attack);
+
+              console.log("attacked");
 
               _this2.io.emit("updatePlayerHealth", socket.id, _this2.players[socket.id].health); // update the monsters health
 
