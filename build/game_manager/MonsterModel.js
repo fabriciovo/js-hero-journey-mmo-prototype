@@ -16,7 +16,7 @@ var _uuid = require("uuid");
 var _utils = require("./utils");
 
 var MonsterModel = /*#__PURE__*/function () {
-  function MonsterModel(x, y, gold, spawnerId, frame, health, attack) {
+  function MonsterModel(x, y, gold, spawnerId, frame, health, attack, exp) {
     (0, _classCallCheck2["default"])(this, MonsterModel);
     this.id = "".concat(spawnerId, "-").concat((0, _uuid.v4)());
     this.spawnerId = spawnerId;
@@ -27,6 +27,7 @@ var MonsterModel = /*#__PURE__*/function () {
     this.health = health;
     this.maxHealth = health;
     this.attack = attack;
+    this.exp = exp;
   }
 
   (0, _createClass2["default"])(MonsterModel, [{
