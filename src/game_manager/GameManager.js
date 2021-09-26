@@ -323,7 +323,6 @@ export default class GameManager {
         // update the spawner
         if (this.monsters[monsterId]) {
           const { gold, attack, exp } = this.monsters[monsterId];
-          console.log(this.monsters[monsterId]);
           const playerAttackValue = this.players[socket.id].attack;
           // subtract health monster model
           this.monsters[monsterId].loseHealth(playerAttackValue);
