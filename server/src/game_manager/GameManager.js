@@ -197,7 +197,7 @@ export default class GameManager {
         }
       });
 
-      socket.on("pickUpItem", (itemId,item) => {
+      socket.on("pickUpItem", (itemId) => {
         // update the spawner
         if (this.items[itemId]) {
           if (this.players[socket.id].canPickupItem()) {
@@ -212,14 +212,6 @@ export default class GameManager {
             // removing the item
             this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
           }
-        }else{
-          this.players[socket.id].addItem(item);
-          socket.emit("updateItems", this.players[socket.id]);
-          socket.broadcast.emit(
-            "updatePlayersItems",
-            socket.id,
-            this.players[socket.id]
-          );
         }
       });
 
@@ -348,7 +340,7 @@ export default class GameManager {
             this.players[socket.id].updateExp(exp);
             this.io.emit("updateXp", exp, socket.id);
 
-            this.io.emit("dropItem",this.monsters[monsterId] );
+            //this.io.emit("dropItem",this.monsters[monsterId] );
 
             // removing the monster
             this.spawners[this.monsters[monsterId].spawnerId].removeObject(

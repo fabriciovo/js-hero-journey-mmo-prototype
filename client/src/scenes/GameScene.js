@@ -105,7 +105,7 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("monsterRemoved", (monsterId) => {
       this.monsters.getChildren().forEach((monster) => {
         if (monster.id === monsterId) {
-          this.dropItem(monster);
+          //this.dropItem(monster);
           monster.makeInactive();
           this.monsterDeathAudio.play();
         }
@@ -274,6 +274,19 @@ export default class GameScene extends Phaser.Scene {
         }
       });
     });
+
+    this.socket.on("droppedItemPicked", item =>{
+      console.log("droppedItemPicked")
+
+      console.log(item)
+
+      this.items.getChildren().forEach((i) => {
+        if (i.id === item.id) {
+          console.log(i)
+          i.makeInactive();
+        }
+      });
+    })
   }
 
   create() {
@@ -675,7 +688,7 @@ export default class GameScene extends Phaser.Scene {
   collectItem(player, item) {
     // item pickup
     console.log(item)
-    this.socket.emit("pickUpItem", item.id, item);
+    this.socket.emit("pickUpItem", item.id);
   }
 
   sendDropItemMessage(itemId) {

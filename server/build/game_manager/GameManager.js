@@ -299,10 +299,10 @@ var GameManager = /*#__PURE__*/function () {
               _this2.spawners[_this2.items[itemId].spawnerId].removeObject(itemId);
             }
           } else {
-            _this2.players[socket.id].addItem(item);
-
+            _this2.items[itemId] = item;
             socket.emit("updateItems", _this2.players[socket.id]);
             socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
+            socket.emit("droppedItemPicked", itemId);
           }
         });
         socket.on("playerDroppedItem", function (itemId) {
