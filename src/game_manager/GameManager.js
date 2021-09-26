@@ -9,6 +9,7 @@ import { SpawnerType } from "./utils";
 import UserModel from "../models/UserModel";
 import mongoose from "mongoose";
 import { async } from "regenerator-runtime";
+import { v4 } from "uuid";
 export default class GameManager {
   constructor(io) {
     this.io = io;
@@ -196,7 +197,7 @@ export default class GameManager {
         }
       });
 
-      socket.on("pickUpItem", (itemId) => {
+      socket.on("pickUpItem", (itemId,item) => {
         // update the spawner
         if (this.items[itemId]) {
           if (this.players[socket.id].canPickupItem()) {
@@ -211,6 +212,14 @@ export default class GameManager {
             // removing the item
             this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
           }
+        }else{
+          this.players[socket.id].addItem(item);
+          socket.emit("updateItems", this.players[socket.id]);
+          socket.broadcast.emit(
+            "updatePlayersItems",
+            socket.id,
+            this.players[socket.id]
+          );
         }
       });
 
@@ -225,9 +234,6 @@ export default class GameManager {
       });
 
       socket.on("playerEquipedItem", (itemId) => {
-        console.log(itemId);
-
-        console.log(this.players[socket.id].items[itemId]);
         if (this.players[socket.id].items[itemId]) {
           if (this.players[socket.id].canEquipItem()) {
             this.players[socket.id].equipItem(
@@ -245,7 +251,6 @@ export default class GameManager {
       });
 
       socket.on("playerUnequipedItem", (itemId) => {
-        console.log(this.players[socket.id].equipedItems[itemId]);
         if (this.players[socket.id].equipedItems[itemId]) {
           if (this.players[socket.id].canPickupItem()) {
             this.players[socket.id].addItem(
@@ -326,8 +331,8 @@ export default class GameManager {
         // update the spawner
         if (this.monsters[monsterId]) {
           const { gold, attack, exp } = this.monsters[monsterId];
+          console.log(this.monsters[monsterId]);
           const playerAttackValue = this.players[socket.id].attack;
-          console.log(attack);
           // subtract health monster model
           this.monsters[monsterId].loseHealth(playerAttackValue);
 
@@ -339,15 +344,17 @@ export default class GameManager {
 
             //socket.emit("dropItem", item);
 
+            //update xp
+            this.players[socket.id].updateExp(exp);
+            this.io.emit("updateXp", exp, socket.id);
+
+            this.io.emit("dropItem",this.monsters[monsterId] );
+
             // removing the monster
             this.spawners[this.monsters[monsterId].spawnerId].removeObject(
               monsterId
             );
             this.io.emit("monsterRemoved", monsterId);
-
-            //update xp
-            this.players[socket.id].updateExp(exp);
-            this.io.emit("updateXp", exp, socket.id);
           } else {
             // update the monsters health
             this.io.emit(
@@ -355,12 +362,10 @@ export default class GameManager {
               monsterId,
               this.monsters[monsterId].health
             );
-            console.log(dis);
 
             if (dis < 90) {
               // update the players health
               this.players[socket.id].playerAttacked(attack);
-              console.log("attacked");
               this.io.emit(
                 "updatePlayerHealth",
                 socket.id,
