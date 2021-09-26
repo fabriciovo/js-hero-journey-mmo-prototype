@@ -100,10 +100,11 @@ export default class PopupWindow extends ModalWindow {
   }
 
   levelUp(playerObject){
-    let oldLevel = playerObject.level;
+    const newLevel = playerObject.level + 1;
+
     this.showWindow();
     this.popupTitle.setText("Level Up")
-    this.popupText.setText(`You advance from ${oldLevel--} to ${playerObject.level}`)
+    this.popupText.setText(`You advance from ${playerObject.level} to ${newLevel}`)
 
   }
 }

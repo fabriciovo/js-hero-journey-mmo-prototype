@@ -301,17 +301,17 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionB.setPosition(this.x,this.y)
     if (this.mainPlayer) this.attackAudio.play();
     if (this.currentDirection === Direction.UP) {
-      this.actionB.body.setVelocityY(-430)
+      this.actionB.body.setVelocityY(-560)
     } else if (this.currentDirection === Direction.DOWN) {
-      this.actionB.body.setVelocityY(430)
+      this.actionB.body.setVelocityY(560)
     } else if (this.currentDirection === Direction.RIGHT) {
-      this.actionB.body.setVelocityX(430)
+      this.actionB.body.setVelocityX(560)
     } else if (this.currentDirection === Direction.LEFT) {
-      this.actionB.body.setVelocityX(-430)
+      this.actionB.body.setVelocityX(-560)
     }
 
     this.scene.time.delayedCall(
-      1000,
+      2000,
       () => {
         this.actionB.makeInactive();
         this.actionBActive = false;

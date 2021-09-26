@@ -1,4 +1,6 @@
 import * as Phaser from "phaser";
+import { v4 } from "uuid";
+
 import PlayerContainer from "../classes/player/PlayerContainer";
 import Chest from "../classes/Chest";
 import Monster from "../classes/Monster";
@@ -79,7 +81,6 @@ export default class GameScene extends Phaser.Scene {
           if (player.potionAActive) {
             otherPlayer.potionAFunction();
           }
-          debugger;
           otherPlayer.playAnimation();
         }
       });
@@ -104,6 +105,7 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("monsterRemoved", (monsterId) => {
       this.monsters.getChildren().forEach((monster) => {
         if (monster.id === monsterId) {
+          this.dropItem(monster);
           monster.makeInactive();
           this.monsterDeathAudio.play();
         }
@@ -127,8 +129,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updateXp", (exp, playerId) => {
-      console.log(playerId, exp);
-
       if (this.player.id === playerId) {
         this.player.updateExp(exp);
         this.uiScene.updatePlayerExpBar(this.player);
@@ -182,7 +182,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updatePlayerHealth", (playerId, health) => {
-      console.log(playerId, health);
       if (this.player.id === playerId) {
         if (health < this.player.health) {
           this.playerDamageAudio.play();
@@ -205,9 +204,6 @@ export default class GameScene extends Phaser.Scene {
         this.uiScene.updatePlayerStatsUi(playerObject);
         this.uiScene.updatePlayerHealthBar(playerObject);
         this.uiScene.updatePlayerExpBar(playerObject);
-
-
-
       } else {
         this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerObject.id) {
@@ -241,6 +237,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("itemSpawned", (item) => {
+      console.log(item);
       this.spawnItem(item);
     });
 
@@ -459,6 +456,7 @@ export default class GameScene extends Phaser.Scene {
   }
   spawnItem(itemObject) {
     let item = this.items.getFirstDead();
+    console.log(itemObject);
     if (!item) {
       item = new Item(
         this,
@@ -477,6 +475,19 @@ export default class GameScene extends Phaser.Scene {
       item.setPosition(itemObject.x * 2, itemObject.y * 2);
       item.makeActive();
     }
+  }
+
+  dropItem(monster) {
+    const item = new Item(
+      this,
+      monster.x,
+      monster.y,
+      "tools",
+      2,
+      `items-${v4()}`
+    );
+    // add item to items group
+    this.items.add(item);
   }
 
   spawnChest(chestObject) {
@@ -663,8 +674,8 @@ export default class GameScene extends Phaser.Scene {
 
   collectItem(player, item) {
     // item pickup
-
-    this.socket.emit("pickUpItem", item.id);
+    console.log(item)
+    this.socket.emit("pickUpItem", item.id, item);
   }
 
   sendDropItemMessage(itemId) {
