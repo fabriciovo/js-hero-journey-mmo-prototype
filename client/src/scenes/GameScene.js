@@ -237,7 +237,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("itemSpawned", (item) => {
-      console.log(item);
       this.spawnItem(item);
     });
 
@@ -276,13 +275,10 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("droppedItemPicked", item =>{
-      console.log("droppedItemPicked")
 
-      console.log(item)
 
       this.items.getChildren().forEach((i) => {
         if (i.id === item.id) {
-          console.log(i)
           i.makeInactive();
         }
       });
@@ -469,7 +465,6 @@ export default class GameScene extends Phaser.Scene {
   }
   spawnItem(itemObject) {
     let item = this.items.getFirstDead();
-    console.log(itemObject);
     if (!item) {
       item = new Item(
         this,
@@ -634,7 +629,6 @@ export default class GameScene extends Phaser.Scene {
   rangedOverlapWalls(ranged, blocked) {
     if (this.player.actionBActive && !this.player.hitbox) {
       this.player.hitbox = true;
-      console.log(ranged);
       ranged.makeInactive();
     }
   }
@@ -687,7 +681,6 @@ export default class GameScene extends Phaser.Scene {
 
   collectItem(player, item) {
     // item pickup
-    console.log(item)
     this.socket.emit("pickUpItem", item.id);
   }
 
