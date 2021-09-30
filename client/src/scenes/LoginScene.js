@@ -64,7 +64,7 @@ export default class LoginScene extends CredentialsBaseScene {
       .then((response) => {
         if (response.status === 200) {
           refreshTokenInterval();
-          this.startScene("Game");
+          this.startScene("Forest", "large");
           
         } else {
           console.log(response.error);
@@ -77,11 +77,11 @@ export default class LoginScene extends CredentialsBaseScene {
       });
   }
 
-  startScene(targetScene) {
+  startScene(targetScene,level) {
     this.scale.removeListener("resize", this.resize);
 
     window.history.pushState({}, document.title, "/");
-    this.scene.start(targetScene);
+    this.scene.start(targetScene, {level:level});
   }
 
   resize(gameSize) {

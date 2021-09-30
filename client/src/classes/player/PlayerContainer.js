@@ -1,8 +1,7 @@
 import * as Phaser from "phaser";
 import Player from "./Player";
 import Direction from "../../utils/direction";
-import Bullet from "../weapons/RangedWeapon";
-import RangedWeapon from "../weapons/RangedWeapon";
+  import RangedWeapon from "../weapons/RangedWeapon";
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(
@@ -81,7 +80,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     // create the weapons game object
     this.actionA = this.scene.add.image(40, 0, "iconset", 2);
-    this.actionB = new RangedWeapon(this.scene,this.x,this.y,"iconset", 2,this.id)
+    this.actionB = new RangedWeapon(this.scene,this.x,this.y,"iconset", 2)
     this.actionB.makeInactive();
     this.scene.rangedObjects.add(this.actionB);
 

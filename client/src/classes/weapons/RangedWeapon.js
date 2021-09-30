@@ -1,10 +1,9 @@
 import * as Phaser from 'phaser';
 
 export default class RangedWeapon extends Phaser.Physics.Arcade.Image {
-  constructor(scene, x, y, key, frame, damage, id) {
+  constructor(scene, x, y, key, frame, id) {
     super(scene, x, y, key, frame);
     this.scene = scene; // the scene this game object will be added to
-    this.damage = damage; 
     this.id = id;
 
     // enable physics

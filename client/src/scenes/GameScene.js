@@ -1,6 +1,4 @@
 import * as Phaser from "phaser";
-import { v4 } from "uuid";
-
 import PlayerContainer from "../classes/player/PlayerContainer";
 import Chest from "../classes/Chest";
 import Monster from "../classes/Monster";
@@ -9,8 +7,8 @@ import { getCookie } from "../utils/utils";
 import DialogWindow from "../classes/window/DialogWindow";
 import Item from "../classes/items/Item";
 export default class GameScene extends Phaser.Scene {
-  constructor() {
-    super("Game");
+  constructor(key) {
+    super(key);
   }
 
   init(data) {
@@ -27,7 +25,10 @@ export default class GameScene extends Phaser.Scene {
     this.listenForSocketEvents();
 
     this.selectedCharacter = data.selectedCharacter || 0;
+    
   }
+
+
   listenForSocketEvents() {
     // spawn player game objects
     this.socket.on("currentPlayers", (players) => {
@@ -70,18 +71,13 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.updateFlipX();
           otherPlayer.actionAActive = player.actionAActive;
           otherPlayer.actionBActive = player.actionBActive;
-          otherPlayer.potionAActive = player.potionAActive;
           otherPlayer.currentDirection = player.currentDirection;
           if (player.actionAActive) {
-            otherPlayer.actionAFunction();
+            otherPlayer.actionA();
           }
           if (player.actionBActive) {
-            otherPlayer.actionBFunction();
+            otherPlayer.actionB();
           }
-          if (player.potionAActive) {
-            otherPlayer.potionAFunction();
-          }
-          otherPlayer.playAnimation();
         }
       });
     });
@@ -105,7 +101,6 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("monsterRemoved", (monsterId) => {
       this.monsters.getChildren().forEach((monster) => {
         if (monster.id === monsterId) {
-          //this.dropItem(monster);
           monster.makeInactive();
           this.monsterDeathAudio.play();
         }
@@ -122,48 +117,23 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
+    this.socket.on("rangedAttackMovement", (rangedAttacks) => {
+      this.rangedAttacks.getChildren().forEach((rangedAttack) => {
+        Object.keys(rangedAttacks).forEach((rangedAttacksId) => {
+          if (rangedAttack.id === rangedAttacksId) {
+            this.physics.moveToObject(rangedAttack, rangedAttacks[rangedAttacksId], 40);
+          }
+        });
+      });
+    });
+
+
+
     this.socket.on("updateScore", (goldAmount) => {
       this.events.emit("updateScore", goldAmount);
       this.player.gold = goldAmount;
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     });
-
-    this.socket.on("updateXp", (exp, playerId) => {
-      if (this.player.id === playerId) {
-        this.player.updateExp(exp);
-        this.uiScene.updatePlayerExpBar(this.player);
-        this.uiScene.updatePlayerStatsUi(this.player);
-
-        if (this.player.exp > this.player.maxExp) {
-          this.socket.emit("levelUp", this.player);
-          this.uiScene.popup.levelUp(this.player);
-        }
-      }
-    });
-
-    this.socket.on(
-      "updatePlayerStats",
-      (playerId, level, attack, defense, maxHealth, exp, maxExp) => {
-        if (this.player.id === playerId) {
-          this.player.updateStats(
-            level,
-            attack,
-            defense,
-            maxHealth,
-            exp,
-            maxExp
-          );
-
-          //Update stats
-          this.player.updateHealthBar();
-
-          this.uiScene.updatePlayerExpBar(this.player);
-          this.uiScene.updatePlayerHealthBar(this.player);
-          this.uiScene.updatePlayerStatsUi(this.player);
-          this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
-        }
-      }
-    );
 
     this.socket.on("updatePlayersScore", (playerId, goldAmount) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
@@ -187,7 +157,6 @@ export default class GameScene extends Phaser.Scene {
           this.playerDamageAudio.play();
         }
         this.player.updateHealth(health);
-        this.uiScene.updatePlayerHealthBar(this.player);
       } else {
         this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerId) {
@@ -201,9 +170,6 @@ export default class GameScene extends Phaser.Scene {
       if (this.player.id === playerObject.id) {
         this.playerDeathAudio.play();
         this.player.respawn(playerObject);
-        this.uiScene.updatePlayerStatsUi(playerObject);
-        this.uiScene.updatePlayerHealthBar(playerObject);
-        this.uiScene.updatePlayerExpBar(playerObject);
       } else {
         this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerObject.id) {
@@ -242,25 +208,24 @@ export default class GameScene extends Phaser.Scene {
 
     this.socket.on("updateItems", (playerObject) => {
       this.player.items = playerObject.items;
+      this.player.equipedItems = playerObject.equipedItems;
       this.player.attackValue = playerObject.attack;
       this.player.defenseValue = playerObject.defense;
       this.player.maxHealth = playerObject.maxHealth;
       this.player.gold = playerObject.gold;
-      this.player.equipedItems = playerObject.equipedItems;
       this.player.updateHealthBar();
       this.uiScene.inventoryWindow.updateInventory(this.player);
-      this.uiScene.playerStatsWindow.updateEquipment(this.player);
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     });
 
     this.socket.on("updatePlayersItems", (playerId, playerObject) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
         if (playerId === otherPlayer.id) {
+          otherPlayer.equipedItems = playerObject.equipedItems;
           otherPlayer.items = playerObject.items;
           otherPlayer.maxHealth = playerObject.maxHealth;
           otherPlayer.attackValue = playerObject.attack;
           otherPlayer.defenseValue = playerObject.defense;
-          otherPlayer.equipedItems = playerObject.equipedItems;
           otherPlayer.updateHealthBar();
         }
       });
@@ -273,16 +238,6 @@ export default class GameScene extends Phaser.Scene {
         }
       });
     });
-
-    this.socket.on("droppedItemPicked", item =>{
-
-
-      this.items.getChildren().forEach((i) => {
-        if (i.id === item.id) {
-          i.makeInactive();
-        }
-      });
-    })
   }
 
   create() {
@@ -302,7 +257,7 @@ export default class GameScene extends Phaser.Scene {
     this.resize({ height: this.scale.height, width: this.scale.width });
 
     this.keyDownEventListener();
-
+ 
     this.input.on("pointerdown", () => {
       document.getElementById("chatInput").blur();
     });
@@ -310,6 +265,8 @@ export default class GameScene extends Phaser.Scene {
     setInterval(() => {
       this.socket.emit("savePlayerData");
     }, 1000);
+    this.door = this.add.image(600,200,"iconset",3);
+    this.doors.add(this.door)
   }
 
   keyDownEventListener() {
@@ -323,6 +280,8 @@ export default class GameScene extends Phaser.Scene {
         }
       }
     });
+
+    
   }
 
   sendMessage() {
@@ -342,35 +301,22 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.player) {
       // emit player movement to the server
-      const {
-        x,
-        y,
-        flipX,
-        actionAActive,
-        currentDirection,
-        actionBActive,
-        potionAActive,
-        level,
-      } = this.player;
+      const { x, y, flipX, actionAActive, currentDirection, actionBActive } = this.player;
       if (
         this.player.oldPosition &&
         (x != this.player.oldPosition.x ||
           y !== this.player.oldPosition.y ||
           flipX != this.player.oldPosition.flipX ||
-          actionAActive !== this.player.oldPosition.actionAActive ||
-          actionBActive !== this.player.oldPosition.actionBActive ||
-          potionAActive !== this.player.oldPosition.potionAActive ||
-          level !== this.player.oldPosition.level)
+          actionAActive !== this.player.oldPosition.actionAActive 
+          || actionBActive !== this.player.oldPosition.actionBActive)
       ) {
         this.socket.emit("playerMovement", {
           x,
           y,
           flipX,
           actionAActive,
-          actionBActive,
-          potionAActive,
           currentDirection,
-          level,
+          actionBActive
         });
       }
       // save old position data
@@ -378,11 +324,9 @@ export default class GameScene extends Phaser.Scene {
         x: this.player.x,
         y: this.player.y,
         flipX: this.player.flipX,
-        currentDirection: currentDirection,
-        actionAActive: this.player.actionAActive,
+        currentDirection:currentDirection,
+        actionBActive: this.player.actionAActive,
         actionBActive: this.player.actionBActive,
-        potionAActive: this.player.potionAActive,
-        level: this.player.level,
       };
     }
   }
@@ -427,17 +371,13 @@ export default class GameScene extends Phaser.Scene {
       playerObject.defense,
       playerObject.attack,
       playerObject.items,
-      playerObject.equipedItems,
-      playerObject.exp,
-      playerObject.maxExp,
-      playerObject.level
+      playerObject.equipedItems
     );
 
     if (!mainPlayer) {
       this.otherPlayers.add(newPlayerObject);
     } else {
       this.player = newPlayerObject;
-      this.uiScene.createPlayersStatsUi(this.player);
     }
 
     newPlayerObject.setInteractive();
@@ -449,6 +389,8 @@ export default class GameScene extends Phaser.Scene {
   createGroups() {
     // create a chest group
     this.chests = this.physics.add.group();
+    this.doors = this.physics.add.group();
+
     // create a monster group
     this.monsters = this.physics.add.group();
     this.monsters.runChildUpdate = true;
@@ -460,8 +402,8 @@ export default class GameScene extends Phaser.Scene {
     this.items = this.physics.add.group();
 
     // create a ranged Attacks group
-    this.rangedObjects = this.physics.add.group();
-    this.rangedObjects.runChildUpdate = true;
+    this.rangedAttacks = this.physics.add.group();
+    this.rangedAttacks.runChildUpdate = true;
   }
   spawnItem(itemObject) {
     let item = this.items.getFirstDead();
@@ -483,19 +425,6 @@ export default class GameScene extends Phaser.Scene {
       item.setPosition(itemObject.x * 2, itemObject.y * 2);
       item.makeActive();
     }
-  }
-
-  dropItem(monster) {
-    const item = new Item(
-      this,
-      monster.x,
-      monster.y,
-      "tools",
-      2,
-      `items-${v4()}`
-    );
-    // add item to items group
-    this.items.add(item);
   }
 
   spawnChest(chestObject) {
@@ -549,11 +478,27 @@ export default class GameScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
+  equipedItem(itemId) {
+    // item pickup
+    debugger;
+
+    this.socket.emit("equipedItem", itemId);
+  }
+
   addCollisions() {
     // check for collisions between the player and the tiled blocked layer
     this.physics.add.collider(this.player, this.gameMap.blockedLayer);
 
     this.physics.add.collider(this.rangedObjects, this.gameMap.blockedLayer);
+
+
+    this.physics.add.overlap(
+        this.player,
+        this.doors,
+        this.changeScene,
+        null,
+        this
+      );
 
     // check for overlaps between player and chest game objects
     this.physics.add.overlap(
@@ -573,27 +518,17 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     );
-
+    // check for collision betwen the player and other players
+    /*this.physics.add.collider(
+      this.otherPlayers,
+      this.player,
+      this.pvpCollider,
+      false,
+      this
+    );*/
     // check for overlaps between the player's weapon and other player game objects
     this.physics.add.overlap(
       this.player.actionA,
-      this.otherPlayers,
-      this.weaponOverlapEnemy,
-      false,
-      this
-    );
-
-    this.physics.add.overlap(
-      this.player.actionB,
-      this.monsters,
-      this.enemyOverlap,
-      null,
-      this
-    );
-
-    // check for overlaps between the player's weapon and other player game objects
-    this.physics.add.overlap(
-      this.player.actionB,
       this.otherPlayers,
       this.weaponOverlapEnemy,
       false,
@@ -609,8 +544,9 @@ export default class GameScene extends Phaser.Scene {
       this
     );
 
+    
     this.physics.add.overlap(
-      this.rangedObjects,
+      this.rangedAttacks,
       this.otherPlayers,
       this.rangedOverlapEnemy,
       false,
@@ -618,12 +554,16 @@ export default class GameScene extends Phaser.Scene {
     );
 
     this.physics.add.overlap(
-      this.rangedObjects,
+      this.rangedAttacks,
       this.monsters,
       this.rangedOverlapEnemy,
       false,
       this
     );
+  }
+
+  changeScene(player, door){
+    //this.scene.start()
   }
 
   rangedOverlapWalls(ranged, blocked) {
@@ -634,42 +574,27 @@ export default class GameScene extends Phaser.Scene {
   }
 
   rangedOverlapEnemy(player, enemyPlayer) {
-    if (
-      (this.player.actionAActive || this.player.actionBActive) &&
-      !this.player.hitbox
-    ) {
+    if (this.player.actionAActive && !this.player.hitbox) {
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
   }
 
+  pvpCollider(player, otherPlayer) {
+    this.player.body.setVelocity(0);
+    otherPlayer.body.setVelocity(0);
+  }
+
   weaponOverlapEnemy(player, enemyPlayer) {
-    if (
-      (this.player.actionAActive || this.player.actionBActive) &&
-      !this.player.hitbox
-    ) {
+    if (this.player.actionAActive && !this.player.hitbox) {
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
   }
   enemyOverlap(weapon, enemy) {
-    if (
-      (this.player.actionAActive || this.player.actionBActive) &&
-      !this.player.hitbox
-    ) {
+    if (this.player.actionAActive && !this.player.hitbox) {
       this.player.hitbox = true;
-      const dis = Phaser.Math.Distance.Between(
-        this.player.x,
-        this.player.y,
-        enemy.x,
-        enemy.y
-      );
-
-      if (this.player.actionB) {
-        this.player.actionB.makeInactive();
-      }
-
-      this.socket.emit("monsterAttacked", enemy.id, dis);
+      this.socket.emit("monsterAttacked", enemy.id);
     }
   }
 
@@ -681,43 +606,16 @@ export default class GameScene extends Phaser.Scene {
 
   collectItem(player, item) {
     // item pickup
+
     this.socket.emit("pickUpItem", item.id);
   }
 
   sendDropItemMessage(itemId) {
     this.socket.emit("playerDroppedItem", itemId);
-    this.uiScene.inventoryWindow.updateInventory(this.player);
-    this.uiScene.inventoryWindow.hideWindow();
-    this.uiScene.inventoryWindow.showWindow(this.player);
-  }
-
-  sendEquipItemMessage(itemId) {
-    this.socket.emit("playerEquipedItem", itemId);
-    this.uiScene.inventoryWindow.updateInventory(this.player);
-    this.uiScene.inventoryWindow.hideWindow();
-    this.uiScene.inventoryWindow.showWindow(this.player);
-
-    this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
-    this.uiScene.playerStatsWindow.hideWindow();
-    this.uiScene.playerStatsWindow.showWindow(this.player);
-  }
-
-  sendUnequipItemMessage(itemId) {
-    this.socket.emit("playerUnequipedItem", itemId);
-
-    this.uiScene.inventoryWindow.updateInventory(this.player);
-    this.uiScene.inventoryWindow.hideWindow();
-    this.uiScene.inventoryWindow.showWindow(this.player);
-
-    this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
-    this.uiScene.playerStatsWindow.hideWindow();
-    this.uiScene.playerStatsWindow.showWindow(this.player);
   }
 
   createMap() {
     // create map
-
-    //TODO - pra criar novas scenes isso tem q ir para um script independente
     this.gameMap = new GameMap(
       this,
       "map",
