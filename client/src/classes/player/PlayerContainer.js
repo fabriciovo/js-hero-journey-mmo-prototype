@@ -75,8 +75,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     // create the weapons game object
     this.actionA = this.scene.add.image(40, 0, "iconset", 2);
-    //this.actionB =  this.scene.add.image(40, 0, "iconset", 2);//new RangedWeapon(this.scene);
-    this.actionB = new Bullets(this.scene);
+    this.actionB = new RangedWeapon(this.scene,this.x,this.y,"iconset", 2,0,this.id)
+    this.actionB.makeInactive();
+    this.scene.rangedObjects.add(this.actionB);
+
+    //this.actionB = new Bullet(this.scene,this.x,this.y);
+    //this.actionB = new Bullet(this.scene, this.x, this.y);
     // create the potion game object
     this.potionA = this.scene.add.image(40, 0, "iconset", 9);
 

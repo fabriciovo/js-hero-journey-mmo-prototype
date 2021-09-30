@@ -22,6 +22,8 @@ export default class BootScene extends Phaser.Scene {
     // load the map tileset image
     this.load.image("background", "assets/level/background-extruded.png");
 
+    this.load.image("background_rpg", "assets/level/background_rpg.png");
+
     this.load.image(
       "inventoryShield",
       "assets/images/condensation_shield_new.png"
@@ -81,7 +83,10 @@ export default class BootScene extends Phaser.Scene {
 
   loadTileMap() {
     // map made with Tiled in JSON format
-    this.load.tilemapTiledJSON("map", "assets/level/large_level.json");
+    //this.load.image("background", "assets/level/background-extruded.png");
+    //this.load.tilemapTiledJSON("map", "assets/level/large_level.json");
+    
+
   }
 
   create() {

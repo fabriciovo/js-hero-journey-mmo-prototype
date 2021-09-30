@@ -7,8 +7,8 @@ import { getCookie } from "../utils/utils";
 import DialogWindow from "../classes/window/DialogWindow";
 import Item from "../classes/items/Item";
 export default class GameScene extends Phaser.Scene {
-  constructor() {
-    super("Game");
+  constructor(key) {
+    super(key);
   }
 
   init(data) {
@@ -25,7 +25,10 @@ export default class GameScene extends Phaser.Scene {
     this.listenForSocketEvents();
 
     this.selectedCharacter = data.selectedCharacter || 0;
+    
   }
+
+
   listenForSocketEvents() {
     // spawn player game objects
     this.socket.on("currentPlayers", (players) => {
@@ -262,6 +265,8 @@ export default class GameScene extends Phaser.Scene {
     setInterval(() => {
       this.socket.emit("savePlayerData");
     }, 1000);
+    this.door = this.add.image(600,200,"iconset",3);
+    this.doors.add(this.door)
   }
 
   keyDownEventListener() {
@@ -275,6 +280,8 @@ export default class GameScene extends Phaser.Scene {
         }
       }
     });
+
+    
   }
 
   sendMessage() {
@@ -382,6 +389,8 @@ export default class GameScene extends Phaser.Scene {
   createGroups() {
     // create a chest group
     this.chests = this.physics.add.group();
+    this.doors = this.physics.add.group();
+
     // create a monster group
     this.monsters = this.physics.add.group();
     this.monsters.runChildUpdate = true;
@@ -479,6 +488,18 @@ export default class GameScene extends Phaser.Scene {
   addCollisions() {
     // check for collisions between the player and the tiled blocked layer
     this.physics.add.collider(this.player, this.gameMap.blockedLayer);
+
+    this.physics.add.collider(this.rangedObjects, this.gameMap.blockedLayer);
+
+
+    this.physics.add.overlap(
+        this.player,
+        this.doors,
+        this.changeScene,
+        null,
+        this
+      );
+
     // check for overlaps between player and chest game objects
     this.physics.add.overlap(
       this.player,
@@ -539,6 +560,17 @@ export default class GameScene extends Phaser.Scene {
       false,
       this
     );
+  }
+
+  changeScene(player, door){
+    //this.scene.start()
+  }
+
+  rangedOverlapWalls(ranged, blocked) {
+    if (this.player.actionBActive && !this.player.hitbox) {
+      this.player.hitbox = true;
+      ranged.makeInactive();
+    }
   }
 
   rangedOverlapEnemy(player, enemyPlayer) {

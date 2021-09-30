@@ -10,7 +10,7 @@ export default class UiScene extends Phaser.Scene {
 
   init() {
     // grab a reference to the game scene
-    this.gameScene = this.scene.get("Game");
+    this.gameScene = this.scene.get("Forest");
     this.showInventory = false;
     this.showPlayerStats = false;
   }
