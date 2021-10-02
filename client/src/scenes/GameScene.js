@@ -116,7 +116,7 @@ export default class GameScene extends Phaser.Scene {
       this.monsters.getChildren().forEach((monster) => {
         Object.keys(monsters).forEach((monsterId) => {
           if (monster.id === monsterId) {
-            this.physics.moveToObject(monster, monsters[monsterId], 40);
+            monster.move(monsters[monsterId])
           }
         });
       });

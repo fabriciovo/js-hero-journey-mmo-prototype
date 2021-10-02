@@ -1,9 +1,9 @@
-import { SpawnerType, randomNumber, WeaponTypes } from "./utils";
-import ChestModel from "./ChestModel";
-import MonsterModel from "./MonsterModel";
-import ItemModel from "../models/ItemModel";
+import { SpawnerType, randomNumber, WeaponTypes } from "../utils";
+import ChestModel from "../../models/ChestModel";
+import MonsterModel from "../../models/MonsterModel";
+import ItemModel from "../../models/ItemModel";
 
-import * as itemData from "../../public/assets/level/tools.json";
+import * as itemData from "../../../public/assets/level/tools.json";
 
 function getRandonValues() {
   const bonus = [-2, -10, -3, -5, -6, -7, 0, 5, 3, 4, 7, 2, 1, 8, 10];

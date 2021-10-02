@@ -19,25 +19,19 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
-var _PlayerModel = _interopRequireDefault(require("./PlayerModel"));
+var _PlayerModel = _interopRequireDefault(require("../models/PlayerModel"));
+
+var _UserModel = _interopRequireDefault(require("../models/UserModel"));
+
+var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
 
 var levelData = _interopRequireWildcard(require("../../public/assets/level/large_level.json"));
 
 var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.json"));
 
-var _Spawner = _interopRequireDefault(require("./Spawner"));
-
-var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
+var _Spawner = _interopRequireDefault(require("./controllers/Spawner"));
 
 var _utils = require("./utils");
-
-var _UserModel = _interopRequireDefault(require("../models/UserModel"));
-
-var _mongoose = _interopRequireDefault(require("mongoose"));
-
-var _regeneratorRuntime2 = require("regenerator-runtime");
-
-var _uuid = require("uuid");
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
@@ -287,7 +281,7 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
-        socket.on("pickUpItem", function (itemId, item) {
+        socket.on("pickUpItem", function (itemId) {
           // update the spawner
           if (_this2.items[itemId]) {
             if (_this2.players[socket.id].canPickupItem()) {
@@ -298,11 +292,6 @@ var GameManager = /*#__PURE__*/function () {
 
               _this2.spawners[_this2.items[itemId].spawnerId].removeObject(itemId);
             }
-          } else {
-            _this2.items[itemId] = item;
-            socket.emit("updateItems", _this2.players[socket.id]);
-            socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
-            socket.emit("droppedItemPicked", itemId);
           }
         });
         socket.on("playerDroppedItem", function (itemId) {
@@ -379,7 +368,6 @@ var GameManager = /*#__PURE__*/function () {
                 gold = _this2$monsters$monst.gold,
                 attack = _this2$monsters$monst.attack,
                 exp = _this2$monsters$monst.exp;
-            console.log(_this2.monsters[monsterId]);
             var playerAttackValue = _this2.players[socket.id].attack; // subtract health monster model
 
             _this2.monsters[monsterId].loseHealth(playerAttackValue); // check the monsters health, and if dead remove that object
@@ -394,9 +382,8 @@ var GameManager = /*#__PURE__*/function () {
 
               _this2.players[socket.id].updateExp(exp);
 
-              _this2.io.emit("updateXp", exp, socket.id);
-
-              _this2.io.emit("dropItem", _this2.monsters[monsterId]); // removing the monster
+              _this2.io.emit("updateXp", exp, socket.id); //this.io.emit("dropItem",this.monsters[monsterId] );
+              // removing the monster
 
 
               _this2.spawners[_this2.monsters[monsterId].spawnerId].removeObject(monsterId);
