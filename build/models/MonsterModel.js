@@ -13,7 +13,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 var _uuid = require("uuid");
 
-var _utils = require("./utils");
+var _utils = require("../game_manager/utils");
 
 var MonsterModel = /*#__PURE__*/function () {
   function MonsterModel(x, y, gold, spawnerId, frame, health, attack, exp) {

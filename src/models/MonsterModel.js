@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { randomNumber } from './utils';
+import { randomNumber } from '../game_manager/utils';
 
 export default class MonsterModel {
   constructor(x, y, gold, spawnerId, frame, health, attack, exp) {

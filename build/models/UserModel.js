@@ -15,8 +15,6 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
 
-var _PlayerModel = _interopRequireDefault(require("../game_manager/PlayerModel"));
-
 /* eslint-disable func-names */
 var Schema = _mongoose["default"].Schema;
 var PlayerSchema = new Schema({

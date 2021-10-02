@@ -1,15 +1,14 @@
 import jwt from "jsonwebtoken";
-import PlayerModel from "./PlayerModel";
+import PlayerModel from "../models/PlayerModel";
+import UserModel from "../models/UserModel";
+import ChatModel from "../models/ChatModel";
+
 import * as levelData from "../../public/assets/level/large_level.json";
 import * as itemData from "../../public/assets/level/tools.json";
 
-import Spawner from "./Spawner";
-import ChatModel from "../models/ChatModel";
+import Spawner from "./controllers/Spawner";
 import { SpawnerType } from "./utils";
-import UserModel from "../models/UserModel";
-import mongoose from "mongoose";
-import { async } from "regenerator-runtime";
-import { v4 } from "uuid";
+
 export default class GameManager {
   constructor(io) {
     this.io = io;

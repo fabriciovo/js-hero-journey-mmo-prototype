@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import PlayerModel from "../game_manager/PlayerModel";
+
 const { Schema } = mongoose;
 
 const PlayerSchema = new Schema({
