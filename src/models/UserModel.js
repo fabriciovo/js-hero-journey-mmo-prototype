@@ -20,6 +20,9 @@ const PlayerSchema = new Schema({
   health: {
     type: Number,
   },
+  key:{
+    type:String
+  },
   frame: {
     type: Number,
   },
