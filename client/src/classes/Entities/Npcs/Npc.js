@@ -1,4 +1,3 @@
-import * as Phaser from "phaser";
 import Entity from "../Entity";
 export default class Npc extends Entity {
   constructor(scene, x, y, key, frame, id) {
@@ -6,7 +5,6 @@ export default class Npc extends Entity {
   }
 
   action(scene,player){
-    console.log("sadopkadsk")
     if(player){
       scene.shopWindow.showWindow(player);
     }else{
