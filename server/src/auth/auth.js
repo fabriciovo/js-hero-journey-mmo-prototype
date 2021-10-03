@@ -23,13 +23,14 @@ passport.use(
           maxHealth: 150,
           health: 150,
           frame: 0,
+          key: "characters_1",
           gold: 20,
           items: null,
           equipedItems: null,
           exp: 0,
           maxExp: 100,
           level: 1,
-          potions:0
+          potions: 0,
         };
         const user = await UserModel.create({
           email,

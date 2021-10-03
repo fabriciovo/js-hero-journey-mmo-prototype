@@ -273,7 +273,7 @@ export default class UiScene extends Phaser.Scene {
       )
       .setDepth(4);
 
-      this.potionACountText.setText(playerObject.potions.toString())  }
+      this.potionACountText.setText(`${playerObject.potions}`)  }
 
   updatePlayerStatsUi(playerObject){
     this.levelText.setText(`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`)

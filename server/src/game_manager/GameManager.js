@@ -139,14 +139,14 @@ export default class GameManager {
         }
       });
 
-      socket.on("newPlayer", async (token, frame) => {
+      socket.on("newPlayer", async (token, key) => {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
           const { name, _id } = decoded.user;
 
           const playerSchema = await UserModel.findById(_id);
           // create a new Player
-          this.spawnPlayer(socket.id, name, frame, playerSchema.player);
+          this.spawnPlayer(socket.id, name, key, playerSchema.player);
 
           // send the players object to the new player
           socket.emit("currentPlayers", this.players);
@@ -184,6 +184,8 @@ export default class GameManager {
           this.players[socket.id].flipX = playerData.flipX;
           this.players[socket.id].actionAActive = playerData.actionAActive;
           this.players[socket.id].actionBActive = playerData.actionBActive;
+          this.players[socket.id].potionAActive = playerData.potionAActive;
+          this.players[socket.id].frame = playerData.frame;
           this.players[socket.id].currentDirection =
             playerData.currentDirection;
 
@@ -397,7 +399,8 @@ export default class GameManager {
 
       socket.on("healthPotion", (playerId, health) => {
         if (socket.id === playerId) {
-          this.players[socket.id].updateHealth(health);
+          this.players[socket.id]
+          this.players[socket.id].potion(health);
           this.io.emit(
             "updatePlayerHealth",
             socket.id,
@@ -486,13 +489,13 @@ export default class GameManager {
     );
     this.spawners[spawner.id] = spawner;
   }
-  spawnPlayer(playerId, name, frame, playerSchema) {
+  spawnPlayer(playerId, name, key, playerSchema) {
     const player = new PlayerModel(
       playerId,
       this.playerLocations,
       this.players,
       name,
-      frame,
+      key,
       playerSchema
     );
     this.players[playerId] = player;

@@ -27,7 +27,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.listenForSocketEvents();
 
-    this.selectedCharacter = data.selectedCharacter || 0;
+    this.selectedCharacter = data.selectedCharacter || "characters_1'";
 
     this.cameras.main.roundPixels = true;
   }
@@ -75,6 +75,9 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.actionBActive = player.actionBActive;
           otherPlayer.potionAActive = player.potionAActive;
           otherPlayer.currentDirection = player.currentDirection;
+          otherPlayer.frame = player.frame;
+          otherPlayer.key = player.key;
+
           if (player.actionAActive) {
             otherPlayer.actionAFunction();
           }
@@ -85,7 +88,7 @@ export default class GameScene extends Phaser.Scene {
             otherPlayer.potionAFunction();
             otherPlayer.updateHealthBar();
           }
-          otherPlayer.playAnimation();
+          //otherPlayer.playAnimation();
         }
       });
     });
@@ -128,12 +131,10 @@ export default class GameScene extends Phaser.Scene {
 
     //Npc
     this.socket.on("npcSpawned", (npc) => {
-      console.log("npcSpawned");
       this.spawnNpc(npc);
     });
 
     this.socket.on("currentNpcs", (npcs) => {
-      console.log("currentNpcs");
       Object.keys(npcs).forEach((id) => {
         this.spawnNpc(npcs[id]);
       });
@@ -371,6 +372,8 @@ export default class GameScene extends Phaser.Scene {
         actionBActive,
         potionAActive,
         level,
+        frame,
+        
       } = this.player;
       if (
         this.player.oldPosition &&
@@ -380,7 +383,9 @@ export default class GameScene extends Phaser.Scene {
           actionAActive !== this.player.oldPosition.actionAActive ||
           actionBActive !== this.player.oldPosition.actionBActive ||
           potionAActive !== this.player.oldPosition.potionAActive ||
-          level !== this.player.oldPosition.level)
+          level !== this.player.oldPosition.level ||
+          frame !== this.player.oldPosition.frame ||
+          currentDirection != this.player.oldPosition.currentDirection)
       ) {
         this.socket.emit("playerMovement", {
           x,
@@ -391,6 +396,7 @@ export default class GameScene extends Phaser.Scene {
           potionAActive,
           currentDirection,
           level,
+          frame,
         });
       }
       // save old position data
@@ -398,11 +404,12 @@ export default class GameScene extends Phaser.Scene {
         x: this.player.x,
         y: this.player.y,
         flipX: this.player.flipX,
-        currentDirection: currentDirection,
+        currentDirection: this.player.currentDirection,
         actionAActive: this.player.actionAActive,
         actionBActive: this.player.actionBActive,
         potionAActive: this.player.potionAActive,
         level: this.player.level,
+        frame: this.player.frame,
       };
     }
   }
@@ -431,11 +438,12 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer(playerObject, mainPlayer) {
+    console.log(playerObject.key);
     const newPlayerObject = new PlayerContainer(
       this,
       playerObject.x * 2,
       playerObject.y * 2,
-      "characters",
+      playerObject.key,
       playerObject.frame,
       playerObject.health,
       playerObject.maxHealth,
@@ -459,13 +467,7 @@ export default class GameScene extends Phaser.Scene {
     } else {
       this.player = newPlayerObject;
       this.uiScene.createPlayersStatsUi(this.player);
-
     }
-
-    newPlayerObject.setInteractive();
-    newPlayerObject.on("pointerdown", () => {
-      this.events.emit("showInventory", newPlayerObject);
-    });
   }
 
   createGroups() {
@@ -573,7 +575,6 @@ export default class GameScene extends Phaser.Scene {
 
   spawnNpc(npcObject) {
     let npc = this.npcs.getFirstDead();
-    console.log(npcObject);
     if (!npc) {
       npc = new Npc(
         this,
@@ -613,7 +614,6 @@ export default class GameScene extends Phaser.Scene {
       false,
       this
     );
-    console.log();
 
     // check for overlaps between player and chest game objects
     this.physics.add.overlap(
@@ -734,10 +734,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   npcAction(player, npc) {
-    npc.action(this.uiScene,player);
+    npc.action(this.uiScene, this.player);
   }
-
-
 
   collectChest(player, chest) {
     // play gold pickup sound
@@ -769,11 +767,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   sendBuyItemMessage(item) {
-    console.log("sendBuyItemMessage")
     this.socket.emit("sendBuyItemMessage", item);
     this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     this.uiScene.potionACountText.setText(this.player.potions);
-
   }
 
   sendUnequipItemMessage(itemId) {

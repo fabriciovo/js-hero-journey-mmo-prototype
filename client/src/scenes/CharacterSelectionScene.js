@@ -16,25 +16,26 @@ export default class CharacterSelectionScene extends Phaser.Scene {
 
   createCharacters() {
     this.group = this.add.group();
-    for (let j = 0; j < 3; j += 1) {
-      let x = this.scale.width / 3.5;
-      const y = (this.scale.height / 6) * (j + 2);
-      for (let i = 0 + 8 * j; i < 8 + 8 * j; i += 1) {
-        const character = this.add
-          .image(x, y, "characters", i)
-          .setInteractive();
-        character.characterId = i;
-        character.setAlpha(0.4);
-        character.setScale(3);
+    for (let i = 1; i < 5; i++) {
+      const character = this.add
+        .image(
+          this.scale.width / 4 * i + 96,
+          this.scale.height / 2,
+          `characters_${i}`,
+          0
+        )
+        .setInteractive();
+      character.characterId = `characters_${i}`;
+      character.setAlpha(0.4);
+      character.setScale(3);
 
-        character.on("pointerover", this.pointerOver);
-        character.on("pointerout", this.pointerOut);
-        character.on("pointerdown", this.pointerDown.bind(this, character));
+      character.on("pointerover", this.pointerOver);
+      character.on("pointerout", this.pointerOut);
+      character.on("pointerdown", this.pointerDown.bind(this, character));
 
-        this.group.add(character);
+      this.group.add(character);
 
-        x += 96;
-      }
+      ;
     }
   }
 

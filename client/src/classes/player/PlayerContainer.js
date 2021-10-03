@@ -49,7 +49,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.exp = exp;
     this.maxExp = maxExp;
     this.level = level;
-
+    this.key = key;
     this.potions = potions;
 
     //Mobile
@@ -73,7 +73,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.scene.cameras.main.roundPixels = false;
     }
     // create the player
-    this.player = new Player(this.scene, 0, 0, key, frame);
+    this.player = new Player(this.scene, 0, 0, this.key, frame);
     this.add(this.player);
     this.setDepth(1);
     //Actions
@@ -205,10 +205,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         this.body.setVelocityX(this.velocity);
         this.currentDirection = Direction.RIGHT;
         this.player.flipX = true;
-
         this.flipX = true;
       }
-
       if (cursors.up.isDown || this.mobileUp) {
         this.body.setVelocityY(-this.velocity);
         this.currentDirection = Direction.UP;
@@ -245,13 +243,17 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     if (this.currentDirection === Direction.UP) {
       this.actionA.setPosition(0, -40);
+      this.player.playAnimation("up");
     } else if (this.currentDirection === Direction.DOWN) {
       this.actionA.setPosition(0, 40);
+      this.player.playAnimation("down");
     } else if (this.currentDirection === Direction.RIGHT) {
       this.actionA.setPosition(40, 0);
+      this.player.playAnimation("right");
     } else if (this.currentDirection === Direction.LEFT) {
       this.actionA.setPosition(-40, 0);
-    }
+      this.player.playAnimation("right");
+    } 
 
     if (this.actionAActive) {
       if (this.actionA.flipX) {
@@ -276,8 +278,11 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     this.updateHealthBar();
     this.updatePlayerName();
-
-    this.playAnimation();
+    
+    if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
+      this.player.playAnimation("idle");
+    }
+    //this.playAnimation();
   }
 
   updateFlipX() {
@@ -339,11 +344,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.potionAActive = true;
 
       if (this.mainPlayer) this.attackAudio.play();
-      this.scene.socket.emit("healthPotion", this.id, 20);
       this.potions--;
-      this.scene.uiScene.potionACountText.setText(
-        this.potions.toString()
-      );
+      this.scene.uiScene.potionACountText.setText(this.potions.toString());
+      this.scene.socket.emit("healthPotion", this.id, 20);
 
       this.scene.time.delayedCall(
         500,
@@ -414,19 +417,4 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     }
   }
 
-  playAnimation() {
-    if (this.currentDirection === Direction.UP) {
-      this.player.playAnimation("up");
-    } else if (this.currentDirection === Direction.DOWN) {
-      this.player.playAnimation("down");
-    } else if (this.currentDirection === Direction.RIGHT) {
-      this.player.playAnimation("right");
-    } else if (this.currentDirection === Direction.LEFT) {
-      this.player.playAnimation("right");
-    }
-
-    if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
-      this.player.playAnimation("idle");
-    }
-  }
 }

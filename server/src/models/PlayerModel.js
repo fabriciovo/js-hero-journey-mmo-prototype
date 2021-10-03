@@ -1,5 +1,5 @@
 export default class PlayerModel {
-  constructor(playerId, spawnLocations, players, name, frame, playerSchema) {
+  constructor(playerId, spawnLocations, players, name, key, playerSchema) {
     this.attack = playerSchema.attack;
     this.defense = playerSchema.defense;
     this.health = playerSchema.health;
@@ -7,14 +7,14 @@ export default class PlayerModel {
     this.gold = playerSchema.gold;
     this.id = playerId;
     this.playerName = name;
-    this.frame = frame;
+    this.key = key;
     this.items = playerSchema.items || {};
     this.equipedItems = playerSchema.equipedItems || {};
     this.level = playerSchema.level;
     this.exp = playerSchema.exp;
     this.maxExp = playerSchema.maxExp;
     this.potions = playerSchema.potions;
-
+    console.log(this.key)
     //this.playerItems =  {};
 
     this.maxNumberOfItems = 5;
@@ -79,6 +79,11 @@ export default class PlayerModel {
     this.gold += gold;
   }
   
+  potion(health){
+    this.updateHealth(health)
+    this.potions--;
+  }
+
 
   updateExp(exp) {
     this.exp += exp;
