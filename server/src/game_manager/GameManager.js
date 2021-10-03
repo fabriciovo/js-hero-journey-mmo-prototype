@@ -3,7 +3,7 @@ import PlayerModel from "../models/PlayerModel";
 import UserModel from "../models/UserModel";
 import ChatModel from "../models/ChatModel";
 
-import * as levelData from "../../public/assets/level/large_level.json";
+import * as levelData from "../../public/assets/level/new_level.json";
 import * as itemData from "../../public/assets/level/tools.json";
 
 import Spawner from "./controllers/Spawner";
@@ -17,10 +17,13 @@ export default class GameManager {
     this.monsters = {};
     this.players = {};
     this.items = {};
+    this.npcs = {};
 
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
+    this.npcLocations = {};
+
     this.itemsLocations = itemData.locations;
   }
 
@@ -51,6 +54,14 @@ export default class GameManager {
             this.chestLocations[obj.properties.spawner].push([obj.x, obj.y]);
           } else {
             this.chestLocations[obj.properties.spawner] = [[obj.x, obj.y]];
+          }
+        });
+      } else if (layer.name === "npc_locations") {
+        layer.objects.forEach((obj) => {
+          if (this.npcLocations[obj.properties.spawner]) {
+            this.npcLocations[obj.properties.spawner].push([obj.x, obj.y]);
+          } else {
+            this.npcLocations[obj.properties.spawner] = [[obj.x, obj.y]];
           }
         });
       }
@@ -148,6 +159,9 @@ export default class GameManager {
 
           // send the items object to the new player
           socket.emit("currentItems", this.items);
+
+          // send the npcs object to the new player
+          socket.emit("currentNpcs", this.npcs);
 
           // inform the other players of the new player that joined
           socket.broadcast.emit("spawnPlayer", this.players[socket.id]);
@@ -381,6 +395,29 @@ export default class GameManager {
 
       socket.on("playerHit", (damage) => {});
 
+      socket.on("healthPotion", (playerId, health) => {
+        if (socket.id === playerId) {
+          this.players[socket.id].updateHealth(health);
+          this.io.emit(
+            "updatePlayerHealth",
+            socket.id,
+            this.players[socket.id].health
+          );
+        }
+      });
+
+      socket.on("sendBuyItemMessage", (item) => {
+        this.players[socket.id].potions++;
+
+        this.players[socket.id].updateGold(-item.price);
+        socket.emit("updateScore", this.players[socket.id].gold);
+        socket.broadcast.emit(
+          "updatePlayersScore",
+          socket.id,
+          this.players[socket.id].gold
+        );
+      });
+
       // player connected to our game
       console.log("player connected to our game");
     });
@@ -394,7 +431,7 @@ export default class GameManager {
       id: "",
     };
     let spawner;
-
+    console.log("aspdfokaspok");
     // create chest spawners
     Object.keys(this.chestLocations).forEach((key) => {
       config.id = `chest-${key}`;
@@ -419,6 +456,21 @@ export default class GameManager {
         this.addMonster.bind(this),
         this.deleteMonster.bind(this),
         this.moveMonsters.bind(this)
+      );
+      this.spawners[spawner.id] = spawner;
+    });
+
+    // create npc spawners
+    Object.keys(this.npcLocations).forEach((key) => {
+      console.log(this.npcLocations);
+      config.id = `npc-${key}`;
+      config.spawnerType = SpawnerType.NPC;
+
+      spawner = new Spawner(
+        config,
+        this.npcLocations[key],
+        this.addNpc.bind(this),
+        this.deleteNpc.bind(this)
       );
       this.spawners[spawner.id] = spawner;
     });
@@ -478,5 +530,15 @@ export default class GameManager {
 
   moveMonsters() {
     this.io.emit("monsterMovement", this.monsters);
+  }
+
+  addNpc(npcId, npc) {
+    this.npcs[npcId] = npc;
+    this.io.emit("npcSpawned", npc);
+  }
+
+  deleteNpc(npcId) {
+    delete this.npcs[npcId];
+    this.io.emit("npcRemoved", npcId);
   }
 }

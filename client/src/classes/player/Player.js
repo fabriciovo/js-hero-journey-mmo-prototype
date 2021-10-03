@@ -9,7 +9,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // set immovable if another object collides with our player
     this.setImmovable(true);
     // scale our player
-    this.setScale(2);
+    this.setScale(3);
     // add the player to our existing scene
     this.scene.add.existing(this);
 

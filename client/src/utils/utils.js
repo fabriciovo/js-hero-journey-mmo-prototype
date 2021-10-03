@@ -75,3 +75,33 @@ export function refreshTokenInterval() {
       });
   },parseInt(TOKEN_INTERVAL,10));
 }
+
+
+export const iconsetWeaponTypes = {
+  SMALL_WOODEN_SWORD: 0,
+  WOODEN_SWORD: 1,
+  BOW: 2,
+  LANCE: 3,
+  AXE: 4,
+  ARROW: 30,
+
+};
+
+export const iconsetGearTypes = {
+  WOODEN_ARMOR: 41,
+  IRON_ARMOR: 42,
+  BOOTS: 46,
+  HAT: 47,
+  GEAR_2: 48,
+  GEAR_3: 49,
+  GEAR_4: 50,
+  GEAR_5: 51,
+  GEAR_6: 52,
+
+
+};
+
+
+export const iconsetPotionsTypes = {
+  HEALTH_POTION: 70,
+};

@@ -3,6 +3,7 @@ import InventoryWindow from "../classes/window/InventoryWindow";
 import ItemDescriptionWindow from "../classes/window/ItemDescriptionWindow";
 import PlayerWindow from "../classes/window/PlayerWindow";
 import PopupWindow from "../classes/window/popupWindow";
+import ShopWindow from "../classes/window/ShopWindow";
 
 export default class UiScene extends Phaser.Scene {
   constructor() {
@@ -14,6 +15,8 @@ export default class UiScene extends Phaser.Scene {
     this.gameScene = this.scene.get("Game");
     this.showInventory = false;
     this.showPlayerStats = false;
+    this.showShopWindow = false;
+
   }
 
   create() {
@@ -26,7 +29,30 @@ export default class UiScene extends Phaser.Scene {
     this.resize({ height: this.scale.height, width: this.scale.width });
   }
 
+
+  update(){
+    if(this.showShopWindow){
+        this.shopWindow.showWindow(this.gameScene.player);
+    }else{
+      this.shopWindow.hideWindow();
+    }
+  }
+
   setupUiElements() {
+
+    //create Popup window
+    this.shopWindow = new ShopWindow(this, {
+      x: this.scale.width / 2 - 174,
+      y: this.scale.height / 2 - 200,
+      windowWidth: 360,
+      windowHeight: 220,
+      borderAlpha: 1,
+      windowAlpha: 0.9,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+    });
+
     //create Popup window
     this.popup = new PopupWindow(this, {
       x: this.scale.width / 2 - 174,
@@ -177,8 +203,8 @@ export default class UiScene extends Phaser.Scene {
   }
 
   setupEvents() {
-    this.gameScene.events.on("showInventory", (playerObject, mainPlayer) => {
-      this.toggleInventory(playerObject, mainPlayer);
+    this.gameScene.events.on("showInventory", (playerObject) => {
+      this.toggleInventory(playerObject);
     });
   }
 
@@ -192,6 +218,19 @@ export default class UiScene extends Phaser.Scene {
       this.inventoryWindow.hideWindow();
     }
   }
+
+  toggleShop(playerObject, active) {
+    this.showShopWindow = active;
+    if (this.showShopWindow) {
+      console.log( "this.shopWindow adsdasdsasda" )
+
+      this.shopWindow.showWindow(playerObject);
+    } else {
+      console.log( "this.shopWindow")
+      this.shopWindow.hideWindow();
+    }
+  }
+
 
   togglePlayerStats(playerObject) {
     this.showPlayerStats = !this.showPlayerStats;
@@ -233,7 +272,8 @@ export default class UiScene extends Phaser.Scene {
         }
       )
       .setDepth(4);
-  }
+
+      this.potionACountText.setText(playerObject.potions.toString())  }
 
   updatePlayerStatsUi(playerObject){
     this.levelText.setText(`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`)

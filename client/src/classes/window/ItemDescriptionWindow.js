@@ -143,4 +143,9 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.defenseText.setText(item.defense);
     this.healthText.setText(item.health);
   }
+
+  setShopItemDescription(item) {    
+    this.attackText.setText(`Restore ${item.value} health points`);
+    this.healthText.setText(`Price: ${item.price}`);
+  }
 }

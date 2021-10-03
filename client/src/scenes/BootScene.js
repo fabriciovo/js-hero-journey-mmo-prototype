@@ -20,7 +20,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("button1", "assets/images/ui/blue_button01.png");
     this.load.image("button2", "assets/images/ui/blue_button02.png");
     // load the map tileset image
-    this.load.image("background", "assets/level/background-extruded.png");
+    this.load.image("atlas_32x", "assets/level/atlas_32x.png");
 
     this.load.image(
       "inventoryShield",
@@ -49,8 +49,8 @@ export default class BootScene extends Phaser.Scene {
       frameHeight: 32,
     });
     this.load.spritesheet("characters", "assets/images/characters.png", {
-      frameWidth: 23,
-      frameHeight: 32,
+      frameWidth: 16,
+      frameHeight: 20,
     });
     this.load.spritesheet("monsters", "assets/images/monsters.png", {
       frameWidth: 32,
@@ -61,8 +61,8 @@ export default class BootScene extends Phaser.Scene {
       frameHeight: 32,
     });
     this.load.spritesheet("iconset", "assets/images/iconset.png", {
-      frameWidth: 24,
-      frameHeight: 24,
+      frameWidth: 32,
+      frameHeight: 32,
     });
     this.load.spritesheet(
       "equipment_sheet",
@@ -81,7 +81,7 @@ export default class BootScene extends Phaser.Scene {
 
   loadTileMap() {
     // map made with Tiled in JSON format
-    this.load.tilemapTiledJSON("map", "assets/level/large_level.json");
+    this.load.tilemapTiledJSON("map", "assets/level/new_level.json");
   }
 
   create() {

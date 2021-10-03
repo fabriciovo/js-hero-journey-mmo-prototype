@@ -57,7 +57,6 @@ export default class CharacterSelectionScene extends Phaser.Scene {
   resize(gameSize) {
     const { width, height } = gameSize;
     this.cameras.resize(width, height);
-
     let yDiff = 0;
     let xDiff = 0;
     let charactersPerRow = 8;

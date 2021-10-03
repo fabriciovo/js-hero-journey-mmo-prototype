@@ -8,6 +8,7 @@ import GameMap from "../classes/GameMap";
 import { getCookie } from "../utils/utils";
 import DialogWindow from "../classes/window/DialogWindow";
 import Item from "../classes/items/Item";
+import Npc from "../classes/Entities/Npcs/Npc";
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("Game");
@@ -27,6 +28,8 @@ export default class GameScene extends Phaser.Scene {
     this.listenForSocketEvents();
 
     this.selectedCharacter = data.selectedCharacter || 0;
+
+    this.cameras.main.roundPixels = true;
   }
   listenForSocketEvents() {
     // spawn player game objects
@@ -80,6 +83,7 @@ export default class GameScene extends Phaser.Scene {
           }
           if (player.potionAActive) {
             otherPlayer.potionAFunction();
+            otherPlayer.updateHealthBar();
           }
           otherPlayer.playAnimation();
         }
@@ -116,10 +120,27 @@ export default class GameScene extends Phaser.Scene {
       this.monsters.getChildren().forEach((monster) => {
         Object.keys(monsters).forEach((monsterId) => {
           if (monster.id === monsterId) {
-            monster.move(monsters[monsterId])
+            monster.move(monsters[monsterId]);
           }
         });
       });
+    });
+
+    //Npc
+    this.socket.on("npcSpawned", (npc) => {
+      console.log("npcSpawned");
+      this.spawnNpc(npc);
+    });
+
+    this.socket.on("currentNpcs", (npcs) => {
+      console.log("currentNpcs");
+      Object.keys(npcs).forEach((id) => {
+        this.spawnNpc(npcs[id]);
+      });
+    });
+
+    this.socket.on("npcRemoved", (npc) => {
+      this.spawnNpc(npc);
     });
 
     this.socket.on("updateScore", (goldAmount) => {
@@ -188,6 +209,8 @@ export default class GameScene extends Phaser.Scene {
         }
         this.player.updateHealth(health);
         this.uiScene.updatePlayerHealthBar(this.player);
+        this.uiScene.updatePlayerStatsUi(this.player);
+        this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
       } else {
         this.otherPlayers.getChildren().forEach((player) => {
           if (player.id === playerId) {
@@ -196,7 +219,6 @@ export default class GameScene extends Phaser.Scene {
         });
       }
     });
-
     this.socket.on("respawnPlayer", (playerObject) => {
       if (this.player.id === playerObject.id) {
         this.playerDeathAudio.play();
@@ -274,15 +296,13 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    this.socket.on("droppedItemPicked", item =>{
-
-
+    this.socket.on("droppedItemPicked", (item) => {
       this.items.getChildren().forEach((i) => {
         if (i.id === item.id) {
           i.makeInactive();
         }
       });
-    })
+    });
   }
 
   create() {
@@ -430,7 +450,8 @@ export default class GameScene extends Phaser.Scene {
       playerObject.equipedItems,
       playerObject.exp,
       playerObject.maxExp,
-      playerObject.level
+      playerObject.level,
+      playerObject.potions
     );
 
     if (!mainPlayer) {
@@ -438,11 +459,12 @@ export default class GameScene extends Phaser.Scene {
     } else {
       this.player = newPlayerObject;
       this.uiScene.createPlayersStatsUi(this.player);
+
     }
 
     newPlayerObject.setInteractive();
     newPlayerObject.on("pointerdown", () => {
-      this.events.emit("showInventory", newPlayerObject, mainPlayer);
+      this.events.emit("showInventory", newPlayerObject);
     });
   }
 
@@ -452,6 +474,10 @@ export default class GameScene extends Phaser.Scene {
     // create a monster group
     this.monsters = this.physics.add.group();
     this.monsters.runChildUpdate = true;
+
+    // create a npc group
+    this.npcs = this.physics.add.group();
+    this.npcs.runChildUpdate = true;
 
     this.otherPlayers = this.physics.add.group();
     this.otherPlayers.runChildUpdate = true;
@@ -545,6 +571,28 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
+  spawnNpc(npcObject) {
+    let npc = this.npcs.getFirstDead();
+    console.log(npcObject);
+    if (!npc) {
+      npc = new Npc(
+        this,
+        npcObject.x,
+        npcObject.y,
+        "iconset",
+        npcObject.frame,
+        npcObject.id
+      );
+      // add npc to npcs group
+      this.npcs.add(npc);
+    } else {
+      npc.id = npcObject.id;
+      npc.setTexture("iconset", npcObject.frame);
+      npc.setPosition(npcObject.x, npcObject.y);
+      npc.makeActive();
+    }
+  }
+
   createInput() {
     this.cursors = this.input.keyboard.createCursorKeys();
   }
@@ -554,6 +602,18 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.gameMap.blockedLayer);
 
     this.physics.add.collider(this.rangedObjects, this.gameMap.blockedLayer);
+
+    this.physics.add.collider(this.player, this.gameMap.enviromentLayer);
+
+    // check for overlaps between player and npc game objects
+    const a = this.physics.add.overlap(
+      this.player,
+      this.npcs,
+      this.npcAction,
+      false,
+      this
+    );
+    console.log();
 
     // check for overlaps between player and chest game objects
     this.physics.add.overlap(
@@ -673,6 +733,12 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
+  npcAction(player, npc) {
+    npc.action(this.uiScene,player);
+  }
+
+
+
   collectChest(player, chest) {
     // play gold pickup sound
     this.goldPickupAudio.play();
@@ -702,6 +768,14 @@ export default class GameScene extends Phaser.Scene {
     this.uiScene.playerStatsWindow.showWindow(this.player);
   }
 
+  sendBuyItemMessage(item) {
+    console.log("sendBuyItemMessage")
+    this.socket.emit("sendBuyItemMessage", item);
+    this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
+    this.uiScene.potionACountText.setText(this.player.potions);
+
+  }
+
   sendUnequipItemMessage(itemId) {
     this.socket.emit("playerUnequipedItem", itemId);
 
@@ -721,15 +795,18 @@ export default class GameScene extends Phaser.Scene {
     this.gameMap = new GameMap(
       this,
       "map",
+      "atlas_32x",
       "background",
-      "background",
-      "blocked"
+      "blocked",
+      "enviroment"
     );
   }
 
   resize(gameSize) {
     const { width, height } = gameSize;
     this.cameras.resize(width, height);
+    this.cameras.main.roundPixels = true;
+
     this.dialogWindow.resize(gameSize);
   }
 }

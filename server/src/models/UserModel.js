@@ -40,6 +40,9 @@ const PlayerSchema = new Schema({
   },
   equipedItems:{
     type:Object
+  },
+  potions:{
+    type:Number
   }
 });
 
