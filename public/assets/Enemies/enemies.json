@@ -1,0 +1,21 @@
+{
+    "enemies": [
+      {
+        "name": "Mushy",
+        "key": "enemy_mushy",
+        "goldValue": 3,
+        "healthValue": 25,
+        "attackValue":  4,
+        "expValue": 20
+      },
+      {
+        "name": "Slime",
+        "key": "enemy_slime",
+        "goldValue": 9,
+        "healthValue": 30,
+        "attackValue":  8,
+        "expValue": 24
+      }
+    ]
+  }
+  

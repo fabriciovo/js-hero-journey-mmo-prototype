@@ -60,6 +60,7 @@ export default class GameManager {
         layer.objects.forEach((obj) => {
           if (this.npcLocations[obj.properties.spawner]) {
             this.npcLocations[obj.properties.spawner].push([obj.x, obj.y]);
+            console.log(this.npcLocations[obj.properties.spawner])
           } else {
             this.npcLocations[obj.properties.spawner] = [[obj.x, obj.y]];
           }
@@ -441,6 +442,7 @@ export default class GameManager {
     // create chest spawners
     Object.keys(this.chestLocations).forEach((key) => {
       config.id = `chest-${key}`;
+      console.log(this.chestLocations);
 
       spawner = new Spawner(
         config,
@@ -454,6 +456,8 @@ export default class GameManager {
     // create monster spawners
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
+      console.log(key);
+
       config.spawnerType = SpawnerType.MONSTER;
 
       spawner = new Spawner(
@@ -469,6 +473,8 @@ export default class GameManager {
     // create npc spawners
     Object.keys(this.npcLocations).forEach((key) => {
       console.log(this.npcLocations);
+      console.log(key);
+
       config.id = `npc-${key}`;
       config.spawnerType = SpawnerType.NPC;
 
