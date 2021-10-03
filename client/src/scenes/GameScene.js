@@ -492,7 +492,7 @@ export default class GameScene extends Phaser.Scene {
         this,
         itemObject.x * 2,
         itemObject.y * 2,
-        "tools",
+        "iconset",
         itemObject.frame,
         itemObject.id
       );
@@ -543,14 +543,15 @@ export default class GameScene extends Phaser.Scene {
   }
 
   spawnMonster(monsterObject) {
+    console.log(monsterObject)
     let monster = this.monsters.getFirstDead();
     if (!monster) {
       monster = new Monster(
         this,
         monsterObject.x,
         monsterObject.y,
-        "monsters",
-        monsterObject.frame,
+        monsterObject.key,
+        0,
         monsterObject.id,
         monsterObject.health,
         monsterObject.maxHealth
@@ -561,7 +562,7 @@ export default class GameScene extends Phaser.Scene {
       monster.id = monsterObject.id;
       monster.health = monsterObject.health;
       monster.maxHealth = monsterObject.maxHealth;
-      monster.setTexture("monsters", monsterObject.frame);
+      monster.setTexture(monsterObject.key, 0);
       monster.setPosition(monsterObject.x, monsterObject.y);
       monster.makeActive();
     }
@@ -574,7 +575,7 @@ export default class GameScene extends Phaser.Scene {
         this,
         npcObject.x,
         npcObject.y,
-        "iconset",
+        "characters_1",
         npcObject.frame,
         npcObject.id
       );

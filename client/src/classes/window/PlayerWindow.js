@@ -207,7 +207,7 @@ export default class PlayerWindow extends ModalWindow {
       //create inventory item icon
       this.equipedItems[x] = {};
       this.equipedItems[x].item = this.scene.add
-        .image(xPos + 90, yPos, "tools", 0)
+        .image(xPos + 90, yPos, "iconset", 0)
         .setScale(2)
         .setInteractive({ cursor: "pointer" });
 

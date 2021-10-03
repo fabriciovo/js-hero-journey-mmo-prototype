@@ -72,14 +72,8 @@ export default class BootScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 20,
     });
-    this.load.spritesheet("monsters", "assets/images/monsters.png", {
-      frameWidth: 32,
-      frameHeight: 32,
-    });
-    this.load.spritesheet("tools", "assets/images/tools.png", {
-      frameWidth: 32,
-      frameHeight: 32,
-    });
+
+
     this.load.spritesheet("iconset", "assets/images/iconset.png", {
       frameWidth: 32,
       frameHeight: 32,
@@ -89,6 +83,17 @@ export default class BootScene extends Phaser.Scene {
       "assets/images/windows/PlayerWindow/equipment_sheet.png",
       { frameWidth: 20, frameHeight: 20 }
     );
+
+
+    this.load.spritesheet("enemy_mushy", "assets/images/enemies/mushy.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    this.load.spritesheet("enemy_slime", "assets/images/enemies/slime.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+
   }
 
   loadAudio() {

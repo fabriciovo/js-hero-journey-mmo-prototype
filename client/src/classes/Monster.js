@@ -1,28 +1,41 @@
 import * as Phaser from 'phaser';
+import Entity from './Entities/Entity';
 
-export default class Monster extends Phaser.Physics.Arcade.Image {
+export default class Monster extends Entity {
   constructor(scene, x, y, key, frame, id, health, maxHealth) {
-    super(scene, x, y, key, frame);
-    this.scene = scene;
-    this.id = id;
+    super(scene, x, y, key, frame, id);
     this.health = health;
     this.maxHealth = maxHealth;
 
-    // enable physics
-    this.scene.physics.world.enable(this);
-    // set immovable if another object collides with our monster
-    this.setImmovable(false);
-    // scale our monster
-    this.setScale(2);
-    // collide with world bounds
-    this.setCollideWorldBounds(true);
-    // add the monster to our existing scene
-    this.scene.add.existing(this);
-    // update the origin
-    this.setOrigin(0);
+    this.scene.anims.create({
+      key: "normal",
+      frames: this.scene.anims.generateFrameNumbers(key, {
+        frames: [0,1,2,3],
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
 
-    
+    this.scene.anims.create({
+      key: "sides",
+      frames: this.scene.anims.generateFrameNumbers(key, {
+        frames: [4,5,6,7],
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
 
+    this.scene.anims.create({
+      key: "up",
+      frames: this.scene.anims.generateFrameNumbers(key, {
+        frames: [4,5,6,7],
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
+
+    this.play("normal");
     this.createHealthBar();
   }
 
@@ -44,26 +57,13 @@ export default class Monster extends Phaser.Physics.Arcade.Image {
     this.updateHealthBar();
   }
 
-  makeActive() {
-    this.setActive(true);
-    this.setVisible(true);
-    this.body.checkCollision.none = false;
-    this.updateHealthBar();
-  }
-
-  makeInactive() {
-    this.setActive(false);
-    this.setVisible(false);
-    this.body.checkCollision.none = true;
-    this.healthBar.clear();
-  }
-
   move(targetPosition){
     this.scene.physics.moveToObject(this, targetPosition, 40);
   }
 
   update() {
     this.updateHealthBar();
+    this.animation();
   }
 
   followPlayer() {
@@ -71,6 +71,10 @@ export default class Monster extends Phaser.Physics.Arcade.Image {
   }
 
   Attack() {
+    
+  }
+
+  animation(){
     
   }
 }

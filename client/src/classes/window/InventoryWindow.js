@@ -245,7 +245,7 @@ export default class InventoryWindow extends ModalWindow {
       //create inventory item icon
       this.inventoryItems[x] = {};
       this.inventoryItems[x].item = this.scene.add
-        .image(xPos + 90, 0, "tools", 0)
+        .image(xPos + 90, 0, "iconset", 0)
         .setScale(2)
         .setInteractive({ cursor: "pointer" });
 

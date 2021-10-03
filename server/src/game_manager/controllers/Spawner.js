@@ -4,6 +4,8 @@ import MonsterModel from "../../models/MonsterModel";
 import ItemModel from "../../models/ItemModel";
 
 import * as itemData from "../../../public/assets/level/tools.json";
+import * as enemyData from "../../../public/assets/Enemies/enemies.json";
+
 import NpcModel from "../../models/npcModel";
 
 function getRandonValues() {
@@ -83,16 +85,20 @@ export default class Spawner {
   }
 
   spawnMonster() {
+
+    const randomEnemy =
+    enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
+
     const location = this.pickRandomLocation();
     const monster = new MonsterModel(
       location[0],
       location[1],
-      randomNumber(10, 120),
+      randomEnemy.goldValue, // gold value
       this.id,
-      randomNumber(0, 20), // frame value
-      randomNumber(10, 320), // health value
-      randomNumber(4, 20), // attack value
-      randomNumber(10, 120) // exp value
+      randomEnemy.key, // key
+      randomEnemy.healthValue, // health value
+      randomEnemy.attackValue, // attack value
+      randomEnemy.expValue // exp value
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);
@@ -104,7 +110,6 @@ export default class Spawner {
       location[0],
       location[1],
       this.id,
-      randomNumber(0, 20), // frame value
     );
     this.objectsCreated.push(npc);
     this.addObject(npc.id, npc);

@@ -2,12 +2,11 @@ import { v4 } from 'uuid';
 import { randomNumber } from '../game_manager/utils';
 
 export default class NpcModel {
-  constructor(x, y, spawnerId, frame) {
+  constructor(x, y, spawnerId) {
     this.id = `${spawnerId}-${v4()}`;
     this.spawnerId = spawnerId;
     this.x = x * 2;
     this.y = y * 2;
-    this.frame = frame;
   }
 
 

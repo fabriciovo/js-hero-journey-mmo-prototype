@@ -11,13 +11,14 @@ export default class Entity extends Phaser.Physics.Arcade.Sprite {
     // set immovable if another object collides with our monster
     this.setImmovable(false);
     // scale our monster
-    this.setScale(2);
+    this.setScale(3);
     // collide with world bounds
     this.setCollideWorldBounds(true);
     // add the monster to our existing scene
     this.scene.add.existing(this);
     // update the origin
     this.setOrigin(0);
+
   }
 
   makeActive() {
@@ -33,5 +34,8 @@ export default class Entity extends Phaser.Physics.Arcade.Sprite {
     this.body.checkCollision.none = true;
     this.healthBar.clear();
   }
+
+ 
+
 
 }
