@@ -13,6 +13,7 @@ export default class PlayerModel {
     this.level = playerSchema.level;
     this.exp = playerSchema.exp;
     this.maxExp = playerSchema.maxExp;
+    this.potions = playerSchema.potions;
 
     //this.playerItems =  {};
 
@@ -77,6 +78,7 @@ export default class PlayerModel {
   updateGold(gold) {
     this.gold += gold;
   }
+  
 
   updateExp(exp) {
     this.exp += exp;

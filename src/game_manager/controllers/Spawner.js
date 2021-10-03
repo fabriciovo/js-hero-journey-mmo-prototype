@@ -4,6 +4,7 @@ import MonsterModel from "../../models/MonsterModel";
 import ItemModel from "../../models/ItemModel";
 
 import * as itemData from "../../../public/assets/level/tools.json";
+import NpcModel from "../../models/npcModel";
 
 function getRandonValues() {
   const bonus = [-2, -10, -3, -5, -6, -7, 0, 5, 3, 4, 7, 2, 1, 8, 10];
@@ -42,6 +43,8 @@ export default class Spawner {
       this.spawnMonster();
     } else if (this.objectType === SpawnerType.ITEM) {
       this.spawnItem();
+    }else if (this.objectType === SpawnerType.NPC) {
+      this.spawnNpc();
     }
   }
 
@@ -87,12 +90,24 @@ export default class Spawner {
       randomNumber(10, 120),
       this.id,
       randomNumber(0, 20), // frame value
-      randomNumber(110, 320), // health value
-      randomNumber(30, 320), // attack value
+      randomNumber(10, 320), // health value
+      randomNumber(4, 20), // attack value
       randomNumber(10, 120) // exp value
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);
+  }
+
+  spawnNpc() {
+    const location = this.pickRandomLocation();
+    const npc = new NpcModel(
+      location[0],
+      location[1],
+      this.id,
+      randomNumber(0, 20), // frame value
+    );
+    this.objectsCreated.push(npc);
+    this.addObject(npc.id, npc);
   }
 
   pickRandomLocation() {

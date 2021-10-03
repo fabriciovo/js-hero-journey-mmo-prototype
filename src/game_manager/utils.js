@@ -2,6 +2,7 @@ export const SpawnerType = {
   MONSTER: 'MONSTER',
   CHEST: 'CHEST',
   ITEM: 'ITEM',
+  NPC: 'NPC',
 
 };
 

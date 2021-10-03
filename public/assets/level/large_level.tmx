@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="32" tileheight="32" infinite="0" nextobjectid="104">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="128">
+ <editorsettings>
+  <export target="large_level.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" name="background" tilewidth="32" tileheight="32" tilecount="1504" columns="32">
   <image source="background.png" width="1024" height="1504"/>
  </tileset>
- <layer name="background" width="60" height="60" locked="1">
+ <layer id="1" name="background" width="60" height="60">
   <data encoding="csv">
 282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,312,312,312,312,312,283,283,283,283,283,283,283,283,282,282,282,282,282,282,282,282,282,282,
 282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,312,312,312,312,312,312,312,312,312,312,312,282,282,282,282,282,282,312,312,312,283,283,283,283,283,283,283,283,282,282,282,516,516,516,516,516,282,282,
@@ -67,7 +70,7 @@
 272,272,272,272,272,272,272,272,272,272,272,272,312,312,312,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282,282
 </data>
  </layer>
- <layer name="blocked" width="60" height="60" locked="1">
+ <layer id="2" name="blocked" width="60" height="60">
   <data encoding="csv">
 1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,0,0,0,0,0,0,0,1138,1138,1138,1138,1138,1138,1138,1138,1138,1138,1138,1138,1138,1138,1138,1138,
 1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,1363,0,0,0,0,0,0,0,0,0,0,0,1363,1363,1363,1363,1363,1363,0,0,0,848,0,0,0,1138,1138,1138,1138,1138,1138,1138,0,0,0,0,0,1138,1138,
@@ -131,7 +134,7 @@
 273,273,273,273,273,273,273,273,273,273,273,273,0,0,0,0,0,0,0,0,845,0,0,1011,1011,1011,1011,1011,1011,1011,1011,845,1030,1030,1030,1030,0,845,0,0,0,845,0,0,845,0,844,0,1009,1009,1009,1009,844,0,844,0,845,0,844,845
 </data>
  </layer>
- <objectgroup name="chest_locations" locked="1">
+ <objectgroup id="3" name="chest_locations">
   <object id="6" gid="86" x="417" y="934" width="32" height="32">
    <properties>
     <property name="spawner" value="6"/>
@@ -313,7 +316,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="monster_locations" locked="1">
+ <objectgroup id="4" name="monster_locations">
   <object id="44" gid="44" x="67" y="283" width="32" height="32">
    <properties>
     <property name="spawner" value="1"/>
@@ -515,7 +518,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="player_locations">
+ <objectgroup id="5" name="player_locations">
   <object id="84" gid="2" x="194" y="317" width="32" height="32"/>
   <object id="85" gid="2" x="160" y="873" width="32" height="32"/>
   <object id="86" gid="2" x="538" y="1601" width="32" height="32"/>
@@ -536,5 +539,72 @@
   <object id="101" gid="2" x="1659" y="1600" width="32" height="32"/>
   <object id="102" gid="2" x="249" y="1579" width="32" height="32"/>
   <object id="103" gid="2" x="1836" y="536" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup id="6" name="npc_locations">
+  <object id="105" x="539" y="429" width="1">
+   <properties>
+    <property name="spawner" value="3"/>
+   </properties>
+  </object>
+  <object id="116" gid="70" x="284" y="368" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="117" gid="70" x="657.333" y="809.333" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="118" gid="70" x="969.333" y="773.333" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="119" gid="70" x="1618.67" y="916" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="120" gid="70" x="1486.67" y="497.333" width="32" height="32">
+   <properties>
+    <property name="spawner" value="3"/>
+   </properties>
+  </object>
+  <object id="121" gid="70" x="1234.67" y="1402.67" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="122" gid="70" x="1490.67" y="1694.67" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="123" gid="70" x="976" y="1736" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="124" gid="70" x="597.333" y="1852" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="125" gid="70" x="430.667" y="1741.33" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="126" gid="70" x="309.333" y="945.333" width="32" height="32">
+   <properties>
+    <property name="spawner" value="6"/>
+   </properties>
+  </object>
+  <object id="127" gid="70" x="978.667" y="212" width="32" height="32">
+   <properties>
+    <property name="spawner" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
