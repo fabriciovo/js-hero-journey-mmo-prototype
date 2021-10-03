@@ -101,7 +101,7 @@ export default class GameManager {
           }
 
           await UserModel.updateOne(
-            { username: this.players[socket.id].playerName },
+            { id: this.players[socket.id].id },
             {
               $set: {
                 player: this.players[socket.id],
@@ -146,6 +146,8 @@ export default class GameManager {
 
           const playerSchema = await UserModel.findById(_id);
           // create a new Player
+          console.log("key")
+          console.log(key)
           this.spawnPlayer(socket.id, name, key, playerSchema.player);
 
           // send the players object to the new player
@@ -164,6 +166,8 @@ export default class GameManager {
           socket.emit("currentNpcs", this.npcs);
 
           // inform the other players of the new player that joined
+          console.log("this.players[socket.id].key")
+          console.log(this.players[socket.id].key)
           socket.broadcast.emit("spawnPlayer", this.players[socket.id]);
           socket.emit("updateItems", this.players[socket.id]);
           socket.broadcast.emit(
@@ -434,7 +438,6 @@ export default class GameManager {
       id: "",
     };
     let spawner;
-    console.log("aspdfokaspok");
     // create chest spawners
     Object.keys(this.chestLocations).forEach((key) => {
       config.id = `chest-${key}`;

@@ -105,3 +105,7 @@ export const iconsetGearTypes = {
 export const iconsetPotionsTypes = {
   HEALTH_POTION: 70,
 };
+
+export const iconsetSlotsTypes = {
+  SLOT_1: 210,
+};

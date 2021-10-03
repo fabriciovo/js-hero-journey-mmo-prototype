@@ -4,6 +4,7 @@ import Direction from "../../utils/direction";
 import Bullet from "../weapons/RangedWeapon";
 import RangedWeapon from "../weapons/RangedWeapon";
 import Potion from "../Armory/Potion/Potion";
+import { iconsetPotionsTypes, iconsetWeaponTypes } from "../../utils/utils";
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(
@@ -73,7 +74,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.scene.cameras.main.roundPixels = false;
     }
     // create the player
-    this.player = new Player(this.scene, 0, 0, this.key, frame);
+    this.player = new Player(this.scene, 0, 0, key, frame);
     this.add(this.player);
     this.setDepth(1);
     //Actions
@@ -82,13 +83,13 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionCActive = false;
 
     // create the weapons game object
-    this.actionA = this.scene.add.image(40, 0, "iconset", 2);
+    this.actionA = this.scene.add.image(40, 0, "iconset", iconsetWeaponTypes.SMALL_WOODEN_SWORDzz);
     this.actionB = new RangedWeapon(
       this.scene,
       this.x,
       this.y,
       "iconset",
-      2,
+      iconsetWeaponTypes.ARROW,
       this.id
     );
     this.actionB.makeInactive();
@@ -102,9 +103,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.x,
       this.y,
       "iconset",
-      2,
+      iconsetPotionsTypes.HEALTH_POTION,
       this.id
     );
+    this.potionA.makeInactive();
 
     this.scene.add.existing(this.actionA);
     this.actionA.setScale(1.5);
@@ -280,7 +282,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.updatePlayerName();
     
     if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
-      this.player.playAnimation("idle");
+      //this.player.playAnimation("idle");
     }
     //this.playAnimation();
   }
@@ -316,13 +318,20 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionB.setPosition(this.x, this.y);
     if (this.mainPlayer) this.attackAudio.play();
     if (this.currentDirection === Direction.UP) {
+      this.actionB.setAngle(-45);
       this.actionB.body.setVelocityY(-560);
     } else if (this.currentDirection === Direction.DOWN) {
       this.actionB.body.setVelocityY(560);
+      this.actionB.setAngle(111);
     } else if (this.currentDirection === Direction.RIGHT) {
       this.actionB.body.setVelocityX(560);
+      this.actionB.setAngle(45);
+
     } else if (this.currentDirection === Direction.LEFT) {
       this.actionB.body.setVelocityX(-560);
+      this.actionB.setAngle(270);
+
+
     }
 
     this.scene.time.delayedCall(
@@ -405,7 +414,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.potions++;
       this.gold -= item.price;
       this.scene.sendBuyItemMessage(item);
-      console.log("buyItem");
     }
   }
 

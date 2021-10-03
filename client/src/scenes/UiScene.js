@@ -4,6 +4,11 @@ import ItemDescriptionWindow from "../classes/window/ItemDescriptionWindow";
 import PlayerWindow from "../classes/window/PlayerWindow";
 import PopupWindow from "../classes/window/popupWindow";
 import ShopWindow from "../classes/window/ShopWindow";
+import {
+  iconsetPotionsTypes,
+  iconsetSlotsTypes,
+  iconsetWeaponTypes,
+} from "../utils/utils";
 
 export default class UiScene extends Phaser.Scene {
   constructor() {
@@ -16,7 +21,6 @@ export default class UiScene extends Phaser.Scene {
     this.showInventory = false;
     this.showPlayerStats = false;
     this.showShopWindow = false;
-
   }
 
   create() {
@@ -29,17 +33,15 @@ export default class UiScene extends Phaser.Scene {
     this.resize({ height: this.scale.height, width: this.scale.width });
   }
 
-
-  update(){
-    if(this.showShopWindow){
-        this.shopWindow.showWindow(this.gameScene.player);
-    }else{
+  update() {
+    if (this.showShopWindow) {
+      this.shopWindow.showWindow(this.gameScene.player);
+    } else {
       this.shopWindow.hideWindow();
     }
   }
 
   setupUiElements() {
-
     //create Popup window
     this.shopWindow = new ShopWindow(this, {
       x: this.scale.width / 2 - 174,
@@ -65,8 +67,6 @@ export default class UiScene extends Phaser.Scene {
       textAlpha: 1,
       windowColor: 0x000000,
     });
-
-    
 
     // create playerStats window
     this.playerStatsWindow = new PlayerWindow(this, {
@@ -104,42 +104,32 @@ export default class UiScene extends Phaser.Scene {
 
     //Create equiped weapons text
     this.actionAText = this.add
-      .text(80, this.scale.height - 50, "Z", {
+      .text(60, this.scale.height - 50, "Z", {
         fontSize: "46px",
         fill: "#fff",
       })
       .setDepth(4);
 
     this.actionBText = this.add
-      .text(180, this.scale.height - 50, "X", {
+      .text(160, this.scale.height - 50, "X", {
         fontSize: "46px",
         fill: "#fff",
       })
       .setDepth(4);
 
     this.potionAText = this.add
-      .text(80, this.scale.height - 150, "C", {
+      .text(50, this.scale.height - 190, "C", {
         fontSize: "46px",
         fill: "#fff",
       })
       .setDepth(4);
 
     this.potionACountText = this.add
-      .text(120, this.scale.height - 125, "0", {
-        fontSize: "26px",
+      .text(80, this.scale.height - 135, "0", {
+        fontSize: "46px",
         fill: "#fff",
       })
       .setDepth(4);
-
-    //create equiped weapons icons
-    this.actionA = this.add.image(50, this.scale.height - 50, "iconset", 2);
-    this.actionB = this.add.image(150, this.scale.height - 50, "iconset", 16);
-
-    this.potionA = this.add.image(50, this.scale.height - 150, "iconset", 64);
-
-    this.actionA.setScale(3);
-    this.actionB.setScale(3);
-    this.potionA.setScale(3);
 
     // create playerStats button
     this.playerStatsButton = this.add
@@ -195,9 +185,7 @@ export default class UiScene extends Phaser.Scene {
         this.playerStatsWindow.hideWindow();
         this.showPlayerStats = false;
 
-
         this.popup.hideWindow();
-
       }
     });
   }
@@ -222,15 +210,14 @@ export default class UiScene extends Phaser.Scene {
   toggleShop(playerObject, active) {
     this.showShopWindow = active;
     if (this.showShopWindow) {
-      console.log( "this.shopWindow adsdasdsasda" )
+      console.log("this.shopWindow adsdasdsasda");
 
       this.shopWindow.showWindow(playerObject);
     } else {
-      console.log( "this.shopWindow")
+      console.log("this.shopWindow");
       this.shopWindow.hideWindow();
     }
   }
-
 
   togglePlayerStats(playerObject) {
     this.showPlayerStats = !this.showPlayerStats;
@@ -273,13 +260,74 @@ export default class UiScene extends Phaser.Scene {
       )
       .setDepth(4);
 
-      this.potionACountText.setText(`${playerObject.potions}`)  }
+    this.potionACountText.setText(`${playerObject.potions}`);
 
-  updatePlayerStatsUi(playerObject){
-    this.levelText.setText(`Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`)
-    this.healtText.setText(`Health: ${playerObject.health} /  ${playerObject.maxHealth}`)
+    //create equiped slots icons
+
+    this.slotA = this.add.image(
+      50,
+      this.scale.height - 50,
+      "iconset",
+      iconsetSlotsTypes.SLOT_1
+    );
+
+    this.slotB = this.add.image(
+      150,
+      this.scale.height - 50,
+      "iconset",
+      iconsetSlotsTypes.SLOT_1
+    );
+
+    //create equiped weapons icons
+
+    this.slotC = this.add.image(
+      50,
+      this.scale.height - 150,
+      "iconset",
+      iconsetSlotsTypes.SLOT_1
+    );
+
+    this.actionA = this.add.image(
+      55,
+      this.scale.height - 55,
+      "iconset",
+      iconsetWeaponTypes.SMALL_WOODEN_SWORD
+    );
+    this.actionB = this.add.image(
+      150,
+      this.scale.height - 50,
+      "iconset",
+      iconsetWeaponTypes.BOW
+    );
+
+    this.potionA = this.add.image(
+      50,
+      this.scale.height - 150,
+      "iconset",
+      iconsetPotionsTypes.HEALTH_POTION
+    );
+
+    this.actionA.setScale(2.5);
+    this.actionB.setScale(2.5);
+    this.potionA.setScale(2.5);
+
+    this.actionA.setOrigin(0.5);
+    this.actionB.setOrigin(0.5);
+    this.potionA.setOrigin(0.5);
+
+    this.slotA.setScale(3);
+    this.slotB.setScale(3);
+    this.slotC.setScale(3);
   }
 
+  updatePlayerStatsUi(playerObject) {
+    this.levelText.setText(
+      `Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`
+    );
+    this.healtText.setText(
+      `Health: ${playerObject.health} /  ${playerObject.maxHealth}`
+    );
+  }
 
   createPlayerExpBar(playerObject) {
     this.expBar = this.add.graphics();

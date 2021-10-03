@@ -1,5 +1,6 @@
 import ModalWindow from "./ModalWindow";
 import UiButton from "../UiButton";
+import { iconsetSlotsTypes } from "../../utils/utils";
 export default class InventoryWindow extends ModalWindow {
   constructor(scene, opts) {
     super(scene, opts);
@@ -231,7 +232,7 @@ export default class InventoryWindow extends ModalWindow {
       const xPos = 90 * x;
       this.inventorySlots[x] = {};
       this.inventorySlots[x].item = this.scene.add
-        .image(90 + xPos, yPos, "slot", 0)
+        .image(90 + xPos, yPos, "iconset", iconsetSlotsTypes.SLOT_1)
         .setScale(3)
         .setInteractive();
       this.itemsContainer.add(this.inventorySlots[x].item);

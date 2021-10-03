@@ -27,7 +27,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.listenForSocketEvents();
 
-    this.selectedCharacter = data.selectedCharacter || "characters_1'";
+    this.selectedCharacter = data.selectedCharacter || 'characters_3';
 
     this.cameras.main.roundPixels = true;
   }
@@ -75,8 +75,6 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.actionBActive = player.actionBActive;
           otherPlayer.potionAActive = player.potionAActive;
           otherPlayer.currentDirection = player.currentDirection;
-          otherPlayer.frame = player.frame;
-          otherPlayer.key = player.key;
 
           if (player.actionAActive) {
             otherPlayer.actionAFunction();
@@ -372,7 +370,6 @@ export default class GameScene extends Phaser.Scene {
         actionBActive,
         potionAActive,
         level,
-        frame,
         
       } = this.player;
       if (
@@ -384,7 +381,6 @@ export default class GameScene extends Phaser.Scene {
           actionBActive !== this.player.oldPosition.actionBActive ||
           potionAActive !== this.player.oldPosition.potionAActive ||
           level !== this.player.oldPosition.level ||
-          frame !== this.player.oldPosition.frame ||
           currentDirection != this.player.oldPosition.currentDirection)
       ) {
         this.socket.emit("playerMovement", {
@@ -396,7 +392,6 @@ export default class GameScene extends Phaser.Scene {
           potionAActive,
           currentDirection,
           level,
-          frame,
         });
       }
       // save old position data
@@ -409,7 +404,6 @@ export default class GameScene extends Phaser.Scene {
         actionBActive: this.player.actionBActive,
         potionAActive: this.player.potionAActive,
         level: this.player.level,
-        frame: this.player.frame,
       };
     }
   }
@@ -438,13 +432,13 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer(playerObject, mainPlayer) {
-    console.log(playerObject.key);
+    console.log(this.selectedCharacter)
     const newPlayerObject = new PlayerContainer(
       this,
       playerObject.x * 2,
       playerObject.y * 2,
-      playerObject.key,
-      playerObject.frame,
+      this.selectedCharacter,
+      0,
       playerObject.health,
       playerObject.maxHealth,
       playerObject.id,

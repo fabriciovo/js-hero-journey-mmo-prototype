@@ -14,7 +14,6 @@ export default class PlayerModel {
     this.exp = playerSchema.exp;
     this.maxExp = playerSchema.maxExp;
     this.potions = playerSchema.potions;
-    console.log(this.key)
     //this.playerItems =  {};
 
     this.maxNumberOfItems = 5;
