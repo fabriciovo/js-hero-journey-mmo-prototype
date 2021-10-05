@@ -543,7 +543,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   spawnMonster(monsterObject) {
-    console.log(monsterObject)
+    console.log(monsterObject.key)
     let monster = this.monsters.getFirstDead();
     if (!monster) {
       monster = new Monster(

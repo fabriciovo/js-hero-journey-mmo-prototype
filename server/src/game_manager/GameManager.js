@@ -102,7 +102,7 @@ export default class GameManager {
           }
 
           await UserModel.updateOne(
-            { id: this.players[socket.id].id },
+            { username: this.players[socket.id].username },
             {
               $set: {
                 player: this.players[socket.id],
@@ -456,6 +456,7 @@ export default class GameManager {
     // create monster spawners
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
+      config.limit = 8;
       console.log(key);
 
       config.spawnerType = SpawnerType.MONSTER;

@@ -1,4 +1,4 @@
-import { iconsetPotionsTypes } from "../../utils/utils";
+import { DEPTH, iconsetPotionsTypes } from "../../utils/utils";
 import ModalWindow from "./ModalWindow";
 import * as potionData from "../../../assets/Items/potions.json";
 
@@ -14,7 +14,7 @@ export default class ShopWindow extends ModalWindow {
 
     this.selectedItem = undefined;
     this.selectedItemNumber = undefined;
-    this.graphics.setDepth(4);
+    this.graphics.setDepth(DEPTH.UI);
     this.createWindow();
     this.hideWindow();
   }
@@ -53,7 +53,7 @@ export default class ShopWindow extends ModalWindow {
 
       // create inventory container for positioning elements
       this.shopContainer = this.scene.add.container(x + 1, y + 1);
-      this.shopContainer.setDepth(5);
+      this.shopContainer.setDepth(DEPTH.UI);
       this.shopContainer.setAlpha(this.textAlpha);
       this.createShopText();
       this.createItems();

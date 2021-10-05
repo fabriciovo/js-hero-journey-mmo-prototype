@@ -14,75 +14,75 @@
   ],
   "items": [
     {
-      "frame": 0,
+      "frame": 40,
       "name": "Battle Axe"
     },
     {
-      "frame": 1,
+      "frame": 41,
       "name": "Swift Shoes"
     },
     {
-      "frame": 2,
+      "frame": 42,
       "name": "Buckle of the Sun"
     },
     {
-      "frame": 3,
+      "frame": 43,
       "name": "Royal Shield"
     },
     {
-      "frame": 4,
+      "frame": 44,
       "name": "Elven Cloak"
     },
     {
-      "frame": 5,
+      "frame": 45,
       "name": "Twinstar Sword"
     },
     {
-      "frame": 6,
+      "frame": 46,
       "name": "Mystic Wand"
     },
     {
-      "frame": 7,
+      "frame": 47,
       "name": "Leather Gloves"
     },
     {
-      "frame": 8,
+      "frame": 48,
       "name": "Iron Gloves"
     },
     {
-      "frame": 9,
+      "frame": 49,
       "name": "Small Axe"
     },
     {
-      "frame": 10,
+      "frame": 50,
       "name": "Mystical Hat"
     },
     {
-      "frame": 11,
+      "frame": 51,
       "name": "Iron Helm"
     },
     {
-      "frame": 12,
+      "frame": 52,
       "name": "Sky Helm"
     },
     {
-      "frame": 13,
+      "frame": 53,
       "name": "Leather Boots"
     },
     {
-      "frame": 14,
+      "frame": 54,
       "name": "Demon Shield"
     },
     {
-      "frame": 15,
+      "frame": 55,
       "name": "Blood Ring"
     },
     {
-      "frame": 16,
+      "frame": 56,
       "name": "Wizard Staff"
     },
     {
-      "frame": 17,
+      "frame": 57,
       "name": "Wizard Hat"
     }
   ]

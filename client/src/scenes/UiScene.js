@@ -5,6 +5,8 @@ import PlayerWindow from "../classes/window/PlayerWindow";
 import PopupWindow from "../classes/window/popupWindow";
 import ShopWindow from "../classes/window/ShopWindow";
 import {
+  DEPTH,
+  healthBarTypes,
   iconsetPotionsTypes,
   iconsetSlotsTypes,
   iconsetWeaponTypes,
@@ -108,28 +110,28 @@ export default class UiScene extends Phaser.Scene {
         fontSize: "46px",
         fill: "#fff",
       })
-      .setDepth(4);
+      .setDepth(DEPTH.UI);
 
     this.actionBText = this.add
       .text(160, this.scale.height - 50, "X", {
         fontSize: "46px",
         fill: "#fff",
       })
-      .setDepth(4);
+      .setDepth(DEPTH.UI);
 
     this.potionAText = this.add
       .text(50, this.scale.height - 190, "C", {
         fontSize: "46px",
         fill: "#fff",
       })
-      .setDepth(4);
+      .setDepth(DEPTH.UI);
 
     this.potionACountText = this.add
       .text(80, this.scale.height - 135, "0", {
         fontSize: "46px",
         fill: "#fff",
       })
-      .setDepth(4);
+      .setDepth(DEPTH.UI);
 
     // create playerStats button
     this.playerStatsButton = this.add
@@ -231,6 +233,15 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayersStatsUi(playerObject) {
+    //create stats container
+    this.playerStatsContainer = this.add.container(0, 20);
+    this.containerImage = this.add.image(
+      20,
+      0,
+      "iconset",
+      iconsetSlotsTypes.SLOT_9
+    ).setScale(24,6).setAlpha(.8);
+    this.playerStatsContainer.add(this.containerImage);
     //Create Bars
     this.createPlayerExpBar(playerObject);
     this.createPlayerHealthBar(playerObject);
@@ -238,27 +249,27 @@ export default class UiScene extends Phaser.Scene {
     //Create texts
     this.levelText = this.add
       .text(
-        400,
-        this.scale.height / 24 - 40,
-        `Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`,
+        120,
+        this.scale.height / 14,
+        `${playerObject.exp} /  ${playerObject.maxExp}`,
         {
           fontSize: "26px",
           fill: "#fff",
         }
       )
-      .setDepth(4);
+      .setDepth(DEPTH.UI);
 
     this.healtText = this.add
       .text(
-        40,
-        this.scale.height / 24 - 40,
-        `Health: ${playerObject.health} /  ${playerObject.maxHealth}`,
+        120,
+        this.scale.height / 24,
+        `${playerObject.health} /  ${playerObject.maxHealth}`,
         {
           fontSize: "26px",
           fill: "#fff",
         }
       )
-      .setDepth(4);
+      .setDepth(DEPTH.UI);
 
     this.potionACountText.setText(`${playerObject.potions}`);
 
@@ -321,11 +332,9 @@ export default class UiScene extends Phaser.Scene {
   }
 
   updatePlayerStatsUi(playerObject) {
-    this.levelText.setText(
-      `Level: ${playerObject.level} - XP: ${playerObject.exp} /  ${playerObject.maxExp}`
-    );
+    this.levelText.setText(`${playerObject.exp} /  ${playerObject.maxExp}`);
     this.healtText.setText(
-      `Health: ${playerObject.health} /  ${playerObject.maxHealth}`
+      `${playerObject.health} /  ${playerObject.maxHealth}`
     );
   }
 
@@ -357,6 +366,17 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerHealthBar(playerObject) {
+    // this.healthBarHolder = this.add
+    //   .image(40, this.scale.height / 24, "bar_sheet", healthBarTypes.HOLDER)
+    //   .setScale(6)
+    //   .setOrigin(0, 0.5);
+
+    // this.healthBar = this.add
+    //   .image(40, this.scale.height / 24, "bar_sheet", healthBarTypes.LIFE_BAR)
+    //   .setScale(6)
+    //   .setOrigin(0, 0.5);
+    // this.healthBarHolder.displayWidth =
+    //  ( playerObject.health / playerObject.maxHealth) * 100;
     this.healthBar = this.add.graphics();
     this.healthBar.clear();
     this.healthBar.fillStyle(0xffffff, 1);

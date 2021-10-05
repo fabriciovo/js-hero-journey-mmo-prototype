@@ -1,6 +1,6 @@
 import ModalWindow from "./ModalWindow";
 import UiButton from "../UiButton";
-import { iconsetSlotsTypes } from "../../utils/utils";
+import { DEPTH, iconsetSlotsTypes } from "../../utils/utils";
 export default class InventoryWindow extends ModalWindow {
   constructor(scene, opts) {
     super(scene, opts);
@@ -8,7 +8,7 @@ export default class InventoryWindow extends ModalWindow {
     this.playerObject = {};
     this.inventoryItems = {};
     this.inventorySlots = {};
-    this.graphics.setDepth(3);
+    this.graphics.setDepth(DEPTH.UI);
     this.selectedItem = undefined;
     this.selectedItemNumber = undefined;
     this.createWindow();
@@ -60,7 +60,7 @@ export default class InventoryWindow extends ModalWindow {
 
       // create inventory container for positioning elements
       this.inventoryContainer = this.scene.add.container(x + 1, y + 1);
-      this.inventoryContainer.setDepth(3);
+      this.inventoryContainer.setDepth(DEPTH.UI_POPUP);
       this.inventoryContainer.setAlpha(this.textAlpha);
 
       // create inventory slots

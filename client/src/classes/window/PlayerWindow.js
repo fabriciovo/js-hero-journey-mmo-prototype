@@ -1,3 +1,4 @@
+import { DEPTH } from "../../utils/utils";
 import ModalWindow from "./ModalWindow";
 export default class PlayerWindow extends ModalWindow {
   constructor(scene, opts) {
@@ -7,7 +8,7 @@ export default class PlayerWindow extends ModalWindow {
     this.mainPlayer = false;
     this.equipedItems = {};
     this.playerSlots = {};
-    this.graphics.setDepth(3);
+    this.graphics.setDepth(DEPTH.UI);
     this.createWindow();
     this.hideWindow();
     this.selectedItem = undefined;
@@ -59,7 +60,7 @@ export default class PlayerWindow extends ModalWindow {
 
       // create inventory container for positioning elements
       this.statsContainer = this.scene.add.container(x + 1, y + 1);
-      this.statsContainer.setDepth(3);
+      this.statsContainer.setDepth(DEPTH.UI);
       this.statsContainer.setAlpha(this.textAlpha);
 
       // create inventory title

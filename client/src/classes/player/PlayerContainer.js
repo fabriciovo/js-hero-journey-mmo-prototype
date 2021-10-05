@@ -4,7 +4,15 @@ import Direction from "../../utils/direction";
 import Bullet from "../weapons/RangedWeapon";
 import RangedWeapon from "../weapons/RangedWeapon";
 import Potion from "../Armory/Potion/Potion";
-import { iconsetPotionsTypes, iconsetWeaponTypes } from "../../utils/utils";
+import {
+  DEPTH,
+  DestroyHealthBar,
+  healthBarTypes,
+  iconsetPotionsTypes,
+  iconsetWeaponTypes,
+} from "../../utils/utils";
+import HealthBar from "../UI/HealthBar";
+import Bar from "../UI/HealthBar";
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(
@@ -74,16 +82,22 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.scene.cameras.main.roundPixels = false;
     }
     // create the player
-    this.player = new Player(this.scene, 0, 0, key, frame);
+    this.player = new Player(this.scene, 0, 0, this.key, frame);
+
     this.add(this.player);
-    this.setDepth(1);
+    this.setDepth(DEPTH.NORMAL);
     //Actions
     this.actionAActive = false;
     this.actionBActive = false;
     this.actionCActive = false;
 
     // create the weapons game object
-    this.actionA = this.scene.add.image(40, 0, "iconset", iconsetWeaponTypes.SMALL_WOODEN_SWORDzz);
+    this.actionA = this.scene.add.image(
+      40,
+      0,
+      "iconset",
+      iconsetWeaponTypes.SMALL_WOODEN_SWORDzz
+    );
     this.actionB = new RangedWeapon(
       this.scene,
       this.x,
@@ -135,15 +149,24 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   createPlayerBars() {
+    //Health bar
+    this.healthBar = new Bar(
+      this.scene,
+      this.x,
+      this.y,
+      "bar_sheet",
+      healthBarTypes.LIFE_BAR,
+      healthBarTypes.HOLDER,
+      DEPTH.UI
+    );
     this.expBar = this.scene.add.graphics();
-    this.healthBar = this.scene.add.graphics();
-    this.updateHealthBar();
+    this.healthBar.UpdateBar();
   }
 
   createPlayerName() {
     this.playerNameText = this.scene.make.text({
       x: this.x - 32,
-      y: this.y - 60,
+      y: this.y - 68,
       text: this.playerName,
       style: {
         font: "14px monospace",
@@ -153,7 +176,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   updatePlayerName() {
-    this.playerNameText.setPosition(this.x - 32, this.y - 60);
+    this.playerNameText.setPosition(this.x - 32, this.y - 68);
   }
 
   updateExp(exp) {
@@ -171,15 +194,11 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   updateHealthBar() {
-    this.healthBar.clear();
-    this.healthBar.fillStyle(0xffffff, 1);
-    this.healthBar.fillRect(this.x - 32, this.y - 40, 64, 5);
-    this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
-    this.healthBar.fillRect(
-      this.x - 32,
+    this.healthBar.UpdateBar(
+      this.x - 48,
       this.y - 40,
-      64 * (this.health / this.maxHealth),
-      5
+      this.health,
+      this.maxHealth
     );
   }
 
@@ -245,17 +264,17 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     if (this.currentDirection === Direction.UP) {
       this.actionA.setPosition(0, -40);
-      this.player.playAnimation("up");
+      this.player.playAnimation(`up_${this.key}`);
     } else if (this.currentDirection === Direction.DOWN) {
       this.actionA.setPosition(0, 40);
-      this.player.playAnimation("down");
+      this.player.playAnimation(`down_${this.key}`);
     } else if (this.currentDirection === Direction.RIGHT) {
       this.actionA.setPosition(40, 0);
-      this.player.playAnimation("right");
+      this.player.playAnimation(`right_${this.key}`);
     } else if (this.currentDirection === Direction.LEFT) {
       this.actionA.setPosition(-40, 0);
-      this.player.playAnimation("right");
-    } 
+      this.player.playAnimation(`right_${this.key}`);
+    }
 
     if (this.actionAActive) {
       if (this.actionA.flipX) {
@@ -280,7 +299,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     this.updateHealthBar();
     this.updatePlayerName();
-    
+
     if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
       //this.player.playAnimation("idle");
     }
@@ -326,12 +345,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     } else if (this.currentDirection === Direction.RIGHT) {
       this.actionB.body.setVelocityX(560);
       this.actionB.setAngle(45);
-
     } else if (this.currentDirection === Direction.LEFT) {
       this.actionB.body.setVelocityX(-560);
       this.actionB.setAngle(270);
-
-
     }
 
     this.scene.time.delayedCall(
@@ -370,9 +386,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   cleanUp() {
     this.setActive(false);
     this.setVisible(false);
-    this.healthBar.setVisible(false);
+    DestroyBar();
+
     this.playerNameText.setText("");
-    this.healthBar.destroy();
+
     this.playerName.destroy();
     this.player.destroy();
     this.destroy();
@@ -424,5 +441,4 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.scene.sendUnequipItemMessage(keys[itemNumber]);
     }
   }
-
 }

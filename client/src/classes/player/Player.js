@@ -12,20 +12,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setScale(3);
     // add the player to our existing scene
     this.scene.add.existing(this);
-    console.log(key)
+    this.key = key;
 
     this.scene.anims.create({
-      key: "idle",
-      frames: this.scene.anims.generateFrameNumbers(key, {
-        frames: [2],
+      key: `idle_${this.key}`,
+      frames: this.scene.anims.generateFrameNumbers(this.key, {
+        frames: [0, 1, 2, 3],
       }),
-      frameRate: 8,
+      frameRate: 0,
       repeat: -1,
     });
 
     this.scene.anims.create({
-      key: "down",
-      frames: this.scene.anims.generateFrameNumbers(key, {
+      key: `down_${this.key}`,
+      frames: this.scene.anims.generateFrameNumbers(this.key, {
         frames: [0, 1, 2, 3],
       }),
       frameRate: 8,
@@ -33,8 +33,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
 
     this.scene.anims.create({
-      key: "right",
-      frames: this.scene.anims.generateFrameNumbers(key, {
+      key: `right_${this.key}`,
+      frames: this.scene.anims.generateFrameNumbers(this.key, {
         frames: [4, 5, 6, 7],
       }),
       frameRate: 8,
@@ -42,15 +42,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     });
 
     this.scene.anims.create({
-      key: "up",
-      frames: this.scene.anims.generateFrameNumbers(key, {
+      key: `up_${this.key}`,
+      frames: this.scene.anims.generateFrameNumbers(this.key, {
         frames: [12, 13, 14, 15],
       }),
       frameRate: 8,
       repeat: -1,
     });
 
-    this.play("idle");
+    this.play(`idle_${this.key}`);
   }
 
   playAnimation(key, children = true) {

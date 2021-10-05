@@ -1,4 +1,4 @@
-import { createInputField } from "../../utils/utils";
+import { createInputField, DEPTH } from "../../utils/utils";
 import ModalWindow from "./ModalWindow";
 
 export default class DialogWindow extends ModalWindow {
@@ -11,7 +11,7 @@ export default class DialogWindow extends ModalWindow {
     this.messagesHeight = 0;
     this.messageGroup = scene.add.group();
 
-    this.graphics.setDepth(2);
+    this.graphics.setDepth(DEPTH.UI);
     this.createInput();
     this.createWindow();
     this.makeInteractive();
@@ -56,7 +56,7 @@ export default class DialogWindow extends ModalWindow {
       this.rect.setOrigin(0, 0);
 
       this.dialogContainer = this.scene.add.container(x + 1, y + 1);
-      this.dialogContainer.setDepth(3);
+      this.dialogContainer.setDepth(DEPTH.UI);
       this.dialogContainer.setAlpha(this.textAlpha);
     }
   }

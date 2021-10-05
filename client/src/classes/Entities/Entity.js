@@ -25,14 +25,12 @@ export default class Entity extends Phaser.Physics.Arcade.Sprite {
     this.setActive(true);
     this.setVisible(true);
     this.body.checkCollision.none = false;
-    this.updateHealthBar();
   }
 
   makeInactive() {
     this.setActive(false);
     this.setVisible(false);
     this.body.checkCollision.none = true;
-    this.healthBar.clear();
   }
 
  

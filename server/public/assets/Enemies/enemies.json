@@ -3,18 +3,42 @@
       {
         "name": "Mushy",
         "key": "enemy_mushy",
-        "goldValue": 3,
-        "healthValue": 25,
-        "attackValue":  4,
-        "expValue": 20
+        "goldValue": 30,
+        "healthValue": 90,
+        "attackValue":  35,
+        "expValue": 35
+      },
+      {
+        "name": "Mushy",
+        "key": "enemy_mushy_pink",
+        "goldValue": 30,
+        "healthValue": 90,
+        "attackValue":  35,
+        "expValue": 35
+      },
+      {
+        "name": "Mushy",
+        "key": "enemy_mushy_orange",
+        "goldValue": 30,
+        "healthValue": 90,
+        "attackValue":  35,
+        "expValue": 35
+      },
+      {
+        "name": "Mushy",
+        "key": "enemy_mushy_red",
+        "goldValue": 30,
+        "healthValue": 90,
+        "attackValue":  35,
+        "expValue": 35
       },
       {
         "name": "Slime",
         "key": "enemy_slime",
-        "goldValue": 9,
-        "healthValue": 30,
-        "attackValue":  8,
-        "expValue": 24
+        "goldValue": 60,
+        "healthValue": 160,
+        "attackValue":  95,
+        "expValue": 100
       }
     ]
   }

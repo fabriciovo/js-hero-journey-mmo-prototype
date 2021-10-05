@@ -85,7 +85,25 @@ export default class BootScene extends Phaser.Scene {
     );
 
 
+    this.load.spritesheet(
+      "bar_sheet",
+      "assets/images/ui/bar_sheet.png",
+      { frameWidth: 24, frameHeight: 8 }
+    );
+
     this.load.spritesheet("enemy_mushy", "assets/images/enemies/mushy.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    this.load.spritesheet("enemy_mushy_pink", "assets/images/enemies/mushy_pink.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    this.load.spritesheet("enemy_mushy_orange", "assets/images/enemies/mushy_orange.png", {
+      frameWidth: 16,
+      frameHeight: 16,
+    });
+    this.load.spritesheet("enemy_mushy_red", "assets/images/enemies/mushy_red.png", {
       frameWidth: 16,
       frameHeight: 16,
     });

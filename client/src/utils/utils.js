@@ -73,8 +73,11 @@ export function refreshTokenInterval() {
         window.alert("Token is no longer valid, please login again.");
         window.location.replace("/index.html");
       });
-  },parseInt(TOKEN_INTERVAL,10));
+  }, parseInt(TOKEN_INTERVAL, 10));
 }
+
+
+
 
 
 export const iconsetWeaponTypes = {
@@ -84,7 +87,6 @@ export const iconsetWeaponTypes = {
   LANCE: 3,
   AXE: 4,
   ARROW: 30,
-
 };
 
 export const iconsetGearTypes = {
@@ -97,10 +99,12 @@ export const iconsetGearTypes = {
   GEAR_4: 50,
   GEAR_5: 51,
   GEAR_6: 52,
-
-
 };
 
+export const healthBarTypes = {
+  HOLDER: 1,
+  LIFE_BAR: 4,
+};
 
 export const iconsetPotionsTypes = {
   HEALTH_POTION: 70,
@@ -108,4 +112,22 @@ export const iconsetPotionsTypes = {
 
 export const iconsetSlotsTypes = {
   SLOT_1: 210,
+  SLOT_2: 211,
+  SLOT_3: 212,
+  SLOT_4: 213,
+  SLOT_5: 214,
+  SLOT_6: 215,
+  SLOT_7: 216,
+  SLOT_8: 217,
+  SLOT_9: 218,
 };
+
+export const DEPTH = {
+  NORMAL: 0,
+  ENTITIES: 1,
+  ENVIROMENT: 2,
+  ENVIROMENT_BLOCKED: 3,
+  UI: 4,
+  UI_POPUP: 5,
+};
+

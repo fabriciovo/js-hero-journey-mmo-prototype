@@ -1,3 +1,4 @@
+import { DEPTH } from "../../utils/utils";
 import ModalWindow from "./ModalWindow";
 
 export default class PopupWindow extends ModalWindow {
@@ -5,7 +6,7 @@ export default class PopupWindow extends ModalWindow {
     super(scene, opts);
 
     this.scene = scene;
-    this.graphics.setDepth(5);
+    this.graphics.setDepth(DEPTH.UI_POPUP);
     this.createWindow();
     this.hideWindow();
 
@@ -45,7 +46,7 @@ export default class PopupWindow extends ModalWindow {
 
       // create inventory container for positioning elements
       this.popupContainer = this.scene.add.container(x + 1, y + 1);
-      this.popupContainer.setDepth(5);
+      this.popupContainer.setDepth(DEPTH.UI_POPUP);
       this.popupContainer.setAlpha(this.textAlpha);
       this.createPopupText();
 

@@ -1,3 +1,4 @@
+import { DEPTH } from "../../utils/utils";
 import ModalWindow from "./ModalWindow";
 
 export default class ItemDescriptionWindow extends ModalWindow {
@@ -5,7 +6,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
     super(scene, opts);
 
     this.scene = scene;
-    this.graphics.setDepth(4);
+    this.graphics.setDepth(DEPTH.UI_POPUP);
     this.createWindow();
     this.hideWindow();
   }
@@ -44,7 +45,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
 
       // create inventory container for positioning elements
       this.descriptionContainer = this.scene.add.container(x + 1, y + 1);
-      this.descriptionContainer.setDepth(4);
+      this.descriptionContainer.setDepth(DEPTH.UI_POPUP);
       this.descriptionContainer.setAlpha(this.textAlpha);
     }
   }

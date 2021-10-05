@@ -92,6 +92,8 @@ var GameManager = /*#__PURE__*/function () {
           layer.objects.forEach(function (obj) {
             if (_this.npcLocations[obj.properties.spawner]) {
               _this.npcLocations[obj.properties.spawner].push([obj.x, obj.y]);
+
+              console.log(_this.npcLocations[obj.properties.spawner]);
             } else {
               _this.npcLocations[obj.properties.spawner] = [[obj.x, obj.y]];
             }
@@ -139,7 +141,7 @@ var GameManager = /*#__PURE__*/function () {
 
                   _context.next = 5;
                   return _UserModel["default"].updateOne({
-                    id: _this2.players[socket.id].id
+                    username: _this2.players[socket.id].username
                   }, {
                     $set: {
                       player: _this2.players[socket.id]
@@ -469,12 +471,15 @@ var GameManager = /*#__PURE__*/function () {
 
       Object.keys(this.chestLocations).forEach(function (key) {
         config.id = "chest-".concat(key);
+        console.log(_this3.chestLocations);
         spawner = new _Spawner["default"](config, _this3.chestLocations[key], _this3.addChest.bind(_this3), _this3.deleteChest.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
       }); // create monster spawners
 
       Object.keys(this.monsterLocations).forEach(function (key) {
         config.id = "monster-".concat(key);
+        config.limit = 8;
+        console.log(key);
         config.spawnerType = _utils.SpawnerType.MONSTER;
         spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
@@ -482,6 +487,7 @@ var GameManager = /*#__PURE__*/function () {
 
       Object.keys(this.npcLocations).forEach(function (key) {
         console.log(_this3.npcLocations);
+        console.log(key);
         config.id = "npc-".concat(key);
         config.spawnerType = _utils.SpawnerType.NPC;
         spawner = new _Spawner["default"](config, _this3.npcLocations[key], _this3.addNpc.bind(_this3), _this3.deleteNpc.bind(_this3));
