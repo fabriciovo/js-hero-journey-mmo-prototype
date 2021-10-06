@@ -1,7 +1,6 @@
 import * as Phaser from "phaser";
 import Player from "./Player";
 import Direction from "../../utils/direction";
-import Bullet from "../weapons/RangedWeapon";
 import RangedWeapon from "../weapons/RangedWeapon";
 import Potion from "../Armory/Potion/Potion";
 import {
@@ -11,8 +10,7 @@ import {
   iconsetPotionsTypes,
   iconsetWeaponTypes,
 } from "../../utils/utils";
-import HealthBar from "../UI/HealthBar";
-import Bar from "../UI/HealthBar";
+import Bar from "../UI/Bar";
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(

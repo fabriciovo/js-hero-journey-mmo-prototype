@@ -14,6 +14,8 @@ export default class BootScene extends Phaser.Scene {
     this.loadAudio();
     // load tilemap
     this.loadTileMap();
+    // load JSON
+    this.loadJson();
   }
 
   loadImages() {
@@ -48,31 +50,50 @@ export default class BootScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    this.load.spritesheet("characters_1", "assets/images/characters/characters_1.png", {
-      frameWidth: 16,
-      frameHeight: 20,
-    });
+    this.load.spritesheet(
+      "characters_1",
+      "assets/images/characters/characters_1.png",
+      {
+        frameWidth: 16,
+        frameHeight: 20,
+      }
+    );
 
-    this.load.spritesheet("characters_2", "assets/images/characters/characters_2.png", {
-      frameWidth: 16,
-      frameHeight: 20,
-    });
+    this.load.spritesheet(
+      "characters_2",
+      "assets/images/characters/characters_2.png",
+      {
+        frameWidth: 16,
+        frameHeight: 20,
+      }
+    );
 
-    this.load.spritesheet("characters_3", "assets/images/characters/characters_3.png", {
-      frameWidth: 16,
-      frameHeight: 20,
-    });
+    this.load.spritesheet(
+      "characters_3",
+      "assets/images/characters/characters_3.png",
+      {
+        frameWidth: 16,
+        frameHeight: 20,
+      }
+    );
 
-    this.load.spritesheet("characters_4", "assets/images/characters/characters_4.png", {
-      frameWidth: 16,
-      frameHeight: 20,
-    });
+    this.load.spritesheet(
+      "characters_4",
+      "assets/images/characters/characters_4.png",
+      {
+        frameWidth: 16,
+        frameHeight: 20,
+      }
+    );
 
-    this.load.spritesheet("characters_5", "assets/images/characters/characters_5.png", {
-      frameWidth: 16,
-      frameHeight: 20,
-    });
-
+    this.load.spritesheet(
+      "characters_5",
+      "assets/images/characters/characters_5.png",
+      {
+        frameWidth: 16,
+        frameHeight: 20,
+      }
+    );
 
     this.load.spritesheet("iconset", "assets/images/iconset.png", {
       frameWidth: 32,
@@ -84,34 +105,43 @@ export default class BootScene extends Phaser.Scene {
       { frameWidth: 20, frameHeight: 20 }
     );
 
-
-    this.load.spritesheet(
-      "bar_sheet",
-      "assets/images/ui/bar_sheet.png",
-      { frameWidth: 24, frameHeight: 8 }
-    );
+    this.load.spritesheet("bar_sheet", "assets/images/ui/bar_sheet.png", {
+      frameWidth: 24,
+      frameHeight: 8,
+    });
 
     this.load.spritesheet("enemy_mushy", "assets/images/enemies/mushy.png", {
       frameWidth: 16,
       frameHeight: 16,
     });
-    this.load.spritesheet("enemy_mushy_pink", "assets/images/enemies/mushy_pink.png", {
-      frameWidth: 16,
-      frameHeight: 16,
-    });
-    this.load.spritesheet("enemy_mushy_orange", "assets/images/enemies/mushy_orange.png", {
-      frameWidth: 16,
-      frameHeight: 16,
-    });
-    this.load.spritesheet("enemy_mushy_red", "assets/images/enemies/mushy_red.png", {
-      frameWidth: 16,
-      frameHeight: 16,
-    });
+    this.load.spritesheet(
+      "enemy_mushy_pink",
+      "assets/images/enemies/mushy_pink.png",
+      {
+        frameWidth: 16,
+        frameHeight: 16,
+      }
+    );
+    this.load.spritesheet(
+      "enemy_mushy_orange",
+      "assets/images/enemies/mushy_orange.png",
+      {
+        frameWidth: 16,
+        frameHeight: 16,
+      }
+    );
+    this.load.spritesheet(
+      "enemy_mushy_red",
+      "assets/images/enemies/mushy_red.png",
+      {
+        frameWidth: 16,
+        frameHeight: 16,
+      }
+    );
     this.load.spritesheet("enemy_slime", "assets/images/enemies/slime.png", {
       frameWidth: 16,
       frameHeight: 16,
     });
-
   }
 
   loadAudio() {
@@ -125,6 +155,10 @@ export default class BootScene extends Phaser.Scene {
   loadTileMap() {
     // map made with Tiled in JSON format
     this.load.tilemapTiledJSON("map", "assets/level/new_level.json");
+  }
+
+  loadJson() {
+    this.load.json("weaponsData", "assets/json/Books/weaponsBook.json");
   }
 
   create() {

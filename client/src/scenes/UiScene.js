@@ -1,9 +1,11 @@
 import * as Phaser from "phaser";
+import WeaponsBook from "../classes/window/BooksWindows/WeaponsBook";
 import InventoryWindow from "../classes/window/InventoryWindow";
 import ItemDescriptionWindow from "../classes/window/ItemDescriptionWindow";
 import PlayerWindow from "../classes/window/PlayerWindow";
 import PopupWindow from "../classes/window/popupWindow";
 import ShopWindow from "../classes/window/ShopWindow";
+import SlotsWindow from "../classes/window/slotsWindow";
 import {
   DEPTH,
   healthBarTypes,
@@ -23,6 +25,8 @@ export default class UiScene extends Phaser.Scene {
     this.showInventory = false;
     this.showPlayerStats = false;
     this.showShopWindow = false;
+    this.showWeaponsBook = false;
+
   }
 
   create() {
@@ -44,6 +48,9 @@ export default class UiScene extends Phaser.Scene {
   }
 
   setupUiElements() {
+    this.createWindows();
+
+
     //create Popup window
     this.shopWindow = new ShopWindow(this, {
       x: this.scale.width / 2 - 174,
@@ -81,7 +88,7 @@ export default class UiScene extends Phaser.Scene {
       windowColor: 0x000000,
     });
 
-    // create inventory modal
+    // create inventory window
     this.inventoryWindow = new InventoryWindow(this, {
       windowWidth: this.scale.width / 4 - 300,
       windowHeight: this.scale.height * 0.3,
@@ -99,6 +106,18 @@ export default class UiScene extends Phaser.Scene {
       windowHeight: 120,
       borderAlpha: 1,
       windowAlpha: 1,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+    });
+
+
+    // create weaponsBook Window
+    this.weaponsBook = new WeaponsBook(this, {
+      windowWidth: this.scale.width / 4 - 300,
+      windowHeight: this.scale.height * 0.3,
+      borderAlpha: 1,
+      windowAlpha: 0.9,
       debug: false,
       textAlpha: 1,
       windowColor: 0x000000,
@@ -142,6 +161,16 @@ export default class UiScene extends Phaser.Scene {
     this.playerStatsButton.on("pointerdown", () => {
       console.log("playerStatsButton", this.gameScene.player);
       this.togglePlayerStats(this.gameScene.player);
+    });
+
+    // create WeaponsBook button
+    this.weaponsBookButton = this.add
+      .image(this.scale.width / 2 - 120, this.scale.height - 50, "iconset", 56)
+      .setScale(3)
+      .setInteractive({ cursor: "pointer" });
+
+    this.weaponsBookButton.on("pointerdown", () => {
+      this.weaponsBook.showWindow(this.gameScene.player);
     });
 
     // create inventory button
@@ -235,12 +264,10 @@ export default class UiScene extends Phaser.Scene {
   createPlayersStatsUi(playerObject) {
     //create stats container
     this.playerStatsContainer = this.add.container(0, 20);
-    this.containerImage = this.add.image(
-      20,
-      0,
-      "iconset",
-      iconsetSlotsTypes.SLOT_9
-    ).setScale(24,6).setAlpha(.8);
+    this.containerImage = this.add
+      .image(20, 0, "iconset", iconsetSlotsTypes.SLOT_9)
+      .setScale(24, 6)
+      .setAlpha(0.8);
     this.playerStatsContainer.add(this.containerImage);
     //Create Bars
     this.createPlayerExpBar(playerObject);
@@ -420,5 +447,9 @@ export default class UiScene extends Phaser.Scene {
       this.inventoryButton.x = gameSize.width - 350;
       this.playerStatsButton.x = gameSize.width - 450;
     }
+  }
+
+  createWindows() {
+
   }
 }
