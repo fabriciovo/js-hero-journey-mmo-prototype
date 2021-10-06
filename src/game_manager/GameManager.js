@@ -102,7 +102,7 @@ export default class GameManager {
           }
 
           await UserModel.updateOne(
-            { username: this.players[socket.id].username },
+            { username: this.players[socket.id].playerName },
             {
               $set: {
                 player: this.players[socket.id],
@@ -168,7 +168,6 @@ export default class GameManager {
 
           // inform the other players of the new player that joined
           console.log("this.players[socket.id].key")
-          console.log(this.players[socket.id].key)
           socket.broadcast.emit("spawnPlayer", this.players[socket.id]);
           socket.emit("updateItems", this.players[socket.id]);
           socket.broadcast.emit(

@@ -141,7 +141,7 @@ var GameManager = /*#__PURE__*/function () {
 
                   _context.next = 5;
                   return _UserModel["default"].updateOne({
-                    username: _this2.players[socket.id].username
+                    username: _this2.players[socket.id].playerName
                   }, {
                     $set: {
                       player: _this2.players[socket.id]
@@ -249,25 +249,24 @@ var GameManager = /*#__PURE__*/function () {
                     socket.emit("currentNpcs", _this2.npcs); // inform the other players of the new player that joined
 
                     console.log("this.players[socket.id].key");
-                    console.log(_this2.players[socket.id].key);
                     socket.broadcast.emit("spawnPlayer", _this2.players[socket.id]);
                     socket.emit("updateItems", _this2.players[socket.id]);
                     socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
-                    _context3.next = 25;
+                    _context3.next = 24;
                     break;
 
-                  case 21:
-                    _context3.prev = 21;
+                  case 20:
+                    _context3.prev = 20;
                     _context3.t0 = _context3["catch"](0);
                     console.log(_context3.t0);
                     socket.emit("invalidToken");
 
-                  case 25:
+                  case 24:
                   case "end":
                     return _context3.stop();
                 }
               }
-            }, _callee3, null, [[0, 21]]);
+            }, _callee3, null, [[0, 20]]);
           }));
 
           return function (_x4, _x5) {
