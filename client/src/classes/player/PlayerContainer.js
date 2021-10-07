@@ -251,6 +251,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         !this.potionAActive
       ) {
         this.actionB.setPosition(this.x, this.y);
+        this.actionB.direction = this.currentDirection;
 
         this.actionBFunction();
       }
@@ -317,7 +318,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionA.alpha = 1;
     this.actionAActive = true;
     this.mobileActionA = false;
-    
 
     if (this.mainPlayer) this.attackAudio.play();
     this.scene.time.delayedCall(
@@ -333,21 +333,27 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   actionBFunction() {
+    this.actionB.makeActive();
+    this.actionB.Attack();
     this.actionBActive = true;
+
+    if (this.mainPlayer) this.attackAudio.play();
+ 
     //this.actionB.attack(this.x, this.y);
     //if (this.mainPlayer) this.attackAudio.play();
-    this.actionB.makeActive();
-    if (this.mainPlayer) this.attackAudio.play();
-    this.actionB.direction = this.currentDirection;
-    this.actionB.Attack();
+
     // this.scene.sendCreateRangedObjectMessage(this.actionB)
+    console.log(this.actionBActive);
 
     this.scene.time.delayedCall(
       2000,
       () => {
-        this.actionB.makeInactive();
-        //this.actionB.setPosition(this.x, this.y);
         this.actionBActive = false;
+        this.hitbox = false;
+        //this.actionB.makeInactive();
+        console.log(this.actionBActive);
+
+        //this.actionB.setPosition(this.x, this.y);
       },
       [],
       this
