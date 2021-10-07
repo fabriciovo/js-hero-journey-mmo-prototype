@@ -90,7 +90,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionCActive = false;
 
     // create the weapons game object
-    this.actionA = this.scene.add.image(
+    this.actionA = this.scene.add.sprite(
       40,
       0,
       "iconset",
@@ -237,7 +237,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       if (
         (Phaser.Input.Keyboard.JustDown(this.actionAButton) ||
           this.mobileActionA) &&
-        !this.actionAActive
+        !this.actionAActive &&
+        !this.potionAActive &&
+        !this.actionBActive
       ) {
         this.actionAFunction();
       }
@@ -245,8 +247,11 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       if (
         Phaser.Input.Keyboard.JustDown(this.actionBButton) &&
         !this.actionBActive &&
-        !this.actionAActive
+        !this.actionAActive &&
+        !this.potionAActive
       ) {
+        this.actionB.setPosition(this.x, this.y);
+
         this.actionBFunction();
       }
 
@@ -312,6 +317,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionA.alpha = 1;
     this.actionAActive = true;
     this.mobileActionA = false;
+    
+
     if (this.mainPlayer) this.attackAudio.play();
     this.scene.time.delayedCall(
       150,
@@ -326,36 +333,21 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   actionBFunction() {
-    //this.actionBActive = true;
+    this.actionBActive = true;
     //this.actionB.attack(this.x, this.y);
     //if (this.mainPlayer) this.attackAudio.play();
-
     this.actionB.makeActive();
-    this.actionBActive = true;
-    this.actionB.setPosition(this.x, this.y);
     if (this.mainPlayer) this.attackAudio.play();
-    if (this.currentDirection === Direction.UP) {
-      this.actionB.setAngle(-45);
-      this.actionB.body.setVelocityY(-560);
-    } else if (this.currentDirection === Direction.DOWN) {
-      this.actionB.body.setVelocityY(560);
-      this.actionB.setAngle(111);
-    } else if (this.currentDirection === Direction.RIGHT) {
-      this.actionB.body.setVelocityX(560);
-      this.actionB.setAngle(45);
-    } else if (this.currentDirection === Direction.LEFT) {
-      this.actionB.body.setVelocityX(-560);
-      this.actionB.setAngle(270);
-    }
+    this.actionB.direction = this.currentDirection;
+    this.actionB.Attack();
+    // this.scene.sendCreateRangedObjectMessage(this.actionB)
 
     this.scene.time.delayedCall(
       2000,
       () => {
         this.actionB.makeInactive();
+        //this.actionB.setPosition(this.x, this.y);
         this.actionBActive = false;
-        this.hitbox = false;
-        this.actionB.body.setVelocityX(0);
-        this.actionB.body.setVelocityY(0);
       },
       [],
       this
@@ -384,7 +376,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   cleanUp() {
     this.setActive(false);
     this.setVisible(false);
-    DestroyBar();
+    this.healthBar.DestroyBar();
 
     this.playerNameText.setText("");
 

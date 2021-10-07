@@ -27,7 +27,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.listenForSocketEvents();
 
-    this.selectedCharacter = data.selectedCharacter || 'characters_3';
+    this.selectedCharacter = data.selectedCharacter || "characters_3";
 
     this.cameras.main.roundPixels = true;
   }
@@ -75,19 +75,23 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.actionBActive = player.actionBActive;
           otherPlayer.potionAActive = player.potionAActive;
           otherPlayer.currentDirection = player.currentDirection;
-
           if (player.actionAActive) {
             otherPlayer.actionAFunction();
           }
           if (player.actionBActive) {
             otherPlayer.actionBFunction();
+
           }
           if (player.potionAActive) {
             otherPlayer.potionAFunction();
             otherPlayer.updateHealthBar();
           }
           //otherPlayer.playAnimation();
+          otherPlayer.actionB.setPosition(player.actionB.x, player.actionB.y);
+
         }
+
+
       });
     });
 
@@ -302,6 +306,15 @@ export default class GameScene extends Phaser.Scene {
         }
       });
     });
+
+    this.socket.on("updateRangedObject", (rangedObject) => {
+      console.log(rangedObject);
+
+      this.rangedObjects.getChildren().forEach((otherRangedObject) => {
+        otherRangedObject.x = rangedObject.x;
+        otherRangedObject.y = rangedObject.y;
+      });
+    });
   }
 
   create() {
@@ -370,18 +383,20 @@ export default class GameScene extends Phaser.Scene {
         actionBActive,
         potionAActive,
         level,
-        
+        actionB,
       } = this.player;
       if (
         this.player.oldPosition &&
-        (x != this.player.oldPosition.x ||
+        (x !== this.player.oldPosition.x ||
           y !== this.player.oldPosition.y ||
-          flipX != this.player.oldPosition.flipX ||
+          flipX !== this.player.oldPosition.flipX ||
           actionAActive !== this.player.oldPosition.actionAActive ||
           actionBActive !== this.player.oldPosition.actionBActive ||
           potionAActive !== this.player.oldPosition.potionAActive ||
           level !== this.player.oldPosition.level ||
-          currentDirection != this.player.oldPosition.currentDirection)
+          currentDirection !== this.player.oldPosition.currentDirection ||
+          actionB !== this.player.oldPosition.actionB ||
+          this.player.oldPosition !== this.player.oldPosition.actionB)
       ) {
         this.socket.emit("playerMovement", {
           x,
@@ -392,6 +407,7 @@ export default class GameScene extends Phaser.Scene {
           potionAActive,
           currentDirection,
           level,
+          actionB,
         });
       }
       // save old position data
@@ -404,6 +420,7 @@ export default class GameScene extends Phaser.Scene {
         actionBActive: this.player.actionBActive,
         potionAActive: this.player.potionAActive,
         level: this.player.level,
+        actionB: this.player.actionB,
       };
     }
   }
@@ -432,7 +449,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer(playerObject, mainPlayer) {
-    console.log(this.selectedCharacter)
+    console.log(this.selectedCharacter);
     const newPlayerObject = new PlayerContainer(
       this,
       playerObject.x * 2,
@@ -543,7 +560,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   spawnMonster(monsterObject) {
-    console.log(monsterObject.key)
+    console.log(monsterObject.key);
     let monster = this.monsters.getFirstDead();
     if (!monster) {
       monster = new Monster(
@@ -741,6 +758,10 @@ export default class GameScene extends Phaser.Scene {
   collectItem(player, item) {
     // item pickup
     this.socket.emit("pickUpItem", item.id);
+  }
+
+  sendCreateRangedObjectMessage(object) {
+    this.socket.emit("createRangedObject", object);
   }
 
   sendDropItemMessage(itemId) {

@@ -19,6 +19,9 @@ export default class GameManager {
     this.items = {};
     this.npcs = {};
 
+    this.rangedObjects = {};
+
+
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
@@ -60,7 +63,6 @@ export default class GameManager {
         layer.objects.forEach((obj) => {
           if (this.npcLocations[obj.properties.spawner]) {
             this.npcLocations[obj.properties.spawner].push([obj.x, obj.y]);
-            console.log(this.npcLocations[obj.properties.spawner])
           } else {
             this.npcLocations[obj.properties.spawner] = [[obj.x, obj.y]];
           }
@@ -147,8 +149,7 @@ export default class GameManager {
 
           const playerSchema = await UserModel.findById(_id);
           // create a new Player
-          console.log("key")
-          console.log(key)
+
           this.spawnPlayer(socket.id, name, key, playerSchema.player);
 
           // send the players object to the new player
@@ -167,7 +168,6 @@ export default class GameManager {
           socket.emit("currentNpcs", this.npcs);
 
           // inform the other players of the new player that joined
-          console.log("this.players[socket.id].key")
           socket.broadcast.emit("spawnPlayer", this.players[socket.id]);
           socket.emit("updateItems", this.players[socket.id]);
           socket.broadcast.emit(
@@ -192,11 +192,13 @@ export default class GameManager {
           this.players[socket.id].frame = playerData.frame;
           this.players[socket.id].currentDirection =
             playerData.currentDirection;
-
+            this.players[socket.id].actionB =
+            playerData.actionB;
           // emit a message to all players about the player that moved
           this.io.emit("playerMoved", this.players[socket.id]);
         }
       });
+
 
       socket.on("pickUpChest", (chestId) => {
         // update the spawner
@@ -441,7 +443,6 @@ export default class GameManager {
     // create chest spawners
     Object.keys(this.chestLocations).forEach((key) => {
       config.id = `chest-${key}`;
-      console.log(this.chestLocations);
 
       spawner = new Spawner(
         config,
@@ -456,7 +457,6 @@ export default class GameManager {
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
       config.limit = 8;
-      console.log(key);
 
       config.spawnerType = SpawnerType.MONSTER;
 
@@ -472,9 +472,6 @@ export default class GameManager {
 
     // create npc spawners
     Object.keys(this.npcLocations).forEach((key) => {
-      console.log(this.npcLocations);
-      console.log(key);
-
       config.id = `npc-${key}`;
       config.spawnerType = SpawnerType.NPC;
 
@@ -505,6 +502,7 @@ export default class GameManager {
       this.players,
       name,
       key,
+      undefined,
       playerSchema
     );
     this.players[playerId] = player;

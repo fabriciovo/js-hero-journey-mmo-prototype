@@ -12,7 +12,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
 var PlayerModel = /*#__PURE__*/function () {
-  function PlayerModel(playerId, spawnLocations, players, name, key, playerSchema) {
+  function PlayerModel(playerId, spawnLocations, players, name, key, actionB, playerSchema) {
     (0, _classCallCheck2["default"])(this, PlayerModel);
     this.attack = playerSchema.attack;
     this.defense = playerSchema.defense;
@@ -32,6 +32,9 @@ var PlayerModel = /*#__PURE__*/function () {
     this.maxNumberOfItems = 5;
     this.spawnLocations = spawnLocations;
     this.actionAActive = false;
+    this.actionBActive = false;
+    this.potionAActive = false;
+    this.actionB = actionB;
     this.flipX = true;
     var location = this.generateLocation(players);
     this.x = location[0];

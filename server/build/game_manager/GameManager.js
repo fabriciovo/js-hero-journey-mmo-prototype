@@ -47,6 +47,7 @@ var GameManager = /*#__PURE__*/function () {
     this.players = {};
     this.items = {};
     this.npcs = {};
+    this.rangedObjects = {};
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
@@ -92,8 +93,6 @@ var GameManager = /*#__PURE__*/function () {
           layer.objects.forEach(function (obj) {
             if (_this.npcLocations[obj.properties.spawner]) {
               _this.npcLocations[obj.properties.spawner].push([obj.x, obj.y]);
-
-              console.log(_this.npcLocations[obj.properties.spawner]);
             } else {
               _this.npcLocations[obj.properties.spawner] = [[obj.x, obj.y]];
             }
@@ -231,10 +230,8 @@ var GameManager = /*#__PURE__*/function () {
 
                   case 5:
                     playerSchema = _context3.sent;
-                    // create a new Player
-                    console.log("key");
-                    console.log(key);
 
+                    // create a new Player
                     _this2.spawnPlayer(socket.id, name, key, playerSchema.player); // send the players object to the new player
 
 
@@ -248,25 +245,24 @@ var GameManager = /*#__PURE__*/function () {
 
                     socket.emit("currentNpcs", _this2.npcs); // inform the other players of the new player that joined
 
-                    console.log("this.players[socket.id].key");
                     socket.broadcast.emit("spawnPlayer", _this2.players[socket.id]);
                     socket.emit("updateItems", _this2.players[socket.id]);
                     socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
-                    _context3.next = 24;
+                    _context3.next = 21;
                     break;
 
-                  case 20:
-                    _context3.prev = 20;
+                  case 17:
+                    _context3.prev = 17;
                     _context3.t0 = _context3["catch"](0);
                     console.log(_context3.t0);
                     socket.emit("invalidToken");
 
-                  case 24:
+                  case 21:
                   case "end":
                     return _context3.stop();
                 }
               }
-            }, _callee3, null, [[0, 20]]);
+            }, _callee3, null, [[0, 17]]);
           }));
 
           return function (_x4, _x5) {
@@ -282,7 +278,8 @@ var GameManager = /*#__PURE__*/function () {
             _this2.players[socket.id].actionBActive = playerData.actionBActive;
             _this2.players[socket.id].potionAActive = playerData.potionAActive;
             _this2.players[socket.id].frame = playerData.frame;
-            _this2.players[socket.id].currentDirection = playerData.currentDirection; // emit a message to all players about the player that moved
+            _this2.players[socket.id].currentDirection = playerData.currentDirection;
+            _this2.players[socket.id].actionB = playerData.actionB; // emit a message to all players about the player that moved
 
             _this2.io.emit("playerMoved", _this2.players[socket.id]);
           }
@@ -470,7 +467,6 @@ var GameManager = /*#__PURE__*/function () {
 
       Object.keys(this.chestLocations).forEach(function (key) {
         config.id = "chest-".concat(key);
-        console.log(_this3.chestLocations);
         spawner = new _Spawner["default"](config, _this3.chestLocations[key], _this3.addChest.bind(_this3), _this3.deleteChest.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
       }); // create monster spawners
@@ -478,15 +474,12 @@ var GameManager = /*#__PURE__*/function () {
       Object.keys(this.monsterLocations).forEach(function (key) {
         config.id = "monster-".concat(key);
         config.limit = 8;
-        console.log(key);
         config.spawnerType = _utils.SpawnerType.MONSTER;
         spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
       }); // create npc spawners
 
       Object.keys(this.npcLocations).forEach(function (key) {
-        console.log(_this3.npcLocations);
-        console.log(key);
         config.id = "npc-".concat(key);
         config.spawnerType = _utils.SpawnerType.NPC;
         spawner = new _Spawner["default"](config, _this3.npcLocations[key], _this3.addNpc.bind(_this3), _this3.deleteNpc.bind(_this3));
@@ -501,7 +494,7 @@ var GameManager = /*#__PURE__*/function () {
   }, {
     key: "spawnPlayer",
     value: function spawnPlayer(playerId, name, key, playerSchema) {
-      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, name, key, playerSchema);
+      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, name, key, undefined, playerSchema);
       this.players[playerId] = player;
     }
   }, {
