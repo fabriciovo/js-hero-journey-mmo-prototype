@@ -127,7 +127,8 @@ export const DEPTH = {
   ENTITIES: 1,
   ENVIROMENT: 2,
   ENVIROMENT_BLOCKED: 3,
-  UI: 4,
-  UI_POPUP: 5,
+  BARS:4,
+  UI: 5,
+  UI_POPUP: 6,
 };
 

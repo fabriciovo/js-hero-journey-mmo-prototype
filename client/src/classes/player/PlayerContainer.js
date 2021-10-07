@@ -155,7 +155,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       "bar_sheet",
       healthBarTypes.LIFE_BAR,
       healthBarTypes.HOLDER,
-      DEPTH.UI
+      DEPTH.BARS
     );
     this.expBar = this.scene.add.graphics();
     this.healthBar.UpdateBar();
@@ -300,8 +300,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         this.actionA.flipX = true;
       }
 
-
-      if(!this.actionBActive){
+      if (!this.actionBActive) {
         this.actionB.makeInactive();
       }
     }
@@ -341,16 +340,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionB.makeActive();
     this.actionB.Attack();
     this.actionBActive = true;
-
     if (this.mainPlayer) this.attackAudio.play();
- 
     this.scene.time.delayedCall(
       2000,
       () => {
         this.actionBActive = false;
         this.hitbox = false;
-        
-        //this.actionB.setPosition(this.x, this.y);
       },
       [],
       this
