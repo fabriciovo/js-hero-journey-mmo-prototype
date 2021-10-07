@@ -79,6 +79,7 @@ export default class GameScene extends Phaser.Scene {
             otherPlayer.actionAFunction();
           }
           if (player.actionBActive) {
+            otherPlayer.actionB.makeActive();
             otherPlayer.actionBFunction();
 
           }

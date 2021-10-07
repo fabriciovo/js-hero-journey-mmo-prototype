@@ -16,7 +16,6 @@ export default class RangedWeapon extends Phaser.Physics.Arcade.Sprite {
     this.setScale(2);
   }
 
-
   makeActive() {
     this.setActive(true);
     this.setVisible(true);

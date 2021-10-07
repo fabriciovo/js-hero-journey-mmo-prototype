@@ -252,7 +252,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       ) {
         this.actionB.setPosition(this.x, this.y);
         this.actionB.direction = this.currentDirection;
-
+        this.actionB.makeActive();
         this.actionBFunction();
       }
 
@@ -299,6 +299,11 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       if (this.currentDirection === Direction.LEFT) {
         this.actionA.flipX = true;
       }
+
+
+      if(!this.actionBActive){
+        this.actionB.makeInactive();
+      }
     }
 
     this.updateHealthBar();
@@ -339,20 +344,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     if (this.mainPlayer) this.attackAudio.play();
  
-    //this.actionB.attack(this.x, this.y);
-    //if (this.mainPlayer) this.attackAudio.play();
-
-    // this.scene.sendCreateRangedObjectMessage(this.actionB)
-    console.log(this.actionBActive);
-
     this.scene.time.delayedCall(
       2000,
       () => {
         this.actionBActive = false;
         this.hitbox = false;
-        //this.actionB.makeInactive();
-        console.log(this.actionBActive);
-
+        
         //this.actionB.setPosition(this.x, this.y);
       },
       [],
