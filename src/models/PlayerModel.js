@@ -1,5 +1,5 @@
 export default class PlayerModel {
-  constructor(playerId, spawnLocations, players, name, key, playerSchema) {
+  constructor(playerId, spawnLocations, players, name, key, actionB, playerSchema) {
     this.attack = playerSchema.attack;
     this.defense = playerSchema.defense;
     this.health = playerSchema.health;
@@ -20,6 +20,9 @@ export default class PlayerModel {
 
     this.spawnLocations = spawnLocations;
     this.actionAActive = false;
+    this.actionBActive = false;
+    this.potionAActive = false;
+    this.actionB = actionB;
     this.flipX = true;
     const location = this.generateLocation(players);
     this.x = location[0];
@@ -77,12 +80,11 @@ export default class PlayerModel {
   updateGold(gold) {
     this.gold += gold;
   }
-  
-  potion(health){
-    this.updateHealth(health)
+
+  potion(health) {
+    this.updateHealth(health);
     this.potions--;
   }
-
 
   updateExp(exp) {
     this.exp += exp;
