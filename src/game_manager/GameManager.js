@@ -456,7 +456,6 @@ export default class GameManager {
     // create monster spawners
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
-      config.limit = 8;
 
       config.spawnerType = SpawnerType.MONSTER;
 
