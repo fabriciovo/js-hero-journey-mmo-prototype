@@ -1,0 +1,49 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "mmorpg backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodemon": "npx nodemon src/index.js --exec babel-node",
+    "mongo": "mongod --config /usr/local/etc/mongod.conf",
+    "mongo:up": "docker-compose up -d",
+    "mongo:down": "docker-compose down",
+    "clean": "rd /s /q build && mkdir build",
+    "cleanheroku": "rm -rf build && mkdir build",
+    "build": "babel -d ./build ./src -s",
+    "start": "npm run cleanheroku && npm run build && node ./build/index.js"
+  },
+  "engines": {
+    "node": "16.1.0",
+    "npm": "7.21.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.2",
+    "nodemailer": "^6.6.3",
+    "nodemailer-express-handlebars": "^4.0.0",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.2.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.15.4",
+    "@babel/core": "^7.15.5",
+    "@babel/node": "^7.15.4",
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.4",
+    "@babel/runtime": "^7.15.4",
+    "babel-loader": "^8.2.2"
+  }
+}
