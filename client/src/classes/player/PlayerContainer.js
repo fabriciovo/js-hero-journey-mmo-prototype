@@ -378,7 +378,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     this.playerNameText.setText("");
 
-    this.playerName.destroy();
     this.player.destroy();
     this.destroy();
   }

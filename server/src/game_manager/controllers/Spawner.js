@@ -5,7 +5,7 @@ import ItemModel from "../../models/ItemModel";
 import * as itemData from "../../../public/assets/level/tools.json";
 import * as enemyData from "../../../public/assets/Enemies/enemies.json";
 
-import NpcModel from "../../models/npcModel";
+import NpcModel from "../../models/NpcModel";
 
 function getRandonValues() {
   const bonus = [
