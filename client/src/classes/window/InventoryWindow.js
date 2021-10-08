@@ -414,7 +414,6 @@ export default class InventoryWindow extends ModalWindow {
     this.inventoryContainer.add(this.discardButton);
 
     this.discardButton.on("pointerdown", () => {
-      console.log(this.selectedItemNumber);
       this.removeItem(this.selectedItemNumber);
     });
 

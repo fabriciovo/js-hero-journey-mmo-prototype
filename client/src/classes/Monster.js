@@ -1,6 +1,7 @@
 import * as Phaser from "phaser";
-import { healthBarTypes } from "../utils/utils";
+import { DEPTH, healthBarTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
+import Bar from "./UI/Bar";
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
@@ -11,7 +12,7 @@ export default class Monster extends Entity {
     super(scene, x, y, key, frame, id);
     this.health = health;
     this.maxHealth = maxHealth;
-    console.log(id);
+    this.scene = scene;
     this.key = key;
     this.scene.anims.create({
       key: `normal_${this.key}`,
@@ -21,6 +22,7 @@ export default class Monster extends Entity {
       frameRate: 8,
       repeat: -1,
     });
+
 
     // this.scene.anims.create({
     //   key: "sides",
@@ -45,26 +47,26 @@ export default class Monster extends Entity {
   }
 
   createHealthBar() {
-    this.healthBarHolder = this.scene.add
-      .image(this.x - 14, this.y - 20, "bar_sheet", healthBarTypes.HOLDER)
-      .setScale(3.5)
-      .setOrigin(0, 0.5)
-      .setDepth(2);
-      this.healthBarHolder.displayWidth = (this.health / this.maxHealth) * 100;
-
-    this.healthBar = this.scene.add
-      .image(this.x - 14, this.y - 20, "bar_sheet", healthBarTypes.LIFE_BAR)
-      .setScale(3.5)
-      .setOrigin(0, 0.5)
-      .setDepth(2);
-
+    //Health bar
+    this.healthBar = new Bar(
+      this.scene,
+      this.x,
+      this.y,
+      "bar_sheet",
+      healthBarTypes.LIFE_BAR,
+      healthBarTypes.HOLDER,
+      DEPTH.BARS
+    );
     this.updateHealthBar();
   }
 
   updateHealthBar() {
-    this.healthBar.setPosition(this.x - 14, this.y - 20);
-    this.healthBarHolder.setPosition(this.x - 14, this.y - 20);
-    this.healthBar.displayWidth = (this.health / this.maxHealth) * 100;
+    this.healthBar.UpdateBar(
+      this.x - 22,
+      this.y - 22,
+      this.health,
+      this.maxHealth
+    );
   }
 
   updateHealth(health) {
@@ -79,6 +81,8 @@ export default class Monster extends Entity {
   update() {
     this.updateHealthBar();
     this.animation();
+
+
   }
 
   followPlayer() {}
@@ -90,13 +94,11 @@ export default class Monster extends Entity {
   makeInactive() {
     super.makeInactive();
     this.updateHealthBar();
-    this.healthBar.setVisible(false);
-    this.healthBarHolder.setVisible(false);
+    this.healthBar.DestroyBar();
   }
 
   makeActive() {
     super.makeActive();
-    this.healthBar.setVisible(true);
-    this.healthBarHolder.setVisible(true);
+    this.createHealthBar();
   }
 }

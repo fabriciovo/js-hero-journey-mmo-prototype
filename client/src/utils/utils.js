@@ -104,6 +104,7 @@ export const iconsetGearTypes = {
 export const healthBarTypes = {
   HOLDER: 1,
   LIFE_BAR: 4,
+  EXP:117,
 };
 
 export const iconsetPotionsTypes = {

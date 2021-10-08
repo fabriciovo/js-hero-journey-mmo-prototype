@@ -17,7 +17,7 @@ export default class GameMap {
     this.blockedLayerName = blockedLayerName;
 
     this.enviromentLayerName = enviromentLayerName;
-
+    this.watterLayer = "Watter";
     this.createMap();
   }
 
@@ -42,7 +42,6 @@ export default class GameMap {
       0
     );
     this.backgroundLayer.setScale(2.01);
-    console.log(this.backgroundLayer);
 
     // create blocked layer
     this.blockedLayer = this.tilemap.createStaticLayer(
@@ -61,14 +60,24 @@ export default class GameMap {
       0,
       0
     );
-    console.log(this.enviromentLayer);
     this.enviromentLayer.setDepth(DEPTH.ENVIROMENT);
     this.enviromentLayer.setScale(2.01);
+
+    // create watter layer
+    this.watterLayer = this.tilemap.createStaticLayer(
+      this.watterLayer,
+      this.tiles,
+      0,
+      0
+    );
+    this.watterLayer.setDepth(0);
+    this.watterLayer.setScale(2.01);
+    this.watterLayer.setCollisionByExclusion([-1]);
+
 
     // update the world bounds
     this.scene.physics.world.bounds.width = this.tilemap.widthInPixels * 2;
     this.scene.physics.world.bounds.height = this.tilemap.heightInPixels * 2;
-
     // limit the camera to the size of our map
     this.scene.cameras.main.setBounds(
       0,

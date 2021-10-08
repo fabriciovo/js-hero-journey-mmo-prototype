@@ -5,9 +5,7 @@ import * as potionData from "../../../assets/Items/potions.json";
 export default class ShopWindow extends ModalWindow {
   constructor(scene, opts) {
     super(scene, opts);
-    console.log("potionData");
 
-    console.log(potionData);
     this.scene = scene;
     this.items = potionData.potions;
     this.playerObject = {};

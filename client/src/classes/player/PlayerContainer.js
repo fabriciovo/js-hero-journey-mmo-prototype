@@ -158,7 +158,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       DEPTH.BARS
     );
     this.expBar = this.scene.add.graphics();
-    this.healthBar.UpdateBar();
+    this.updateHealthBar();
   }
 
   createPlayerName() {

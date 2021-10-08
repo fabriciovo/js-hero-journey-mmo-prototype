@@ -46,7 +46,6 @@ export default class CharacterSelectionScene extends Phaser.Scene {
     this.setAlpha(0.4);
   }
   pointerDown(character) {
-    console.log(character)
     this.scale.removeListener("resize", this.resize);
     this.scene.start("Game", { selectedCharacter: character.characterId });
   }

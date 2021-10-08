@@ -161,7 +161,6 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   showWindow(playerObject) {
-    console.log(playerObject);
     this.mainPlayer = true;
     this.playerObject = playerObject;
     this.rect.setInteractive();
@@ -249,7 +248,6 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   updatePlayerStats(playerObject) {
-    console.log(playerObject);
     this.swordStatText.setText(playerObject.attackValue);
     this.shieldStatText.setText(playerObject.defenseValue);
     this.goldStatText.setText(playerObject.gold);

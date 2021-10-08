@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import Bar from "../classes/UI/Bar";
 import WeaponsBook from "../classes/window/BooksWindows/WeaponsBook";
 import InventoryWindow from "../classes/window/InventoryWindow";
 import ItemDescriptionWindow from "../classes/window/ItemDescriptionWindow";
@@ -159,19 +160,18 @@ export default class UiScene extends Phaser.Scene {
       .setInteractive({ cursor: "pointer" });
 
     this.playerStatsButton.on("pointerdown", () => {
-      console.log("playerStatsButton", this.gameScene.player);
       this.togglePlayerStats(this.gameScene.player);
     });
 
-    // create WeaponsBook button
-    this.weaponsBookButton = this.add
-      .image(this.scale.width / 2 - 120, this.scale.height - 50, "iconset", 56)
-      .setScale(3)
-      .setInteractive({ cursor: "pointer" });
+    // // create WeaponsBook button
+    // this.weaponsBookButton = this.add
+    //   .image(this.scale.width / 2 - 120, this.scale.height - 50, "iconset", 56)
+    //   .setScale(3)
+    //   .setInteractive({ cursor: "pointer" });
 
-    this.weaponsBookButton.on("pointerdown", () => {
-      this.weaponsBook.showWindow(this.gameScene.player);
-    });
+    // this.weaponsBookButton.on("pointerdown", () => {
+    //   this.weaponsBook.showWindow(this.gameScene.player);
+    // });
 
     // create inventory button
     this.inventoryButton = this.add
@@ -276,11 +276,11 @@ export default class UiScene extends Phaser.Scene {
     //Create texts
     this.levelText = this.add
       .text(
-        120,
-        this.scale.height / 14,
-        `${playerObject.exp} /  ${playerObject.maxExp}`,
+        60,
+        this.scale.height / 14 + 10,
+        `Level: ${playerObject.exp} /  ${playerObject.maxExp} - ${playerObject.level}`,
         {
-          fontSize: "26px",
+          fontSize: "22px",
           fill: "#fff",
         }
       )
@@ -288,11 +288,11 @@ export default class UiScene extends Phaser.Scene {
 
     this.healtText = this.add
       .text(
-        120,
-        this.scale.height / 24,
-        `${playerObject.health} /  ${playerObject.maxHealth}`,
+        60,
+        this.scale.height / 22 - 8,
+        `HP: ${playerObject.health} /  ${playerObject.maxHealth}`,
         {
-          fontSize: "26px",
+          fontSize: "22px",
           fill: "#fff",
         }
       )
@@ -359,78 +359,62 @@ export default class UiScene extends Phaser.Scene {
   }
 
   updatePlayerStatsUi(playerObject) {
-    this.levelText.setText(`${playerObject.exp} /  ${playerObject.maxExp}`);
+    this.levelText.setText(`Level: ${playerObject.exp} /  ${playerObject.maxExp} - ${playerObject.level}`);
     this.healtText.setText(
-      `${playerObject.health} /  ${playerObject.maxHealth}`
+      `HP: ${playerObject.health} /  ${playerObject.maxHealth}`
     );
   }
 
   createPlayerExpBar(playerObject) {
-    this.expBar = this.add.graphics();
-    this.expBar.clear();
-    this.expBar.fillStyle(0xffffff, 1);
-    this.expBar.fillRect(40, this.scale.height / 14, 300, 12);
-    this.expBar.fillGradientStyle(0x0000ff, 0xffffff, 4);
-    this.expBar.fillRect(
+    this.expBar = new Bar(
+      this,
       40,
       this.scale.height / 14,
-      300 * (playerObject.exp / playerObject.maxExp),
-      12
+      "bar_sheet",
+      healthBarTypes.EXP,
+      healthBarTypes.HOLDER,
+      DEPTH.UI,
+      300
     );
+    
+    this.updatePlayerExpBar(playerObject)
   }
 
   updatePlayerExpBar(playerObject) {
-    this.expBar.clear();
-    this.expBar.fillStyle(0xffffff, 1);
-    this.expBar.fillRect(40, this.scale.height / 14, 300, 12);
-    this.expBar.fillGradientStyle(0x0000ff, 0xffffff, 4);
-    this.expBar.fillRect(
+    this.expBar.UpdateBar(
       40,
       this.scale.height / 14,
-      300 * (playerObject.exp / playerObject.maxExp),
-      12
+      playerObject.exp,
+      playerObject.maxExp
     );
   }
 
   createPlayerHealthBar(playerObject) {
-    // this.healthBarHolder = this.add
-    //   .image(40, this.scale.height / 24, "bar_sheet", healthBarTypes.HOLDER)
-    //   .setScale(6)
-    //   .setOrigin(0, 0.5);
 
-    // this.healthBar = this.add
-    //   .image(40, this.scale.height / 24, "bar_sheet", healthBarTypes.LIFE_BAR)
-    //   .setScale(6)
-    //   .setOrigin(0, 0.5);
-    // this.healthBarHolder.displayWidth =
-    //  ( playerObject.health / playerObject.maxHealth) * 100;
-    this.healthBar = this.add.graphics();
-    this.healthBar.clear();
-    this.healthBar.fillStyle(0xffffff, 1);
-    this.healthBar.fillRect(40, this.scale.height / 24, 300, 12);
-    this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
-    this.healthBar.fillRect(
-      40,
-      this.scale.height / 24,
-      300 * (playerObject.health / playerObject.maxHealth),
-      12
+    this.healthBar = new Bar(
+      this,
+      40, this.scale.height / 24,
+      "bar_sheet",
+      healthBarTypes.LIFE_BAR,
+      healthBarTypes.HOLDER,
+      DEPTH.UI,
+      300
     );
+    
+    this.updatePlayerHealthBar(playerObject)
+
   }
 
   updatePlayerHealthBar(playerObject) {
-    this.healthBar.clear();
-    this.healthBar.fillStyle(0xffffff, 1);
-    this.healthBar.fillRect(40, this.scale.height / 24, 300, 12);
-    this.healthBar.fillGradientStyle(0xff0000, 0xffffff, 4);
-    this.healthBar.fillRect(
-      40,
-      this.scale.height / 24,
-      300 * (playerObject.health / playerObject.maxHealth),
-      12
-    );
-  }
 
-  updatePlayerBars() {}
+    this.healthBar.UpdateBar(
+      40,
+      this.scale.height / 28 - 5,
+      playerObject.health,
+      playerObject.maxHealth
+    );
+
+  }
 
   resize(gameSize) {
     if (this.inventoryWindow) this.inventoryWindow.resize(gameSize);

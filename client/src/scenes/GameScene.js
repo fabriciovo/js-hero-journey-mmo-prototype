@@ -309,7 +309,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updateRangedObject", (rangedObject) => {
-      console.log(rangedObject);
 
       this.rangedObjects.getChildren().forEach((otherRangedObject) => {
         otherRangedObject.x = rangedObject.x;
@@ -450,7 +449,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer(playerObject, mainPlayer) {
-    console.log(this.selectedCharacter);
     const newPlayerObject = new PlayerContainer(
       this,
       playerObject.x * 2,
@@ -561,7 +559,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   spawnMonster(monsterObject) {
-    console.log(monsterObject.key);
     let monster = this.monsters.getFirstDead();
     if (!monster) {
       monster = new Monster(
@@ -614,6 +611,8 @@ export default class GameScene extends Phaser.Scene {
   addCollisions() {
     // check for collisions between the player and the tiled blocked layer
     this.physics.add.collider(this.player, this.gameMap.blockedLayer);
+    this.physics.add.collider(this.player, this.gameMap.watterLayer);
+
 
     this.physics.add.collider(this.rangedObjects, this.gameMap.blockedLayer);
 
@@ -638,6 +637,8 @@ export default class GameScene extends Phaser.Scene {
     );
     // check for collisions between the monster group and the tiled blocked layer
     this.physics.add.collider(this.monsters, this.gameMap.blockedLayer);
+    this.physics.add.collider(this.monsters, this.gameMap.watterLayer);
+
     // check for overlaps between the player's weapon and monster game objects
     this.physics.add.overlap(
       this.player.actionA,
@@ -819,7 +820,6 @@ export default class GameScene extends Phaser.Scene {
     const { width, height } = gameSize;
     this.cameras.resize(width, height);
     this.cameras.main.roundPixels = true;
-
     this.dialogWindow.resize(gameSize);
   }
 }

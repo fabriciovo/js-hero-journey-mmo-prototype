@@ -2,14 +2,15 @@ import { SpawnerType, randomNumber, WeaponTypes } from "../utils";
 import ChestModel from "../../models/ChestModel";
 import MonsterModel from "../../models/MonsterModel";
 import ItemModel from "../../models/ItemModel";
-
 import * as itemData from "../../../public/assets/level/tools.json";
 import * as enemyData from "../../../public/assets/Enemies/enemies.json";
 
 import NpcModel from "../../models/npcModel";
 
 function getRandonValues() {
-  const bonus = [-2, -10, -3, -5, -6, -7, 0, 5, 3, 4, 7, 2, 1, 8, 10];
+  const bonus = [
+    -3, -5, -6, 0, 5, 3, 4, 7, 2, 1, 8, 10, 11, 23, 12, 13, 14, 15, 16, 9,
+  ];
   return bonus[Math.floor(Math.random() * bonus.length)];
 }
 
@@ -45,7 +46,7 @@ export default class Spawner {
       this.spawnMonster();
     } else if (this.objectType === SpawnerType.ITEM) {
       this.spawnItem();
-    }else if (this.objectType === SpawnerType.NPC) {
+    } else if (this.objectType === SpawnerType.NPC) {
       this.spawnNpc();
     }
   }
@@ -85,9 +86,8 @@ export default class Spawner {
   }
 
   spawnMonster() {
-
     const randomEnemy =
-    enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
+      enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
 
     const location = this.pickRandomLocation();
     const monster = new MonsterModel(
@@ -106,11 +106,7 @@ export default class Spawner {
 
   spawnNpc() {
     const location = this.pickRandomLocation();
-    const npc = new NpcModel(
-      location[0],
-      location[1],
-      this.id,
-    );
+    const npc = new NpcModel(location[0], location[1], this.id);
     this.objectsCreated.push(npc);
     this.addObject(npc.id, npc);
   }

@@ -149,12 +149,10 @@ export default class SlotsWindow extends ModalWindow {
   }
 
   showSlots(itemNumber) {
-    console.log("showSlots");
     //this.slots[itemNumber].item.setAlpha(1);
   }
 
   populateSlot(item, itemNumber) {
-    console.log("updateSlots");
     // this.slots[itemNumber].id = item.id;
     // this.slots[itemNumber].item.setFrame(item.frame);
     // this.slots[itemNumber].itemName = item.name;
