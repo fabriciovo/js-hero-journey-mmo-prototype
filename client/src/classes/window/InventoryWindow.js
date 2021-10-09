@@ -16,6 +16,8 @@ export default class InventoryWindow extends ModalWindow {
   }
 
   calculateWindowDimension() {
+    
+
     let x = this.x + this.scene.scale.width / 4 + 140;
     let y = this.y + this.scene.scale.height * 0.1;
 
@@ -26,6 +28,8 @@ export default class InventoryWindow extends ModalWindow {
 
     const rectHeight = this.windowHeight - 5;
     const rectWidth = this.windowWidth;
+    
+    
     return {
       x,
       y,
@@ -38,6 +42,8 @@ export default class InventoryWindow extends ModalWindow {
     if (this.rect) {
       this.rect.setPosition(x + 1, y + 1);
       this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
+      console.log(rectWidth, "INVENTORY");
+      console.log(rectHeight, "INVENTORY");
 
       // update the position of our inventory container
       this.inventoryContainer.setPosition(x + 1, y + 1);
@@ -60,7 +66,7 @@ export default class InventoryWindow extends ModalWindow {
 
       // create inventory container for positioning elements
       this.inventoryContainer = this.scene.add.container(x + 1, y + 1);
-      this.inventoryContainer.setDepth(DEPTH.UI_POPUP);
+      this.inventoryContainer.setDepth(DEPTH.UI);
       this.inventoryContainer.setAlpha(this.textAlpha);
 
       // create inventory slots
@@ -261,6 +267,7 @@ export default class InventoryWindow extends ModalWindow {
       });
 
       this.inventoryItems[x].item.on("pointerout", () => {
+        this.scene.descriptionWindow.resetWindow();
         this.scene.descriptionWindow.hideWindow();
       });
 

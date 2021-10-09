@@ -65,46 +65,51 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.graphics.setAlpha(1);
   }
 
-
   createItemDescriptionText() {
-    this.itemsText = this.scene.add.text(
+    this.title = this.scene.add.text(
       this.descriptionContainer.width / 2,
       140,
       "Item Description",
       { fontSize: "22px", fill: "#ffffff", align: "center" }
     );
-    this.itemsText.setOrigin(0.5);
+    this.title.setOrigin(0.5);
 
-    this.attackText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-      align: 'center',
-    }).setOrigin(0.5);
+    this.attackText = this.scene.add
+      .text(0, 0, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
 
-    this.defenseText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-      align: 'center',
+    this.defenseText = this.scene.add
+      .text(0, 0, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
 
-    }).setOrigin(0.5);
-
-    this.healthText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-      align: 'center',
-
-    }).setOrigin(0.5);
+    this.healthText = this.scene.add
+      .text(0, 0, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
     this.healthIcon = this.scene.add
       .image(0, 0, "inventoryHealth")
-      .setOrigin(.5);
+      .setOrigin(0.5);
 
-    this.swordIcon = this.scene.add.image(0, 0, "inventorySword").setOrigin(.5);
+    this.swordIcon = this.scene.add
+      .image(0, 0, "inventorySword")
+      .setOrigin(0.5);
 
     this.shieldIcon = this.scene.add
       .image(0, 0, "inventoryShield")
-      .setOrigin(.5);
+      .setOrigin(0.5);
 
-    this.descriptionContainer.add(this.itemsText);
+    this.descriptionContainer.add(this.title);
     this.descriptionContainer.add(this.attackText);
     this.descriptionContainer.add(this.healthText);
     this.descriptionContainer.add(this.defenseText);
@@ -113,7 +118,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.descriptionContainer.add(this.swordIcon);
     this.descriptionContainer.add(this.shieldIcon);
 
-    this.itemsText.setPosition(this.descriptionContainer.width / 2, 20);
+    this.title.setPosition(this.descriptionContainer.width / 2, 20);
     this.attackText.setPosition(this.descriptionContainer.width / 2 - 90, 60);
     this.healthText.setPosition(this.descriptionContainer.width / 2 + 90, 60);
     this.defenseText.setPosition(this.descriptionContainer.width / 2, 60);
@@ -124,6 +129,10 @@ export default class ItemDescriptionWindow extends ModalWindow {
   }
 
   setItemDescription(item) {
+    this.title.setText("Item Description")
+    this.healthIcon.setAlpha(1);
+    this.swordIcon.setAlpha(1);
+    this.shieldIcon.setAlpha(1);
     if (item.attack > 0) {
       this.attackText.setFill("#00ff00");
     } else {
@@ -145,8 +154,24 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.healthText.setText(item.health);
   }
 
-  setShopItemDescription(item) {    
+  setShopItemDescription(item) {
+    this.title.setText("Item Description")
     this.attackText.setText(`Restore ${item.value} health points`);
     this.healthText.setText(`Price: ${item.price}`);
+  }
+
+  showBookDescription(item){
+    this.title.setText(item.name)
+
+  }
+
+  resetWindow() {
+    this.title.setText("");
+    this.attackText.setText("");
+    this.healthText.setText("");
+    this.defenseText.setText("");
+    this.healthIcon.setAlpha(0);
+    this.swordIcon.setAlpha(0);
+    this.shieldIcon.setAlpha(0);
   }
 }

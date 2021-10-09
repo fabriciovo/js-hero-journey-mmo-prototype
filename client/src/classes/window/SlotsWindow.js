@@ -15,7 +15,7 @@ export default class SlotsWindow extends ModalWindow {
   }
 
   calculateWindowDimension() {
-    let x = this.x + this.scene.scale.width / 4 + 140;
+    let x = this.x + this.scene.scale.width / 4 - 50;
     let y = this.y + this.scene.scale.height * 0.1;
 
     if (this.scene.scale.width < 750) {
@@ -37,7 +37,8 @@ export default class SlotsWindow extends ModalWindow {
     if (this.rect) {
       this.rect.setPosition(x + 1, y + 1);
       this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
-
+      console.log(rectWidth, "SLOT");
+      console.log(rectHeight, "SLOT");
       // update the position of our mainContainer
       this.mainContainer.setPosition(x + 1, y + 1);
       this.mainContainer.setSize(rectWidth - 1, rectHeight - 1);
@@ -57,14 +58,19 @@ export default class SlotsWindow extends ModalWindow {
         rectWidth - 1,
         rectHeight - 1
       );
+      console.log(rectWidth, "SLOT else");
+      console.log(rectHeight, "SLOT else");
       if (this.debug) this.rect.setFillStyle(0x6666ff);
       this.rect.setOrigin(0, 0);
+      this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
 
       // create mainContainer for positioning elements
       this.mainContainer = this.scene.add.container(x + 1, y + 1);
-      this.mainContainer.setDepth(DEPTH.UI_POPUP);
+      this.mainContainer.setDepth(DEPTH.UI);
       this.mainContainer.setAlpha(this.textAlpha);
+      this.mainContainer.setPosition(x + 1, y + 1);
 
+      this.mainContainer.setSize(rectWidth - 1, rectHeight - 1);
       this.createSlots();
     }
   }
@@ -77,35 +83,50 @@ export default class SlotsWindow extends ModalWindow {
   }
 
   createSlots() {
-    const self = this
     this.slotsContainer = this.scene.add.container(0, 80);
     this.mainContainer.add(this.slotsContainer);
-    this.itemsContainer = this.scene.add.container(0, 20);
-    this.slotsContainer.add(this.itemsContainer);
-    // create items title
+
+    console.log(this.mainContainer.width);
+    console.log(this.mainContainer.width / 2);
+
+    //create items title
     this.title = this.scene.add.text(
-      this.mainContainer.width / 2,
-      140,
+      this.mainContainer.width / 2 - 40,
+      -60,
       "Title",
       { fontSize: "22px", fill: "#ffffff", align: "center" }
     );
-    this.title.setOrigin(0.5);
 
     this.slotsContainer.add(this.title);
-
-
-    for (let x = 0; x < 5; x += 1) {
-      const yPos = 0;
+    
+    for (let x = 0; x < this.data.items.length; x += 1) {
+      const yPos = 20;
       const xPos = 90 * x;
       this.slots[x] = this.data.items[x];
+
       this.slots[x].itemImage = this.scene.add
         .image(90 + xPos, yPos, "iconset", this.data.items[x].frame)
-        .setScale(3)
+        .setScale(2)
         .setInteractive()
         .setTint(0);
-      this.itemsContainer.add(this.slots[x].itemImage);
-    }
 
+      this.slots[x].slotImage = this.scene.add
+        .image(90 + xPos, yPos, "iconset", iconsetSlotsTypes.SLOT_2)
+        .setScale(3)
+        .setInteractive();
+
+      this.slots[x].itemImage.on("pointerover", () => {
+        this.scene.descriptionWindow.showBookDescription(this.slots[x]);
+        this.scene.descriptionWindow.showWindow();
+      });
+
+      this.slots[x].itemImage.on("pointerout", () => {
+        this.scene.descriptionWindow.resetWindow();
+        this.scene.descriptionWindow.hideWindow();
+      });
+      this.slotsContainer.add(this.slots[x].slotImage);
+      this.slotsContainer.add(this.slots[x].itemImage);
+    }
   }
 
   removeItem(itemNumber) {
@@ -143,23 +164,12 @@ export default class SlotsWindow extends ModalWindow {
     this.rect.setInteractive();
     this.mainContainer.setAlpha(1);
     this.graphics.setAlpha(1);
-
     // populate slots
     this.populateSlots(playerObject);
   }
 
-  showSlots(itemNumber) {
-    //this.slots[itemNumber].item.setAlpha(1);
-  }
-
+  showSlots(itemNumber) {}
   populateSlot(item, itemNumber) {
-    // this.slots[itemNumber].id = item.id;
-    // this.slots[itemNumber].item.setFrame(item.frame);
-    // this.slots[itemNumber].itemName = item.name;
-    // this.slots[itemNumber].attack = item.attackBonus;
-    // this.slots[itemNumber].defense = item.defenseBonus;
-    // this.slots[itemNumber].health = item.healthBonus;
-
     this.showSlots(itemNumber);
   }
 
