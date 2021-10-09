@@ -348,6 +348,18 @@ export default class GameScene extends Phaser.Scene {
         if (document.activeElement === this.inputMessageField) {
           this.inputMessageField.value = `${this.inputMessageField.value} `;
         }
+      } else if (event.keyCode === 67) {
+        if (document.activeElement === this.inputMessageField) {
+          this.inputMessageField.value = `${this.inputMessageField.value}c`;
+        }
+      } else if (event.keyCode === 88) {
+        if (document.activeElement === this.inputMessageField) {
+          this.inputMessageField.value = `${this.inputMessageField.value}x`;
+        }
+      }else if (event.keyCode === 90) {
+        if (document.activeElement === this.inputMessageField) {
+          this.inputMessageField.value = `${this.inputMessageField.value}z`;
+        }
       }
     });
   }
