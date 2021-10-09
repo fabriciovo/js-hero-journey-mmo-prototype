@@ -14,6 +14,11 @@ export default class RangedWeapon extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     // scale the chest game object
     this.setScale(2);
+    this.hitbox = false;
+    this.setSize(16,16)
+    this.setOffset(4, 8)       
+
+
   }
 
   makeActive() {
@@ -26,6 +31,7 @@ export default class RangedWeapon extends Phaser.Physics.Arcade.Sprite {
     this.setActive(false);
     this.setVisible(false);
     this.body.checkCollision.none = true;
+    this.hitbox = false;
   }
 
   Attack() {

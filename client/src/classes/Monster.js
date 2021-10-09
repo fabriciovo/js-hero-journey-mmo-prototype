@@ -81,8 +81,6 @@ export default class Monster extends Entity {
   update() {
     this.updateHealthBar();
     this.animation();
-
-
   }
 
   followPlayer() {}
@@ -100,5 +98,9 @@ export default class Monster extends Entity {
   makeActive() {
     super.makeActive();
     this.createHealthBar();
+  }
+
+  monsterOut() {
+    this.reset(300, 300);
   }
 }

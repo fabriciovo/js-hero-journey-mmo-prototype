@@ -81,7 +81,6 @@ export default class GameScene extends Phaser.Scene {
           if (player.actionBActive) {
             otherPlayer.actionB.makeActive();
             otherPlayer.actionBFunction();
-
           }
           if (player.potionAActive) {
             otherPlayer.potionAFunction();
@@ -89,10 +88,7 @@ export default class GameScene extends Phaser.Scene {
           }
           //otherPlayer.playAnimation();
           otherPlayer.actionB.setPosition(player.actionB.x, player.actionB.y);
-
         }
-
-
       });
     });
 
@@ -309,7 +305,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updateRangedObject", (rangedObject) => {
-
       this.rangedObjects.getChildren().forEach((otherRangedObject) => {
         otherRangedObject.x = rangedObject.x;
         otherRangedObject.y = rangedObject.y;
@@ -613,7 +608,6 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.gameMap.blockedLayer);
     this.physics.add.collider(this.player, this.gameMap.watterLayer);
 
-
     this.physics.add.collider(this.rangedObjects, this.gameMap.blockedLayer);
 
     this.physics.add.collider(this.player, this.gameMap.enviromentLayer);
@@ -683,47 +677,41 @@ export default class GameScene extends Phaser.Scene {
       this
     );
 
-    this.physics.add.overlap(
-      this.rangedObjects,
-      this.otherPlayers,
-      this.rangedOverlapEnemy,
-      false,
-      this
-    );
+    // this.physics.add.overlap(
+    //   this.rangedObjects,
+    //   this.otherPlayers,
+    //   this.rangedOverlapEnemy,
+    //   false,
+    //   this
+    // );
 
-    this.physics.add.overlap(
-      this.rangedObjects,
-      this.monsters,
-      this.rangedOverlapEnemy,
-      false,
-      this
-    );
+    // this.physics.add.overlap(
+    //   this.rangedObjects,
+    //   this.monsters,
+    //   this.rangedOverlapEnemy,
+    //   false,
+    //   this
+    // );
   }
 
-  rangedOverlapWalls(ranged, blocked) {
-    if (this.player.actionBActive && !this.player.hitbox) {
-      this.player.hitbox = true;
-      ranged.makeInactive();
-    }
-  }
+  // rangedOverlapEnemy(player, enemyPlayer) {
+  //   if (this.player.actionBActive && !this.player.hitbox) {
+  //     this.player.hitbox = true;
+  //     this.socket.emit("attackedPlayer", enemyPlayer.id);
+  //   }
+  // }
 
-  rangedOverlapEnemy(player, enemyPlayer) {
+  weaponOverlapEnemy(weapon, enemyPlayer) {
     if (
       (this.player.actionAActive || this.player.actionBActive) &&
       !this.player.hitbox
     ) {
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
-    }
-  }
 
-  weaponOverlapEnemy(player, enemyPlayer) {
-    if (
-      (this.player.actionAActive || this.player.actionBActive) &&
-      !this.player.hitbox
-    ) {
-      this.player.hitbox = true;
-      this.socket.emit("attackedPlayer", enemyPlayer.id);
+      if (this.player.actionBActive) {
+        this.player.actionB.makeInactive();
+      }
     }
   }
   enemyOverlap(weapon, enemy) {
@@ -739,7 +727,7 @@ export default class GameScene extends Phaser.Scene {
         enemy.y
       );
 
-      if (this.player.actionB) {
+      if (this.player.actionBActive) {
         this.player.actionB.makeInactive();
       }
 

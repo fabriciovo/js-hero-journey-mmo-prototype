@@ -271,12 +271,15 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.player.playAnimation(`up_${this.key}`);
     } else if (this.currentDirection === Direction.DOWN) {
       this.actionA.setPosition(0, 40);
+
       this.player.playAnimation(`down_${this.key}`);
     } else if (this.currentDirection === Direction.RIGHT) {
       this.actionA.setPosition(40, 0);
+
       this.player.playAnimation(`right_${this.key}`);
     } else if (this.currentDirection === Direction.LEFT) {
       this.actionA.setPosition(-40, 0);
+
       this.player.playAnimation(`right_${this.key}`);
     }
 
