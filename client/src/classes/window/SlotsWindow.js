@@ -5,7 +5,7 @@ export default class SlotsWindow extends ModalWindow {
   constructor(scene, opts) {
     super(scene, opts);
     this.playerObject = {};
-    this.slots = {};
+    this.slots = [];
     this.data = this.scene.gameScene.cache.json.get("weaponsData");
     this.graphics.setDepth(DEPTH.UI);
     this.selectedItem = undefined;
@@ -51,6 +51,7 @@ export default class SlotsWindow extends ModalWindow {
 
       // update mainContainer positions
       this.updateContainerPositions();
+      this.checkPlayersItem(this.slots,this.playerObject.weapons)
     } else {
       this.rect = this.scene.add.rectangle(
         x + 1,
@@ -98,7 +99,7 @@ export default class SlotsWindow extends ModalWindow {
     );
 
     this.slotsContainer.add(this.title);
-    
+
     for (let x = 0; x < this.data.items.length; x += 1) {
       const yPos = 20;
       const xPos = 90 * x;
@@ -107,8 +108,8 @@ export default class SlotsWindow extends ModalWindow {
       this.slots[x].itemImage = this.scene.add
         .image(90 + xPos, yPos, "iconset", this.data.items[x].frame)
         .setScale(2)
-        .setInteractive()
-        .setTint(0);
+        .setTint(0)
+        .setInteractive();
 
       this.slots[x].slotImage = this.scene.add
         .image(90 + xPos, yPos, "iconset", iconsetSlotsTypes.SLOT_2)
@@ -126,7 +127,12 @@ export default class SlotsWindow extends ModalWindow {
       });
       this.slotsContainer.add(this.slots[x].slotImage);
       this.slotsContainer.add(this.slots[x].itemImage);
+
+      console.log(this.slots[x].canEquip);
+      console.log(this.playerObject);
+
     }
+
   }
 
   removeItem(itemNumber) {
@@ -164,13 +170,12 @@ export default class SlotsWindow extends ModalWindow {
     this.rect.setInteractive();
     this.mainContainer.setAlpha(1);
     this.graphics.setAlpha(1);
-    // populate slots
-    this.populateSlots(playerObject);
-  }
 
-  showSlots(itemNumber) {}
-  populateSlot(item, itemNumber) {
-    this.showSlots(itemNumber);
+    this.updateSlots(playerObject);
+
+    this.checkPlayersItem(this.slots, this.playerObject.weapons);
+
+    // check player items slots
   }
 
   selectItem(item, x) {
@@ -206,11 +211,41 @@ export default class SlotsWindow extends ModalWindow {
     this.scene.descriptionWindow.setItemDescription(item);
   }
 
-  populateSlots(playerObjectList) {
-    // populate slot items
-    const keys = Object.keys(playerObjectList);
+  checkPlayersItem(data, playerItems) {
+    console.log(this.playerObject);
+    console.log(data);
+    playerItems.forEach((playerItem) => {
+      data.forEach((item) => {
+        if (playerItem.name === item.name) {
+          console.log("player tem item");
+          item.itemImage.setTint(0xffffff);
+          item.canEquip = true;
+          item.slotImage.setInteractive({ cursor: "pointer" });
+          item.itemImage.setInteractive({ cursor: "pointer" });
+        }
+      });
+    });
+  }
+
+
+  updateSlots(playerObject) {
+    // populate inventory items
+    const keys = Object.keys(playerObject.weapons);
     for (let i = 0; i < keys.length; i += 1) {
-      //this.populateSlot(playerObjectList[keys[i]], i);
+      this.updateSlotItem(playerObject.weapons[keys[i]], i);
     }
+  }
+
+  updateSlotItem(item, itemNumber) {
+    this.slots[itemNumber].id = item.id;
+    this.slots[itemNumber].itemImage.setFrame(item.frame);
+
+    this.showSlotItem(itemNumber);
+  }
+
+  showSlotItem(itemNumber) {
+    this.slots[itemNumber].itemImage.setAlpha(1);
+    this.slots[itemNumber].slotImage.setAlpha(1);
+
   }
 }

@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import Player from "./Player";
 import Direction from "../../utils/direction";
-import RangedWeapon from "../weapons/RangedWeapon";
+import RangedWeapon from "../Entities/weapons/Weapon";
 import Potion from "../Armory/Potion/Potion";
 import {
   DEPTH,
@@ -11,6 +11,21 @@ import {
   iconsetWeaponTypes,
 } from "../../utils/utils";
 import Bar from "../UI/Bar";
+
+const weaponsTemp = [
+  {
+    frame: 0,
+    name: "Small Wooden Sword",
+    Description: "",
+    PlayerHave: false,
+  },
+  {
+    frame: 2,
+    name: "Bow",
+    Description: "",
+    PlayerHave: false,
+  },
+];
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(
@@ -33,7 +48,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     exp,
     maxExp,
     level,
-    potions
+    potions,
+    weapons
   ) {
     super(scene, x, y);
     this.scene = scene; // the scene this container will be added to
@@ -53,6 +69,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.attackValue = attackValue;
     this.items = items || {};
     this.equipedItems = equipedItems || {};
+    this.weapons = weaponsTemp;
+
     this.exp = exp;
     this.maxExp = maxExp;
     this.level = level;
@@ -90,42 +108,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionCActive = false;
 
     // create the weapons game object
-    this.actionA = this.scene.add.sprite(
-      40,
-      0,
-      "iconset",
-      iconsetWeaponTypes.SMALL_WOODEN_SWORDzz
-    );
-    this.actionB = new RangedWeapon(
-      this.scene,
-      this.x,
-      this.y,
-      "iconset",
-      iconsetWeaponTypes.ARROW,
-      this.id
-    );
-    this.actionB.makeInactive();
-    this.scene.rangedObjects.add(this.actionB);
-
-    //this.actionB = new Bullet(this.scene,this.x,this.y);
-    //this.actionB = new Bullet(this.scene, this.x, this.y);
-    // create the potion game object
-    this.potionA = new Potion(
-      this.scene,
-      this.x,
-      this.y,
-      "iconset",
-      iconsetPotionsTypes.HEALTH_POTION,
-      this.id
-    );
-    this.potionA.makeInactive();
-
-    this.scene.add.existing(this.actionA);
-    this.actionA.setScale(1.5);
-
-    this.scene.physics.world.enable(this.actionA);
-    this.add(this.actionA);
-    this.actionA.alpha = 0;
 
     // create the player healthbar
     this.createPlayerBars();
@@ -430,5 +412,39 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       delete this.equipedItems[keys[itemNumber]];
       this.scene.sendUnequipItemMessage(keys[itemNumber]);
     }
+  }
+
+  createWeapons() {
+    this.actionA = this.scene.add.sprite(
+      40,
+      0,
+      "iconset",
+      iconsetWeaponTypes.SMALL_WOODEN_SWORDzz
+    );
+    this.actionB = new RangedWeapon(
+      this.scene,
+      this.x,
+      this.y,
+      "iconset",
+      iconsetWeaponTypes.ARROW,
+      this.id
+    );
+    this.actionB.makeInactive();
+    this.scene.rangedObjects.add(this.actionB);
+
+    //this.actionB = new Bullet(this.scene,this.x,this.y);
+    //this.actionB = new Bullet(this.scene, this.x, this.y);
+    // create the potion game object
+    this.potionA = new Potion(
+      this.scene,
+      this.x,
+      this.y,
+      "iconset",
+      iconsetPotionsTypes.HEALTH_POTION,
+      this.id
+    );
+    this.potionA.makeInactive();
+
+    this.add(this.actionA);
   }
 }

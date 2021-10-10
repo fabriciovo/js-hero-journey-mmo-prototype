@@ -476,7 +476,8 @@ export default class GameScene extends Phaser.Scene {
       playerObject.exp,
       playerObject.maxExp,
       playerObject.level,
-      playerObject.potions
+      playerObject.potions,
+      {}
     );
 
     if (!mainPlayer) {
