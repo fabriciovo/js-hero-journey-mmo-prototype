@@ -1,5 +1,5 @@
-import * as Phaser from "phaser";
-import Direction from "../../../utils/direction";
+
+import Entity from "../Entity";
 
 export default class Weapon extends Entity {
   constructor(scene, x, y, key, frame, id, direction) {
@@ -21,6 +21,6 @@ export default class Weapon extends Entity {
   }
 
   Attack() {
-    throw new Error("Metodo não implementado")
+    //throw new Error("Metodo não implementado")
   }
 }

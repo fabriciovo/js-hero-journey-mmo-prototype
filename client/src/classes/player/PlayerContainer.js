@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import Player from "./Player";
 import Direction from "../../utils/direction";
-import RangedWeapon from "../Entities/weapons/Weapon";
+import Bow from "../Entities/weapons/Bow";
 import Potion from "../Armory/Potion/Potion";
 import {
   DEPTH,
@@ -108,7 +108,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionCActive = false;
 
     // create the weapons game object
-
+    this.createWeapons();
     // create the player healthbar
     this.createPlayerBars();
 
@@ -419,15 +419,16 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       40,
       0,
       "iconset",
-      iconsetWeaponTypes.SMALL_WOODEN_SWORDzz
+      iconsetWeaponTypes.SMALL_WOODEN_SWORD
     );
-    this.actionB = new RangedWeapon(
+    this.actionB = new Bow(
       this.scene,
       this.x,
       this.y,
       "iconset",
       iconsetWeaponTypes.ARROW,
-      this.id
+      this.id,
+      this.currentDirection
     );
     this.actionB.makeInactive();
     this.scene.rangedObjects.add(this.actionB);
@@ -445,6 +446,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     );
     this.potionA.makeInactive();
 
+    this.scene.add.existing(this.actionA);
+    this.actionA.setScale(1.5);
+
+    this.scene.physics.world.enable(this.actionA);
     this.add(this.actionA);
+    this.actionA.alpha = 0;
+
   }
 }
