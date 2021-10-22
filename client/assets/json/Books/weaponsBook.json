@@ -3,19 +3,19 @@
       {
         "frame": 0,
         "name": "Small Wooden Sword",
-        "Description": "",
+        "description": "teste",
         "PlayerHave": false
       },
       {
         "frame": 2,
         "name": "Bow",        
-        "Description": "",
+        "description": "teste",
         "PlayerHave": false
       },
       {
         "frame": 11,
         "name": "Small Sword",        
-        "Description": "",
+        "description": "teste",
         "PlayerHave": false
       }
     ]

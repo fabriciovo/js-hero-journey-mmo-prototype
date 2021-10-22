@@ -325,11 +325,15 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionB.makeActive();
     this.actionB.Attack();
     this.actionBActive = true;
+    this.actionB.hitbox = true;
+    debugger;
+
     if (this.mainPlayer) this.attackAudio.play();
     this.scene.time.delayedCall(
       2000,
       () => {
         this.actionBActive = false;
+        this.actionB.hitbox = false;
         this.hitbox = false;
       },
       [],
@@ -452,6 +456,5 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.scene.physics.world.enable(this.actionA);
     this.add(this.actionA);
     this.actionA.alpha = 0;
-
   }
 }

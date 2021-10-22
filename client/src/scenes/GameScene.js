@@ -75,12 +75,16 @@ export default class GameScene extends Phaser.Scene {
           otherPlayer.actionBActive = player.actionBActive;
           otherPlayer.potionAActive = player.potionAActive;
           otherPlayer.currentDirection = player.currentDirection;
+          //otherPlayer.actionB = player.actionB;
+
           if (player.actionAActive) {
             otherPlayer.actionAFunction();
           }
           if (player.actionBActive) {
             otherPlayer.actionB.makeActive();
             otherPlayer.actionBFunction();
+          }else{
+            otherPlayer.actionB.makeInactive();
           }
           if (player.potionAActive) {
             otherPlayer.potionAFunction();
@@ -356,7 +360,7 @@ export default class GameScene extends Phaser.Scene {
         if (document.activeElement === this.inputMessageField) {
           this.inputMessageField.value = `${this.inputMessageField.value}x`;
         }
-      }else if (event.keyCode === 90) {
+      } else if (event.keyCode === 90) {
         if (document.activeElement === this.inputMessageField) {
           this.inputMessageField.value = `${this.inputMessageField.value}z`;
         }
@@ -717,22 +721,26 @@ export default class GameScene extends Phaser.Scene {
   weaponOverlapEnemy(weapon, enemyPlayer) {
     if (
       (this.player.actionAActive || this.player.actionBActive) &&
-      !this.player.hitbox
+      (!this.player.hitbox || !this.player.actionB.hitbox)
     ) {
       this.player.hitbox = true;
-      this.socket.emit("attackedPlayer", enemyPlayer.id);
+      this.player.actionB.hitbox = true;
 
       if (this.player.actionBActive) {
-        this.player.actionB.makeInactive();
+        weapon.makeInactive();
       }
+      this.socket.emit("attackedPlayer", enemyPlayer.id);
+
     }
   }
   enemyOverlap(weapon, enemy) {
     if (
       (this.player.actionAActive || this.player.actionBActive) &&
-      !this.player.hitbox
+      (!weapon.hitbox || !this.player.hitbox)
     ) {
       this.player.hitbox = true;
+      weapon.hitbox = true;
+
       const dis = Phaser.Math.Distance.Between(
         this.player.x,
         this.player.y,
@@ -741,7 +749,7 @@ export default class GameScene extends Phaser.Scene {
       );
 
       if (this.player.actionBActive) {
-        this.player.actionB.makeInactive();
+        weapon.makeInactive();
       }
 
       this.socket.emit("monsterAttacked", enemy.id, dis);

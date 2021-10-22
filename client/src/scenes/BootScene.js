@@ -159,6 +159,9 @@ export default class BootScene extends Phaser.Scene {
 
   loadJson() {
     this.load.json("weaponsData", "assets/json/Books/weaponsBook.json");
+    this.load.json("materialsData", "assets/json/Books/materialsBook.json");
+    this.load.json("potionsData", "assets/json/Books/potionsBook.json");
+
   }
 
   create() {

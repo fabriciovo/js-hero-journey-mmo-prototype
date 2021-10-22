@@ -1,6 +1,5 @@
 import * as Phaser from "phaser";
 import Bar from "../classes/UI/Bar";
-import WeaponsBook from "../classes/window/BooksWindows/WeaponsBook";
 import InventoryWindow from "../classes/window/InventoryWindow";
 import ItemDescriptionWindow from "../classes/window/ItemDescriptionWindow";
 import PlayerWindow from "../classes/window/PlayerWindow";
@@ -27,6 +26,8 @@ export default class UiScene extends Phaser.Scene {
     this.showPlayerStats = false;
     this.showShopWindow = false;
     this.showWeaponsBook = false;
+    this.showMaterialsBook = false;
+    this.showPotionsBook = false;
   }
 
   create() {
@@ -96,7 +97,27 @@ export default class UiScene extends Phaser.Scene {
       .setInteractive({ cursor: "pointer" });
 
     this.weaponsBookButton.on("pointerdown", () => {
-      this.weaponsBook.showWindow(this.gameScene.player);
+      this.toggleWeaponsBook();
+    });
+
+    // create potionsBook button
+    this.potionsBookButton = this.add
+      .image(this.scale.width / 2 - 220, this.scale.height - 50, "iconset", 56)
+      .setScale(3)
+      .setInteractive({ cursor: "pointer" });
+
+    this.potionsBookButton.on("pointerdown", () => {
+      this.togglePotionsBook();
+    });
+
+    // create MaterialsBook button
+    this.materialsBookButton = this.add
+      .image(this.scale.width / 2 - 320, this.scale.height - 50, "iconset", 56)
+      .setScale(3)
+      .setInteractive({ cursor: "pointer" });
+
+    this.materialsBookButton.on("pointerdown", () => {
+      this.toggleMaterialsBook();
     });
 
     // create inventory button
@@ -133,7 +154,10 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.playerStatsWindow.equipedItems[1].item) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[2].item) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[3].item) &&
-        !gameObjects.includes(this.playerStatsWindow.equipedItems[4].item)
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[4].item) &&
+        !gameObjects.includes(this.weaponsBookButton) &&
+        !gameObjects.includes(this.potionsBookButton) &&
+        !gameObjects.includes(this.materialsBookButton)
       ) {
         this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();
@@ -141,6 +165,15 @@ export default class UiScene extends Phaser.Scene {
 
         this.playerStatsWindow.hideWindow();
         this.showPlayerStats = false;
+
+        this.weaponsBook.hideWindow();
+        this.showWeaponsBook = false;
+
+        this.potionsBook.hideWindow();
+        this.showPotionsBook = false;
+
+        this.materialsBook.hideWindow();
+        this.showMaterialsBook = false;
 
         this.popup.hideWindow();
       }
@@ -151,6 +184,51 @@ export default class UiScene extends Phaser.Scene {
     this.gameScene.events.on("showInventory", (playerObject) => {
       this.toggleInventory(playerObject);
     });
+  }
+
+  toggleWeaponsBook() {
+    this.potionsBook.hideWindow();
+    this.showPotionsBook = false;
+
+    this.materialsBook.hideWindow();
+    this.showMaterialsBook = false;
+
+    this.showWeaponsBook = !this.showWeaponsBook;
+    if (this.showWeaponsBook) {
+      this.weaponsBook.showWindow(this.gameScene.player);
+    } else {
+      this.weaponsBook.hideWindow();
+    }
+  }
+
+  toggleMaterialsBook() {
+    this.weaponsBook.hideWindow();
+    this.showWeaponsBook = false;
+
+    this.potionsBook.hideWindow();
+    this.showPotionsBook = false;
+
+    this.showMaterialsBook = !this.showMaterialsBook;
+    if (this.showMaterialsBook) {
+      this.materialsBook.showWindow(this.gameScene.player);
+    } else {
+      this.materialsBook.hideWindow();
+    }
+  }
+
+  togglePotionsBook() {
+    this.weaponsBook.hideWindow();
+    this.showWeaponsBook = false;
+
+    this.materialsBook.hideWindow();
+    this.showMaterialsBook = false;
+
+    this.showPotionsBook = !this.showPotionsBook;
+    if (this.showPotionsBook) {
+      this.potionsBook.showWindow(this.gameScene.player);
+    } else {
+      this.potionsBook.hideWindow();
+    }
   }
 
   toggleInventory(playerObject) {
@@ -360,16 +438,52 @@ export default class UiScene extends Phaser.Scene {
 
   createWindows() {
     // create weaponsBook Window
-    this.weaponsBook = new WeaponsBook(this, {
-      windowWidth: this.scale.width / 2,
-      windowHeight: this.scale.height * .8,
-      borderAlpha: 1,
-      windowAlpha: 0.9,
-      debug: false  ,
-      textAlpha: 1,
-      windowColor: 0x000000,
-      name: "weaponsBook",
-    });
+    this.weaponsBook = new SlotsWindow(
+      this,
+      {
+        windowWidth: this.scale.width / 2,
+        windowHeight: this.scale.height * 0.8,
+        borderAlpha: 1,
+        windowAlpha: 0.9,
+        debug: false,
+        textAlpha: 1,
+        windowColor: 0x000000,
+        name: "weaponsBook",
+      },
+      this.gameScene.cache.json.get("weaponsData")
+    );
+
+    // create potionsBook Window
+    this.potionsBook = new SlotsWindow(
+      this,
+      {
+        windowWidth: this.scale.width / 2,
+        windowHeight: this.scale.height * 0.8,
+        borderAlpha: 1,
+        windowAlpha: 0.9,
+        debug: false,
+        textAlpha: 1,
+        windowColor: 0x000000,
+        name: "potionsBook",
+      },
+      this.gameScene.cache.json.get("potionsData")
+    );
+
+    // create materialsBook Window
+    this.materialsBook = new SlotsWindow(
+      this,
+      {
+        windowWidth: this.scale.width / 2,
+        windowHeight: this.scale.height * 0.8,
+        borderAlpha: 1,
+        windowAlpha: 0.9,
+        debug: false,
+        textAlpha: 1,
+        windowColor: 0x000000,
+        name: "materialsBook",
+      },
+      this.gameScene.cache.json.get("materialsData")
+    );
 
     //create Popup window
     this.shopWindow = new ShopWindow(this, {

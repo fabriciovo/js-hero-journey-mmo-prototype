@@ -56,7 +56,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
   hideWindow() {
     this.rect.disableInteractive();
     this.descriptionContainer.setAlpha(0);
-    this.graphics.setAlpha(0);
+    this.graphics.setAlpha(0); 
   }
 
   showWindow() {
@@ -73,6 +73,14 @@ export default class ItemDescriptionWindow extends ModalWindow {
       { fontSize: "22px", fill: "#ffffff", align: "center" }
     );
     this.title.setOrigin(0.5);
+
+    this.description = this.scene.add.text(
+      this.descriptionContainer.width / 2,
+      260,
+      "",
+      { fontSize: "22px", fill: "#ffffff", align: "center" }
+    );
+    this.description.setOrigin(0.5);
 
     this.attackText = this.scene.add
       .text(0, 0, "", {
@@ -110,6 +118,8 @@ export default class ItemDescriptionWindow extends ModalWindow {
       .setOrigin(0.5);
 
     this.descriptionContainer.add(this.title);
+    this.descriptionContainer.add(this.description);
+
     this.descriptionContainer.add(this.attackText);
     this.descriptionContainer.add(this.healthText);
     this.descriptionContainer.add(this.defenseText);
@@ -119,6 +129,8 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.descriptionContainer.add(this.shieldIcon);
 
     this.title.setPosition(this.descriptionContainer.width / 2, 20);
+    this.description.setPosition(this.descriptionContainer.width / 2, 60);
+
     this.attackText.setPosition(this.descriptionContainer.width / 2 - 90, 60);
     this.healthText.setPosition(this.descriptionContainer.width / 2 + 90, 60);
     this.defenseText.setPosition(this.descriptionContainer.width / 2, 60);
@@ -129,7 +141,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
   }
 
   setItemDescription(item) {
-    this.title.setText("Item Description")
+    this.title.setText("Item Description");
     this.healthIcon.setAlpha(1);
     this.swordIcon.setAlpha(1);
     this.shieldIcon.setAlpha(1);
@@ -155,23 +167,26 @@ export default class ItemDescriptionWindow extends ModalWindow {
   }
 
   setShopItemDescription(item) {
-    this.title.setText("Item Description")
+    this.title.setText("Item Description");
     this.attackText.setText(`Restore ${item.value} health points`);
     this.healthText.setText(`Price: ${item.price}`);
   }
 
-  showBookDescription(item){
-    this.title.setText(item.name)
-
+  showBookDescription(item) {
+    this.title.setText(item.name);
+    this.description.setText(item.description);
   }
 
   resetWindow() {
-    this.title.setText("");
-    this.attackText.setText("");
-    this.healthText.setText("");
-    this.defenseText.setText("");
-    this.healthIcon.setAlpha(0);
-    this.swordIcon.setAlpha(0);
-    this.shieldIcon.setAlpha(0);
+    if (this.descriptionContainer) {
+      this.title.setText("");
+      this.description.setText("");
+      this.attackText.setText("");
+      this.healthText.setText("");
+      this.defenseText.setText("");
+      this.healthIcon.setAlpha(0);
+      this.swordIcon.setAlpha(0);
+      this.shieldIcon.setAlpha(0);
+    }
   }
 }

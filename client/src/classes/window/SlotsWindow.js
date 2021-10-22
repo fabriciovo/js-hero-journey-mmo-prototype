@@ -2,11 +2,11 @@ import ModalWindow from "./ModalWindow";
 import { DEPTH, iconsetSlotsTypes } from "../../utils/utils";
 
 export default class SlotsWindow extends ModalWindow {
-  constructor(scene, opts) {
+  constructor(scene, opts, data) {
     super(scene, opts);
     this.playerObject = {};
     this.slots = [];
-    this.data = this.scene.gameScene.cache.json.get("weaponsData");
+    this.data = data;
     this.graphics.setDepth(DEPTH.UI);
     this.selectedItem = undefined;
     this.selectedItemNumber = undefined;
@@ -124,6 +124,7 @@ export default class SlotsWindow extends ModalWindow {
       this.slots[x].itemImage.on("pointerout", () => {
         this.scene.descriptionWindow.resetWindow();
         this.scene.descriptionWindow.hideWindow();
+        
       });
       this.slotsContainer.add(this.slots[x].slotImage);
       this.slotsContainer.add(this.slots[x].itemImage);

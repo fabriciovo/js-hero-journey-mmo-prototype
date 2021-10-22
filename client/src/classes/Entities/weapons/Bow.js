@@ -12,6 +12,7 @@ export default class Bow extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     // scale the chest game object
     this.setScale(2);
+    this.hitbox = false;
   }
 
   makeActive() {
