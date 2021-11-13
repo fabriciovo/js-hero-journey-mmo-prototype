@@ -410,13 +410,14 @@ export default class GameManager {
       });
 
       socket.on("monsterMovement", (monster) => {
+        if(!this.monsters[monster.id]) return
         this.monsters[monster.id].x = monster.x;
         this.monsters[monster.id].y = monster.y;
-        // emit a message to all players about the player that moved
+        // emit a message to all players about the monster that moved
         this.io.emit("monsterMoved", this.monsters[monster.id]);
       });
 
-      // player connected to our game
+       // player connected to our game
       console.log("player connected to our game");
     });
   }

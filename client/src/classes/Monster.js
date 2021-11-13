@@ -3,8 +3,8 @@ import { DEPTH, healthBarTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
 import Bar from "./UI/Bar";
 
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * max) + min;
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
 }
 
 export default class Monster extends Entity {
@@ -74,11 +74,6 @@ export default class Monster extends Entity {
   }
 
   move(targetPosition, speed) {
-    const pos = {
-      x: randomNumber(-6, 6),
-      y: randomNumber(-6, 6),
-    };
-    console.log(pos);
     const dis = Phaser.Math.Distance.Between(
       targetPosition.x,
       targetPosition.y,
@@ -89,10 +84,8 @@ export default class Monster extends Entity {
     if (dis < 120) {
       this.scene.physics.moveToObject(this, targetPosition, speed);
     } else {
-      this.scene.physics.moveToObject(this, pos, 40);
+      
     }
-
-
   }
 
   update() {

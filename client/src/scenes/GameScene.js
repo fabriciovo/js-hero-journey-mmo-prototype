@@ -444,27 +444,29 @@ export default class GameScene extends Phaser.Scene {
     }
 
     this.monsters.getChildren().forEach((monster) => {
-      const { x, y, id } = monster;
+      if (monster.health > 0) {
+        const { x, y, id } = monster;
 
-      if (
-        monster.oldPosition &&
-        (x !== monster.oldPosition.x || y !== monster.oldPosition.y)
-      ) {
-        this.socket.emit("monsterMovement", {
-          x,
-          y,
-          id,
+        if (
+          monster.oldPosition &&
+          (x !== monster.oldPosition.x || y !== monster.oldPosition.y)
+        ) {
+          this.socket.emit("monsterMovement", {
+            x,
+            y,
+            id,
+          });
+        }
+        // save old position data
+        monster.oldPosition = {
+          x: monster.x,
+          y: monster.y,
+        };
+
+        this.playerList.getChildren().forEach((otherPlayer) => {
+          monster.move(otherPlayer, 90);
         });
       }
-      // save old position data
-      monster.oldPosition = {
-        x: monster.x,
-        y: monster.y,
-      };
-
-      this.playerList.getChildren().forEach((otherPlayer) => {
-        monster.move(otherPlayer, 90);
-      });
     });
   }
 
