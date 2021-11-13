@@ -107,22 +107,6 @@ var GameManager = /*#__PURE__*/function () {
 
       this.io.on("connection", function (socket) {
         // player disconnected
-
-        /*socket.on("disconnect", async () => {
-          // delete user data from server
-          try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const { data } = decoded.user;
-            console.log(data)
-            await UserModel.save({ data });
-            console.log(this.players[socket.id]);
-              delete this.players[socket.id];
-              // emit a message to all players to remove this player
-            this.io.emit("disconnected", socket.id);
-          } catch (error) {
-            console.log(error);
-          }
-        });*/
         socket.on("savePlayerData", /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
           return _regenerator["default"].wrap(function _callee$(_context) {
             while (1) {
@@ -171,16 +155,15 @@ var GameManager = /*#__PURE__*/function () {
           _this2.io.emit("disconnected", socket.id);
         });
         socket.on("sendMessage", /*#__PURE__*/function () {
-          var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(message, token, player) {
-            var decoded, _decoded$user, name, email;
-
+          var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(message, token) {
+            var decoded, email;
             return _regenerator["default"].wrap(function _callee2$(_context2) {
               while (1) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
                     _context2.prev = 0;
                     decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
-                    _decoded$user = decoded.user, name = _decoded$user.name, email = _decoded$user.email;
+                    email = decoded.user.email;
                     _context2.next = 5;
                     return _ChatModel["default"].create({
                       email: email,
@@ -210,13 +193,13 @@ var GameManager = /*#__PURE__*/function () {
             }, _callee2, null, [[0, 8]]);
           }));
 
-          return function (_x, _x2, _x3) {
+          return function (_x, _x2) {
             return _ref2.apply(this, arguments);
           };
         }());
         socket.on("newPlayer", /*#__PURE__*/function () {
           var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(token, key) {
-            var decoded, _decoded$user2, name, _id, playerSchema;
+            var decoded, _decoded$user, name, _id, playerSchema;
 
             return _regenerator["default"].wrap(function _callee3$(_context3) {
               while (1) {
@@ -224,7 +207,7 @@ var GameManager = /*#__PURE__*/function () {
                   case 0:
                     _context3.prev = 0;
                     decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
-                    _decoded$user2 = decoded.user, name = _decoded$user2.name, _id = _decoded$user2._id;
+                    _decoded$user = decoded.user, name = _decoded$user.name, _id = _decoded$user._id;
                     _context3.next = 5;
                     return _UserModel["default"].findById(_id);
 
@@ -265,12 +248,15 @@ var GameManager = /*#__PURE__*/function () {
             }, _callee3, null, [[0, 17]]);
           }));
 
-          return function (_x4, _x5) {
+          return function (_x3, _x4) {
             return _ref3.apply(this, arguments);
           };
         }());
         socket.on("playerMovement", function (playerData) {
+          console.log("playerMovement");
+
           if (_this2.players[socket.id]) {
+            console.log("playerMovement2");
             _this2.players[socket.id].x = playerData.x;
             _this2.players[socket.id].y = playerData.y;
             _this2.players[socket.id].flipX = playerData.flipX;
@@ -447,6 +433,12 @@ var GameManager = /*#__PURE__*/function () {
 
           socket.emit("updateScore", _this2.players[socket.id].gold);
           socket.broadcast.emit("updatePlayersScore", socket.id, _this2.players[socket.id].gold);
+        });
+        socket.on("monsterMovement", function (monster) {
+          _this2.monsters[monster.id].x = monster.x;
+          _this2.monsters[monster.id].y = monster.y; // emit a message to all players about the player that moved
+
+          _this2.io.emit("monsterMoved", _this2.monsters[monster.id]);
         }); // player connected to our game
 
         console.log("player connected to our game");
@@ -475,7 +467,7 @@ var GameManager = /*#__PURE__*/function () {
         config.id = "monster-".concat(key);
         config.limit = 8;
         config.spawnerType = _utils.SpawnerType.MONSTER;
-        spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
+        spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
       }); // create npc spawners
 
@@ -532,11 +524,6 @@ var GameManager = /*#__PURE__*/function () {
     value: function deleteMonster(monsterId) {
       delete this.monsters[monsterId];
       this.io.emit("monsterRemoved", monsterId);
-    }
-  }, {
-    key: "moveMonsters",
-    value: function moveMonsters() {
-      this.io.emit("monsterMovement", this.monsters);
     }
   }, {
     key: "addNpc",

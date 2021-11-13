@@ -27,6 +27,21 @@ const weaponsTemp = [
   },
 ];
 
+const potionsTemp = [
+  {
+    frame: 0,
+    name: "Small Potion",
+    Description: "",
+    PlayerHave: false,
+  },
+  {
+    frame: 2,
+    name: "Potion",
+    Description: "",
+    PlayerHave: false,
+  },
+];
+
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(
     scene,
@@ -107,25 +122,15 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionBActive = false;
     this.actionCActive = false;
 
+    //creeate player input
+    this.createInput();
+
     // create the weapons game object
     this.createWeapons();
     // create the player healthbar
     this.createPlayerBars();
 
     this.createPlayerName();
-
-    //set actions
-    this.actionAButton = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.Z
-    );
-
-    this.actionBButton = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.X
-    );
-
-    this.potionAButton = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.C
-    );
   }
 
   createPlayerBars() {
@@ -153,6 +158,23 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         fill: "#ffffff",
       },
     });
+  }
+
+  createInput() {
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
+
+    //set actions
+    this.actionAButton = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.Z
+    );
+
+    this.actionBButton = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.X
+    );
+
+    this.potionAButton = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.C
+    );
   }
 
   updatePlayerName() {
@@ -194,24 +216,24 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.updatePlayerName();
   }
 
-  update(cursors) {
+  update() {
     this.body.setVelocity(0);
     if (this.mainPlayer) {
-      if (cursors.left.isDown || this.mobileLeft) {
+      if (this.cursors.left.isDown || this.mobileLeft) {
         this.body.setVelocityX(-this.velocity);
         this.currentDirection = Direction.LEFT;
         this.player.flipX = false;
         this.flipX = false;
-      } else if (cursors.right.isDown || this.mobileRight) {
+      } else if (this.cursors.right.isDown || this.mobileRight) {
         this.body.setVelocityX(this.velocity);
         this.currentDirection = Direction.RIGHT;
         this.player.flipX = true;
         this.flipX = true;
       }
-      if (cursors.up.isDown || this.mobileUp) {
+      if (this.cursors.up.isDown || this.mobileUp) {
         this.body.setVelocityY(-this.velocity);
         this.currentDirection = Direction.UP;
-      } else if (cursors.down.isDown || this.mobileDown) {
+      } else if (this.cursors.down.isDown || this.mobileDown) {
         this.body.setVelocityY(this.velocity);
         this.currentDirection = Direction.DOWN;
       }
@@ -326,7 +348,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.actionB.Attack();
     this.actionBActive = true;
     this.actionB.hitbox = true;
-    debugger;
 
     if (this.mainPlayer) this.attackAudio.play();
     this.scene.time.delayedCall(

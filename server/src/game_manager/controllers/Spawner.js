@@ -36,7 +36,6 @@ export default class Spawner {
         this.spawnObject();
       }
     }, this.spawnInterval);
-    if (this.objectType === SpawnerType.MONSTER) this.moveMonsters();
   }
 
   spawnObject() {
@@ -130,15 +129,5 @@ export default class Spawner {
   removeObject(id) {
     this.objectsCreated = this.objectsCreated.filter((obj) => obj.id !== id);
     this.deleteObject(id);
-  }
-
-  moveMonsters() {
-    this.moveMonsterInterval = setInterval(() => {
-      this.objectsCreated.forEach((monster) => {
-        monster.move();
-      });
-
-      this.moveObjects();
-    }, 1000);
   }
 }

@@ -61,7 +61,6 @@ var Spawner = /*#__PURE__*/function () {
           _this.spawnObject();
         }
       }, this.spawnInterval);
-      if (this.objectType === _utils.SpawnerType.MONSTER) this.moveMonsters();
     }
   }, {
     key: "spawnObject",
@@ -136,19 +135,6 @@ var Spawner = /*#__PURE__*/function () {
         return obj.id !== id;
       });
       this.deleteObject(id);
-    }
-  }, {
-    key: "moveMonsters",
-    value: function moveMonsters() {
-      var _this2 = this;
-
-      this.moveMonsterInterval = setInterval(function () {
-        _this2.objectsCreated.forEach(function (monster) {
-          monster.move();
-        });
-
-        _this2.moveObjects();
-      }, 1000);
     }
   }]);
   return Spawner;

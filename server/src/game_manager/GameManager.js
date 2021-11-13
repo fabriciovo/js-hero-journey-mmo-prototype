@@ -21,7 +21,6 @@ export default class GameManager {
 
     this.rangedObjects = {};
 
-
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
@@ -75,24 +74,6 @@ export default class GameManager {
     this.io.on("connection", (socket) => {
       // player disconnected
 
-      /*socket.on("disconnect", async () => {
-        // delete user data from server
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { data } = decoded.user;
-          console.log(data)
-          await UserModel.save({ data });
-          console.log(this.players[socket.id]);
-
-          delete this.players[socket.id];
-
-          // emit a message to all players to remove this player
-          this.io.emit("disconnected", socket.id);
-        } catch (error) {
-          console.log(error);
-        }
-      });*/
-
       socket.on("savePlayerData", async () => {
         try {
           if (!this.players[socket.id].items) {
@@ -127,10 +108,10 @@ export default class GameManager {
         this.io.emit("disconnected", socket.id);
       });
 
-      socket.on("sendMessage", async (message, token, player) => {
+      socket.on("sendMessage", async (message, token) => {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { name, email } = decoded.user;
+          const { email } = decoded.user;
           await ChatModel.create({ email, message });
           this.io.emit("newMessage", {
             message,
@@ -182,7 +163,10 @@ export default class GameManager {
       });
 
       socket.on("playerMovement", (playerData) => {
+        console.log("playerMovement")
         if (this.players[socket.id]) {
+          console.log("playerMovement2")
+
           this.players[socket.id].x = playerData.x;
           this.players[socket.id].y = playerData.y;
           this.players[socket.id].flipX = playerData.flipX;
@@ -192,13 +176,11 @@ export default class GameManager {
           this.players[socket.id].frame = playerData.frame;
           this.players[socket.id].currentDirection =
             playerData.currentDirection;
-            this.players[socket.id].actionB =
-            playerData.actionB;
+          this.players[socket.id].actionB = playerData.actionB;
           // emit a message to all players about the player that moved
           this.io.emit("playerMoved", this.players[socket.id]);
         }
       });
-
 
       socket.on("pickUpChest", (chestId) => {
         // update the spawner
@@ -405,7 +387,7 @@ export default class GameManager {
 
       socket.on("healthPotion", (playerId, health) => {
         if (socket.id === playerId) {
-          this.players[socket.id]
+          this.players[socket.id];
           this.players[socket.id].potion(health);
           this.io.emit(
             "updatePlayerHealth",
@@ -425,6 +407,13 @@ export default class GameManager {
           socket.id,
           this.players[socket.id].gold
         );
+      });
+
+      socket.on("monsterMovement", (monster) => {
+        this.monsters[monster.id].x = monster.x;
+        this.monsters[monster.id].y = monster.y;
+        // emit a message to all players about the player that moved
+        this.io.emit("monsterMoved", this.monsters[monster.id]);
       });
 
       // player connected to our game
@@ -463,8 +452,7 @@ export default class GameManager {
         config,
         this.monsterLocations[key],
         this.addMonster.bind(this),
-        this.deleteMonster.bind(this),
-        this.moveMonsters.bind(this)
+        this.deleteMonster.bind(this)
       );
       this.spawners[spawner.id] = spawner;
     });
@@ -535,10 +523,6 @@ export default class GameManager {
   deleteMonster(monsterId) {
     delete this.monsters[monsterId];
     this.io.emit("monsterRemoved", monsterId);
-  }
-
-  moveMonsters() {
-    this.io.emit("monsterMovement", this.monsters);
   }
 
   addNpc(npcId, npc) {

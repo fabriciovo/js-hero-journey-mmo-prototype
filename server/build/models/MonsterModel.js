@@ -35,53 +35,6 @@ var MonsterModel = /*#__PURE__*/function () {
     value: function loseHealth(attack) {
       this.health -= attack;
     }
-  }, {
-    key: "move",
-    value: function move() {
-      var randomPosition = (0, _utils.randomNumber)(1, 8);
-      var distance = 64;
-
-      switch (randomPosition) {
-        case 1:
-          this.x += distance;
-          break;
-
-        case 2:
-          this.x -= distance;
-          break;
-
-        case 3:
-          this.y += distance;
-          break;
-
-        case 4:
-          this.y -= distance;
-          break;
-
-        case 5:
-          this.x += distance;
-          this.y += distance;
-          break;
-
-        case 6:
-          this.x += distance;
-          this.y -= distance;
-          break;
-
-        case 7:
-          this.x -= distance;
-          this.y += distance;
-          break;
-
-        case 8:
-          this.x -= distance;
-          this.y -= distance;
-          break;
-
-        default:
-          break;
-      }
-    }
   }]);
   return MonsterModel;
 }();
