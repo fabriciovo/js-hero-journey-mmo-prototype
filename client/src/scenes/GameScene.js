@@ -9,6 +9,7 @@ import { getCookie } from "../utils/utils";
 import DialogWindow from "../classes/window/DialogWindow";
 import Item from "../classes/items/Item";
 import Npc from "../classes/Entities/Npcs/Npc";
+import { randomNumber } from "../../../server/src/game_manager/utils";
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("Game");

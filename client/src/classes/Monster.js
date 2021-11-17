@@ -1,11 +1,9 @@
 import * as Phaser from "phaser";
+import { randomNumber } from "../../../server/src/game_manager/utils";
 import { DEPTH, healthBarTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
 import Bar from "./UI/Bar";
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
 
 export default class Monster extends Entity {
   constructor(scene, x, y, key, frame, id, health, maxHealth) {
@@ -84,7 +82,41 @@ export default class Monster extends Entity {
     if (dis < 120) {
       this.scene.physics.moveToObject(this, targetPosition, speed);
     } else {
-      
+    
+      const distance = 64;
+      const randomPosition = randomNumber(1,8)
+      switch (randomPosition) {
+        case 1:
+          this.body.setVelocityX(distance);
+          break;
+        case 2:
+          this.body.setVelocityX(-distance);
+          break;
+        case 3:
+          this.body.setVelocityY(distance);
+          break;
+        case 4:
+          this.body.setVelocityY(-distance);          
+          break;
+        case 5:
+          this.body.setVelocityX(distance);
+          this.body.setVelocityY(distance);
+          break;
+        case 6:
+          this.body.setVelocityX(distance);
+          this.body.setVelocityY(-distance);
+          break;
+        case 7:
+          this.body.setVelocityX(-distance);
+          this.body.setVelocityY(distance);
+          break;
+        case 8:
+          this.body.setVelocityX(-distance);
+          this.body.setVelocityY(-distance);
+          break;
+        default:
+          break;
+      }
     }
   }
 

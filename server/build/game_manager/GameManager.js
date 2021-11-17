@@ -258,11 +258,9 @@ var GameManager = /*#__PURE__*/function () {
             _this2.players[socket.id].y = playerData.y;
             _this2.players[socket.id].flipX = playerData.flipX;
             _this2.players[socket.id].actionAActive = playerData.actionAActive;
-            _this2.players[socket.id].actionBActive = playerData.actionBActive;
             _this2.players[socket.id].potionAActive = playerData.potionAActive;
             _this2.players[socket.id].frame = playerData.frame;
-            _this2.players[socket.id].currentDirection = playerData.currentDirection;
-            _this2.players[socket.id].actionB = playerData.actionB; // emit a message to all players about the player that moved
+            _this2.players[socket.id].currentDirection = playerData.currentDirection; // emit a message to all players about the player that moved
 
             _this2.io.emit("playerMoved", _this2.players[socket.id]);
           }
