@@ -278,16 +278,25 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
-        socket.on("pickUpItem", function (itemId) {
+        socket.on("pickUpItem", function (item) {
           // update the spawner
-          if (_this2.items[itemId]) {
+          if (!_this2.items[item.id] || !_this2.spawners[_this2.items[item.id].spawnerId]) {
+            _this2.items[item.id] = item;
+
+            _this2.players[socket.id].addItem(_this2.items[item.id]);
+
+            socket.emit("updateItems", _this2.players[socket.id]);
+            socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
+
+            _this2.deleteItems(item.id);
+          } else if (_this2.items[item.id]) {
             if (_this2.players[socket.id].canPickupItem()) {
-              _this2.players[socket.id].addItem(_this2.items[itemId]);
+              _this2.players[socket.id].addItem(_this2.items[item.id]);
 
               socket.emit("updateItems", _this2.players[socket.id]);
               socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]); // removing the item
 
-              _this2.spawners[_this2.items[itemId].spawnerId].removeObject(itemId);
+              _this2.spawners[_this2.items[item.id].spawnerId].removeObject(item.id);
             }
           }
         });

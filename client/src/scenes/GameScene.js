@@ -544,8 +544,8 @@ export default class GameScene extends Phaser.Scene {
       monster.x,
       monster.y,
       "iconset",
-      2,
-      `items-${v4()}`
+      6,
+      `item-${v4()}`
     );
     // add item to items group
     this.items.add(item);
@@ -714,7 +714,8 @@ export default class GameScene extends Phaser.Scene {
 
   collectItem(player, item) {
     // item pickup
-    this.socket.emit("pickUpItem", item.id);
+    console.log(item)
+    this.socket.emit("pickUpItem", item.id, item.x, item.y);
   }
 
   sendDropItemMessage(itemId) {

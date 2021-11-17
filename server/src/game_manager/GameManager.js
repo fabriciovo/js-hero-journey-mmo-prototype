@@ -8,6 +8,7 @@ import * as itemData from "../../public/assets/level/tools.json";
 
 import Spawner from "./controllers/Spawner";
 import { SpawnerType } from "./utils";
+import ItemModel from "../models/ItemModel";
 
 export default class GameManager {
   constructor(io) {
@@ -164,7 +165,6 @@ export default class GameManager {
 
       socket.on("playerMovement", (playerData) => {
         if (this.players[socket.id]) {
-
           this.players[socket.id].x = playerData.x;
           this.players[socket.id].y = playerData.y;
           this.players[socket.id].flipX = playerData.flipX;
@@ -196,7 +196,7 @@ export default class GameManager {
         }
       });
 
-      socket.on("pickUpItem", (itemId) => {
+      socket.on("pickUpItem", (itemId, x, y) => {
         // update the spawner
         if (this.items[itemId]) {
           if (this.players[socket.id].canPickupItem()) {
@@ -210,6 +210,21 @@ export default class GameManager {
 
             // removing the item
             this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
+          }
+        } else {
+          if (this.players[socket.id].canPickupItem()) {
+            this.items[itemId] = new ItemModel(
+              x,
+              y,
+              "item",
+              "adsdas",
+              7,
+              1,
+              1,
+              1,
+              "MELEE",
+              "Description"
+            );
           }
         }
       });
@@ -275,9 +290,9 @@ export default class GameManager {
       });
 
       socket.on("attackedPlayer", (attackedPlayerId) => {
-      console.log("attackedPlayer")
+        console.log("attackedPlayer");
         if (this.players[attackedPlayerId]) {
-          console.log(this.players[attackedPlayerId])
+          console.log(this.players[attackedPlayerId]);
 
           // get required info from attacked player
           const { gold } = this.players[attackedPlayerId];
@@ -409,14 +424,14 @@ export default class GameManager {
       });
 
       socket.on("monsterMovement", (monster) => {
-        if(!this.monsters[monster.id]) return
+        if (!this.monsters[monster.id]) return;
         this.monsters[monster.id].x = monster.x;
         this.monsters[monster.id].y = monster.y;
         // emit a message to all players about the monster that moved
         this.io.emit("monsterMoved", this.monsters[monster.id]);
       });
 
-       // player connected to our game
+      // player connected to our game
       console.log("player connected to our game");
     });
   }
