@@ -20,9 +20,7 @@ export default class PlayerModel {
 
     this.spawnLocations = spawnLocations;
     this.actionAActive = false;
-    this.actionBActive = false;
     this.potionAActive = false;
-    this.actionB = actionB;
     this.flipX = true;
     const location = this.generateLocation(players);
     this.x = location[0];

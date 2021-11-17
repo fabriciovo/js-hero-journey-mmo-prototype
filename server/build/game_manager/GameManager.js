@@ -253,10 +253,7 @@ var GameManager = /*#__PURE__*/function () {
           };
         }());
         socket.on("playerMovement", function (playerData) {
-          console.log("playerMovement");
-
           if (_this2.players[socket.id]) {
-            console.log("playerMovement2");
             _this2.players[socket.id].x = playerData.x;
             _this2.players[socket.id].y = playerData.y;
             _this2.players[socket.id].flipX = playerData.flipX;
@@ -330,8 +327,11 @@ var GameManager = /*#__PURE__*/function () {
           _this2.io.emit("updatePlayerStats", socket.id, _this2.players[socket.id].level, _this2.players[socket.id].attack, _this2.players[socket.id].defense, _this2.players[socket.id].maxHealth, _this2.players[socket.id].exp, _this2.players[socket.id].maxExp);
         });
         socket.on("attackedPlayer", function (attackedPlayerId) {
+          console.log("attackedPlayer");
+
           if (_this2.players[attackedPlayerId]) {
-            // get required info from attacked player
+            console.log(_this2.players[attackedPlayerId]); // get required info from attacked player
+
             var gold = _this2.players[attackedPlayerId].gold;
             var playerAttackValue = _this2.players[socket.id].attack; // subtract health from attacked player
 
@@ -437,7 +437,7 @@ var GameManager = /*#__PURE__*/function () {
         socket.on("monsterMovement", function (monster) {
           if (!_this2.monsters[monster.id]) return;
           _this2.monsters[monster.id].x = monster.x;
-          _this2.monsters[monster.id].y = monster.y; // emit a message to all players about the player that moved
+          _this2.monsters[monster.id].y = monster.y; // emit a message to all players about the monster that moved
 
           _this2.io.emit("monsterMoved", _this2.monsters[monster.id]);
         }); // player connected to our game

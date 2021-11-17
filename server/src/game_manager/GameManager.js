@@ -163,20 +163,16 @@ export default class GameManager {
       });
 
       socket.on("playerMovement", (playerData) => {
-        console.log("playerMovement")
         if (this.players[socket.id]) {
-          console.log("playerMovement2")
 
           this.players[socket.id].x = playerData.x;
           this.players[socket.id].y = playerData.y;
           this.players[socket.id].flipX = playerData.flipX;
           this.players[socket.id].actionAActive = playerData.actionAActive;
-          this.players[socket.id].actionBActive = playerData.actionBActive;
           this.players[socket.id].potionAActive = playerData.potionAActive;
           this.players[socket.id].frame = playerData.frame;
           this.players[socket.id].currentDirection =
             playerData.currentDirection;
-          this.players[socket.id].actionB = playerData.actionB;
           // emit a message to all players about the player that moved
           this.io.emit("playerMoved", this.players[socket.id]);
         }
@@ -279,7 +275,10 @@ export default class GameManager {
       });
 
       socket.on("attackedPlayer", (attackedPlayerId) => {
+      console.log("attackedPlayer")
         if (this.players[attackedPlayerId]) {
+          console.log(this.players[attackedPlayerId])
+
           // get required info from attacked player
           const { gold } = this.players[attackedPlayerId];
           const playerAttackValue = this.players[socket.id].attack;

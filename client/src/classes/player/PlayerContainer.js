@@ -119,7 +119,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.setDepth(DEPTH.NORMAL);
     //Actions
     this.actionAActive = false;
-    this.actionBActive = false;
     this.actionCActive = false;
 
     //creeate player input
@@ -166,10 +165,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     //set actions
     this.actionAButton = this.scene.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.Z
-    );
-
-    this.actionBButton = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.X
     );
 
     this.potionAButton = this.scene.input.keyboard.addKey(
@@ -242,30 +237,15 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         (Phaser.Input.Keyboard.JustDown(this.actionAButton) ||
           this.mobileActionA) &&
         !this.actionAActive &&
-        !this.potionAActive &&
-        !this.actionBActive
+        !this.potionAActive
       ) {
         this.actionAFunction();
       }
 
       if (
-        Phaser.Input.Keyboard.JustDown(this.actionBButton) &&
-        !this.actionBActive &&
-        !this.actionAActive &&
-        !this.potionAActive
-      ) {
-        this.actionB.setPosition(this.x, this.y);
-        this.actionB.direction = this.currentDirection;
-        this.actionB.makeActive();
-        this.actionBFunction();
-      }
-
-      if (
         Phaser.Input.Keyboard.JustDown(this.potionAButton) &&
         !this.potionAActive &&
-        !this.actionAActive &&
-        !this.actionBActive
-      ) {
+        !this.actionAActive      ) {
         this.potionAFunction();
       }
     }
@@ -306,10 +286,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       if (this.currentDirection === Direction.LEFT) {
         this.actionA.flipX = true;
       }
-
-      if (!this.actionBActive) {
-        this.actionB.makeInactive();
-      }
     }
 
     this.updateHealthBar();
@@ -336,25 +312,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       () => {
         this.actionA.alpha = 0;
         this.actionAActive = false;
-        this.hitbox = false;
-      },
-      [],
-      this
-    );
-  }
-
-  actionBFunction() {
-    this.actionB.makeActive();
-    this.actionB.Attack();
-    this.actionBActive = true;
-    this.actionB.hitbox = true;
-
-    if (this.mainPlayer) this.attackAudio.play();
-    this.scene.time.delayedCall(
-      2000,
-      () => {
-        this.actionBActive = false;
-        this.actionB.hitbox = false;
         this.hitbox = false;
       },
       [],
@@ -446,20 +403,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       "iconset",
       iconsetWeaponTypes.SMALL_WOODEN_SWORD
     );
-    this.actionB = new Bow(
-      this.scene,
-      this.x,
-      this.y,
-      "iconset",
-      iconsetWeaponTypes.ARROW,
-      this.id,
-      this.currentDirection
-    );
-    this.actionB.makeInactive();
-    this.scene.rangedObjects.add(this.actionB);
 
-    //this.actionB = new Bullet(this.scene,this.x,this.y);
-    //this.actionB = new Bullet(this.scene, this.x, this.y);
     // create the potion game object
     this.potionA = new Potion(
       this.scene,
