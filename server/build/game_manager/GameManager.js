@@ -33,6 +33,10 @@ var _Spawner = _interopRequireDefault(require("./controllers/Spawner"));
 
 var _utils = require("./utils");
 
+var _ItemModel = _interopRequireDefault(require("../models/ItemModel"));
+
+var _uuid = require("uuid");
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -278,25 +282,18 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
-        socket.on("pickUpItem", function (item) {
+        socket.on("pickUpItem", function (itemId) {
           // update the spawner
-          if (!_this2.items[item.id] || !_this2.spawners[_this2.items[item.id].spawnerId]) {
-            _this2.items[item.id] = item;
+          if (_this2.items[itemId]) {
+            console.log(itemId);
 
-            _this2.players[socket.id].addItem(_this2.items[item.id]);
-
-            socket.emit("updateItems", _this2.players[socket.id]);
-            socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]);
-
-            _this2.deleteItems(item.id);
-          } else if (_this2.items[item.id]) {
             if (_this2.players[socket.id].canPickupItem()) {
-              _this2.players[socket.id].addItem(_this2.items[item.id]);
+              _this2.players[socket.id].addItem(_this2.items[itemId]);
 
               socket.emit("updateItems", _this2.players[socket.id]);
               socket.broadcast.emit("updatePlayersItems", socket.id, _this2.players[socket.id]); // removing the item
 
-              _this2.spawners[_this2.items[item.id].spawnerId].removeObject(item.id);
+              _this2.deleteItems(itemId);
             }
           }
         });
@@ -334,11 +331,8 @@ var GameManager = /*#__PURE__*/function () {
           _this2.io.emit("updatePlayerStats", socket.id, _this2.players[socket.id].level, _this2.players[socket.id].attack, _this2.players[socket.id].defense, _this2.players[socket.id].maxHealth, _this2.players[socket.id].exp, _this2.players[socket.id].maxExp);
         });
         socket.on("attackedPlayer", function (attackedPlayerId) {
-          console.log("attackedPlayer");
-
           if (_this2.players[attackedPlayerId]) {
-            console.log(_this2.players[attackedPlayerId]); // get required info from attacked player
-
+            // get required info from attacked player
             var gold = _this2.players[attackedPlayerId].gold;
             var playerAttackValue = _this2.players[socket.id].attack; // subtract health from attacked player
 
@@ -393,11 +387,12 @@ var GameManager = /*#__PURE__*/function () {
 
               _this2.io.emit("updateXp", exp, socket.id); //this.io.emit("dropItem",this.monsters[monsterId] );
               // removing the monster
+              // this.spawners[this.monsters[monsterId].spawnerId].removeObject(
+              //   monsterId
+              // );
 
 
-              _this2.spawners[_this2.monsters[monsterId].spawnerId].removeObject(monsterId);
-
-              _this2.io.emit("monsterRemoved", monsterId);
+              _this2.deleteMonster(monsterId);
             } else {
               // update the monsters health
               _this2.io.emit("updateMonsterHealth", monsterId, _this2.monsters[monsterId].health);
@@ -447,6 +442,11 @@ var GameManager = /*#__PURE__*/function () {
           _this2.monsters[monster.id].y = monster.y; // emit a message to all players about the monster that moved
 
           _this2.io.emit("monsterMoved", _this2.monsters[monster.id]);
+        });
+        socket.on("dropItem", function (x, y) {
+          var item = new _ItemModel["default"](x, y, "item-".concat((0, _uuid.v4)()), "adsdas", 7, 1, 1, 1, "MELEE", "Description");
+
+          _this2.addItems(item.id, item);
         }); // player connected to our game
 
         console.log("player connected to our game");

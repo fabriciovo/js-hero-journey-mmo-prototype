@@ -107,6 +107,7 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("monsterRemoved", (monsterId) => {
       this.monsters.getChildren().forEach((monster) => {
         if (monster.id === monsterId) {
+          console.log("monsterRemoved")
           this.dropItem(monster);
           monster.makeInactive();
           this.monsterDeathAudio.play();
@@ -253,6 +254,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("itemSpawned", (item) => {
+      console.log(item);
       this.spawnItem(item);
     });
 
@@ -521,8 +523,8 @@ export default class GameScene extends Phaser.Scene {
     if (!item) {
       item = new Item(
         this,
-        itemObject.x * 2,
-        itemObject.y * 2,
+        itemObject.x,
+        itemObject.y,
         "iconset",
         itemObject.frame,
         itemObject.id
@@ -533,22 +535,14 @@ export default class GameScene extends Phaser.Scene {
       item.id = itemObject.id;
       item.frame = itemObject.frame;
       item.setFrame(item.frame);
-      item.setPosition(itemObject.x * 2, itemObject.y * 2);
+      item.setPosition(itemObject.x, itemObject.y);
       item.makeActive();
     }
   }
 
   dropItem(monster) {
-    const item = new Item(
-      this,
-      monster.x,
-      monster.y,
-      "iconset",
-      6,
-      `item-${v4()}`
-    );
     // add item to items group
-    this.items.add(item);
+    this.sendMonsterDropItemMessage(monster.x, monster.y);
   }
 
   spawnChest(chestObject) {
@@ -714,8 +708,7 @@ export default class GameScene extends Phaser.Scene {
 
   collectItem(player, item) {
     // item pickup
-    console.log(item)
-    this.socket.emit("pickUpItem", item.id, item.x, item.y);
+    this.socket.emit("pickUpItem", item.id);
   }
 
   sendDropItemMessage(itemId) {
@@ -723,6 +716,11 @@ export default class GameScene extends Phaser.Scene {
     this.uiScene.inventoryWindow.updateInventory(this.player);
     this.uiScene.inventoryWindow.hideWindow();
     this.uiScene.inventoryWindow.showWindow(this.player);
+  }
+
+  sendMonsterDropItemMessage(x, y) {
+    console.log("sendMonsterDropItemMessage");
+    this.socket.emit("dropItem", x, y);
   }
 
   sendEquipItemMessage(itemId) {

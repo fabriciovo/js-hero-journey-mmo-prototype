@@ -9,6 +9,7 @@ import * as itemData from "../../public/assets/level/tools.json";
 import Spawner from "./controllers/Spawner";
 import { SpawnerType } from "./utils";
 import ItemModel from "../models/ItemModel";
+import { v4 } from "uuid";
 
 export default class GameManager {
   constructor(io) {
@@ -196,9 +197,10 @@ export default class GameManager {
         }
       });
 
-      socket.on("pickUpItem", (itemId, x, y) => {
+      socket.on("pickUpItem", (itemId) => {
         // update the spawner
         if (this.items[itemId]) {
+          console.log(itemId)
           if (this.players[socket.id].canPickupItem()) {
             this.players[socket.id].addItem(this.items[itemId]);
             socket.emit("updateItems", this.players[socket.id]);
@@ -209,22 +211,7 @@ export default class GameManager {
             );
 
             // removing the item
-            this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
-          }
-        } else {
-          if (this.players[socket.id].canPickupItem()) {
-            this.items[itemId] = new ItemModel(
-              x,
-              y,
-              "item",
-              "adsdas",
-              7,
-              1,
-              1,
-              1,
-              "MELEE",
-              "Description"
-            );
+           this.deleteItems(itemId)
           }
         }
       });
@@ -290,9 +277,7 @@ export default class GameManager {
       });
 
       socket.on("attackedPlayer", (attackedPlayerId) => {
-        console.log("attackedPlayer");
         if (this.players[attackedPlayerId]) {
-          console.log(this.players[attackedPlayerId]);
 
           // get required info from attacked player
           const { gold } = this.players[attackedPlayerId];
@@ -359,10 +344,11 @@ export default class GameManager {
             //this.io.emit("dropItem",this.monsters[monsterId] );
 
             // removing the monster
-            this.spawners[this.monsters[monsterId].spawnerId].removeObject(
-              monsterId
-            );
-            this.io.emit("monsterRemoved", monsterId);
+            // this.spawners[this.monsters[monsterId].spawnerId].removeObject(
+            //   monsterId
+            // );
+            this.deleteMonster(monsterId)
+
           } else {
             // update the monsters health
             this.io.emit(
@@ -430,6 +416,24 @@ export default class GameManager {
         // emit a message to all players about the monster that moved
         this.io.emit("monsterMoved", this.monsters[monster.id]);
       });
+
+      socket.on("dropItem", (x, y) => {
+        const item = new ItemModel(
+          x,
+          y,
+          `item-${v4()}`,
+          "adsdas",
+          7,
+          1,
+          1,
+          1,
+          "MELEE",
+          "Description"
+        );
+        this.addItems(item.id, item);
+      });
+      
+      
 
       // player connected to our game
       console.log("player connected to our game");
