@@ -101,7 +101,8 @@ var Spawner = /*#__PURE__*/function () {
       this.id, randomEnemy.key, // key
       randomEnemy.healthValue, // health value
       randomEnemy.attackValue, // attack value
-      randomEnemy.expValue // exp value
+      randomEnemy.expValue, // exp value
+      3000 //timer
       );
       this.objectsCreated.push(monster);
       this.addObject(monster.id, monster);

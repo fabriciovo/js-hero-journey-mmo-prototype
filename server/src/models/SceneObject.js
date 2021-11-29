@@ -113,9 +113,6 @@ export default class SceneObject {
         this.players[socket.id].potionAActive = playerData.potionAActive;
         this.players[socket.id].frame = playerData.frame;
         this.players[socket.id].currentDirection = playerData.currentDirection;
-        this.players[socket.id].actionB.x = playerData.actionB.x;
-        this.players[socket.id].actionB.y = playerData.actionB.y;
-
         // emit a message to all players about the player that moved
         socket.broadcast.emit("playerMoved", this.players[socket.id]);
       }

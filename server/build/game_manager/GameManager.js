@@ -438,6 +438,8 @@ var GameManager = /*#__PURE__*/function () {
         });
         socket.on("monsterMovement", function (monster) {
           if (!_this2.monsters[monster.id]) return;
+          _this2.monsters[monster.id].stateTime = monster.stateTime;
+          _this2.monsters[monster.id].randomPosition = monster.randomPosition;
           _this2.monsters[monster.id].x = monster.x;
           _this2.monsters[monster.id].y = monster.y; // emit a message to all players about the monster that moved
 

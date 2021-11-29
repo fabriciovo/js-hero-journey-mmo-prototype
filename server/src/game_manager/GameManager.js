@@ -411,9 +411,12 @@ export default class GameManager {
 
       socket.on("monsterMovement", (monster) => {
         if (!this.monsters[monster.id]) return;
+        this.monsters[monster.id].stateTime = monster.stateTime;
+        this.monsters[monster.id].randomPosition = monster.randomPosition;
         this.monsters[monster.id].x = monster.x;
         this.monsters[monster.id].y = monster.y;
         // emit a message to all players about the monster that moved
+        
         this.io.emit("monsterMoved", this.monsters[monster.id]);
       });
 
