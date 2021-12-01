@@ -549,7 +549,6 @@ export default class GameScene extends Phaser.Scene {
 
   dropItem(monster) {
     // add item to items group
-    console.log(getRandomItem());
     this.sendMonsterDropItemMessage(monster.x, monster.y, getRandomItem());
   }
 
@@ -558,8 +557,8 @@ export default class GameScene extends Phaser.Scene {
     if (!chest) {
       chest = new Chest(
         this,
-        chestObject.x * 2,
-        chestObject.y * 2,
+        chestObject.x ,
+        chestObject.y ,
         "items",
         0,
         chestObject.gold,
@@ -570,7 +569,7 @@ export default class GameScene extends Phaser.Scene {
     } else {
       chest.coins = chestObject.gold;
       chest.id = chestObject.id;
-      chest.setPosition(chestObject.x * 2, chestObject.y * 2);
+      chest.setPosition(chestObject.x, chestObject.y);
       chest.makeActive();
     }
   }
@@ -729,6 +728,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   sendMonsterDropItemMessage(x, y, item) {
+    console.log(item)
     this.socket.emit("dropItem", x, y, item);
   }
 

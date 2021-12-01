@@ -131,7 +131,6 @@ export default class UiScene extends Phaser.Scene {
       .setInteractive({ cursor: "pointer" });
 
     this.inventoryButton.on("pointerdown", () => {
-      console.log("inventoryButton", this.gameScene.player);
 
       this.toggleInventory(this.gameScene.player);
     });
@@ -245,11 +244,9 @@ export default class UiScene extends Phaser.Scene {
   toggleShop(playerObject, active) {
     this.showShopWindow = active;
     if (this.showShopWindow) {
-      console.log("this.shopWindow adsdasdsasda");
 
       this.shopWindow.showWindow(playerObject);
     } else {
-      console.log("this.shopWindow");
       this.shopWindow.hideWindow();
     }
   }

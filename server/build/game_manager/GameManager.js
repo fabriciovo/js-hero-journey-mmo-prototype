@@ -60,8 +60,8 @@ var GameManager = /*#__PURE__*/function () {
     this.npcLocations = {};
     this.itemsLocations = itemData.locations;
     this.itemDictionary = {
-      "chest": this.createChest,
-      "item": this.createItem,
+      chest: this.createChest.bind(this),
+      item: this.createItem.bind(this),
       "": this.drop
     };
   }
@@ -286,14 +286,12 @@ var GameManager = /*#__PURE__*/function () {
             socket.emit("updateScore", _this2.players[socket.id].gold);
             socket.broadcast.emit("updatePlayersScore", socket.id, _this2.players[socket.id].gold); // removing the chest
 
-            _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
+            _this2.deleteChest(chestId);
           }
         });
         socket.on("pickUpItem", function (itemId) {
           // update the spawner
           if (_this2.items[itemId]) {
-            console.log(itemId);
-
             if (_this2.players[socket.id].canPickupItem()) {
               _this2.players[socket.id].addItem(_this2.items[itemId]);
 

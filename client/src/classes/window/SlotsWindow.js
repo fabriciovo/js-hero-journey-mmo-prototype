@@ -37,8 +37,6 @@ export default class SlotsWindow extends ModalWindow {
     if (this.rect) {
       this.rect.setPosition(x + 1, y + 1);
       this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
-      console.log(rectWidth, "SLOT");
-      console.log(rectHeight, "SLOT");
       // update the position of our mainContainer
       this.mainContainer.setPosition(x + 1, y + 1);
       this.mainContainer.setSize(rectWidth - 1, rectHeight - 1);
@@ -59,8 +57,6 @@ export default class SlotsWindow extends ModalWindow {
         rectWidth - 1,
         rectHeight - 1
       );
-      console.log(rectWidth, "SLOT else");
-      console.log(rectHeight, "SLOT else");
       if (this.debug) this.rect.setFillStyle(0x6666ff);
       this.rect.setOrigin(0, 0);
       this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
@@ -86,9 +82,6 @@ export default class SlotsWindow extends ModalWindow {
   createSlots() {
     this.slotsContainer = this.scene.add.container(0, 80);
     this.mainContainer.add(this.slotsContainer);
-
-    console.log(this.mainContainer.width);
-    console.log(this.mainContainer.width / 2);
 
     //create items title
     this.title = this.scene.add.text(
@@ -129,8 +122,6 @@ export default class SlotsWindow extends ModalWindow {
       this.slotsContainer.add(this.slots[x].slotImage);
       this.slotsContainer.add(this.slots[x].itemImage);
 
-      console.log(this.slots[x].canEquip);
-      console.log(this.playerObject);
 
     }
 
@@ -213,12 +204,9 @@ export default class SlotsWindow extends ModalWindow {
   }
 
   checkPlayersItem(data, playerItems) {
-    console.log(this.playerObject);
-    console.log(data);
     playerItems.forEach((playerItem) => {
       data.forEach((item) => {
         if (playerItem.name === item.name) {
-          console.log("player tem item");
           item.itemImage.setTint(0xffffff);
           item.canEquip = true;
           item.slotImage.setInteractive({ cursor: "pointer" });

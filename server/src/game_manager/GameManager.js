@@ -37,8 +37,8 @@ export default class GameManager {
     this.itemsLocations = itemData.locations;
 
     this.itemDictionary = {
-      chest: this.createChest,
-      item: this.createItem,
+      chest: this.createChest.bind(this),
+      item: this.createItem.bind(this),
       "": this.drop,
     };
   }
@@ -205,15 +205,14 @@ export default class GameManager {
             this.players[socket.id].gold
           );
           // removing the chest
-          this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
+          this.deleteChest(chestId)
         }
       });
 
       socket.on("pickUpItem", (itemId) => {
         // update the spawner
         if (this.items[itemId]) {
-          console.log(itemId);
-          if (this.players[socket.id].canPickupItem()) {
+           if (this.players[socket.id].canPickupItem()) {
             this.players[socket.id].addItem(this.items[itemId]);
             socket.emit("updateItems", this.players[socket.id]);
             socket.broadcast.emit(
@@ -557,7 +556,7 @@ export default class GameManager {
 
   createChest(x, y) {
     const chest = new ChestModel(x, y, randomNumber(10, 20), `chest-${v4()}`);
-
+    
     this.addChest(chest.id, chest);
   }
 
