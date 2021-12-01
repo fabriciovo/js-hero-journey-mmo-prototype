@@ -1,15 +1,15 @@
 import * as Phaser from "phaser";
-import { v4 } from "uuid";
 
 import PlayerContainer from "../classes/player/PlayerContainer";
 import Chest from "../classes/Chest";
 import Monster from "../classes/Monster";
 import GameMap from "../classes/GameMap";
-import { getCookie } from "../utils/utils";
+import { getCookie, getRandomItem } from "../utils/utils";
 import DialogWindow from "../classes/window/DialogWindow";
 import Item from "../classes/items/Item";
 import Npc from "../classes/Entities/Npcs/Npc";
-import { randomNumber } from "../../../server/src/game_manager/utils";
+
+
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("Game");
@@ -107,7 +107,6 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("monsterRemoved", (monsterId) => {
       this.monsters.getChildren().forEach((monster) => {
         if (monster.id === monsterId) {
-          console.log("monsterRemoved");
           this.dropItem(monster);
           monster.makeInactive();
           this.monsterDeathAudio.play();
@@ -256,7 +255,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("itemSpawned", (item) => {
-      console.log(item);
       this.spawnItem(item);
     });
 
@@ -551,7 +549,8 @@ export default class GameScene extends Phaser.Scene {
 
   dropItem(monster) {
     // add item to items group
-    this.sendMonsterDropItemMessage(monster.x, monster.y);
+    console.log(getRandomItem());
+    this.sendMonsterDropItemMessage(monster.x, monster.y, getRandomItem());
   }
 
   spawnChest(chestObject) {
@@ -729,9 +728,8 @@ export default class GameScene extends Phaser.Scene {
     this.uiScene.inventoryWindow.showWindow(this.player);
   }
 
-  sendMonsterDropItemMessage(x, y) {
-    console.log("sendMonsterDropItemMessage");
-    this.socket.emit("dropItem", x, y);
+  sendMonsterDropItemMessage(x, y, item) {
+    this.socket.emit("dropItem", x, y, item);
   }
 
   sendEquipItemMessage(itemId) {

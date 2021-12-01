@@ -176,9 +176,7 @@ var SceneObject = /*#__PURE__*/function () {
           _this3.players[socket.id].actionBActive = playerData.actionBActive;
           _this3.players[socket.id].potionAActive = playerData.potionAActive;
           _this3.players[socket.id].frame = playerData.frame;
-          _this3.players[socket.id].currentDirection = playerData.currentDirection;
-          _this3.players[socket.id].actionB.x = playerData.actionB.x;
-          _this3.players[socket.id].actionB.y = playerData.actionB.y; // emit a message to all players about the player that moved
+          _this3.players[socket.id].currentDirection = playerData.currentDirection; // emit a message to all players about the player that moved
 
           socket.broadcast.emit("playerMoved", _this3.players[socket.id]);
         }

@@ -24,6 +24,7 @@ export default class Monster extends Entity {
     this.key = key;
     this.stateTime = stateTime;
     this.randomPosition = randomPosition;
+    this.dead = false;
     // this.enemyStates = {
     //   idle: this.idle(),
     //   move: this.move(),
@@ -110,21 +111,22 @@ export default class Monster extends Entity {
   }
 
   update() {
-    this.updateHealthBar();
-    this.animation();
+    if (!this.dead) {
+      this.updateHealthBar();
+      this.animation();
 
-    this.text.setText("this.state.toString()");
-    this.text.x = this.x;
-    this.text.y = this.y - 40;
+      this.text.setText("this.state.toString()");
+      this.text.x = this.x;
+      this.text.y = this.y - 40;
 
-    if (this.timer.getProgress().toString().substr(0, 4) === 0.0) {
-      this.move();
+      if (this.timer.getProgress().toString().substr(0, 4) === 0.0) {
+        this.move();
+      }
     }
   }
 
   move() {
     const distance = 64;
-    console.log(this.randomPosition)
     switch (this.randomPosition) {
       case 1:
         this.body.setVelocityX(distance);
@@ -157,7 +159,7 @@ export default class Monster extends Entity {
       case 8:
         break;
     }
-    this.stateTime = Phaser.Math.Between(1000, 3000)
+    this.stateTime = Phaser.Math.Between(1000, 3000);
     this.timer = this.scene.time.delayedCall(
       this.stateTime,
       this.idle,
@@ -167,7 +169,7 @@ export default class Monster extends Entity {
   }
 
   followPlayer(targetPosition) {
-    if (!targetPosition) return;
+    if (!targetPosition || this.dead) return;
     const dis = Phaser.Math.Distance.Between(
       targetPosition.x,
       targetPosition.y,
@@ -189,8 +191,8 @@ export default class Monster extends Entity {
   idle() {
     this.body.setVelocityX(0);
     this.body.setVelocityY(0);
-    this.stateTime = Phaser.Math.Between(1000, 3000)
-    this.randomPosition = randomNumber(1,8);
+    this.stateTime = Phaser.Math.Between(1000, 3000);
+    this.randomPosition = randomNumber(1, 8);
     this.timer = this.scene.time.delayedCall(
       this.stateTime,
       this.move,
@@ -203,10 +205,12 @@ export default class Monster extends Entity {
     super.makeInactive();
     this.updateHealthBar();
     this.healthBar.DestroyBar();
+    this.dead = true;
   }
 
   makeActive() {
     super.makeActive();
     this.createHealthBar();
+    this.dead = false;
   }
 }

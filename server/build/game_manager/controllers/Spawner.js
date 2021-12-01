@@ -31,11 +31,6 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function getRandonValues() {
-  var bonus = [-3, -5, -6, 0, 5, 3, 4, 7, 2, 1, 8, 10, 11, 23, 12, 13, 14, 15, 16, 9];
-  return bonus[Math.floor(Math.random() * bonus.length)];
-}
-
 var Spawner = /*#__PURE__*/function () {
   function Spawner(config, spawnLocations, addObject, deleteObject, moveObjects) {
     (0, _classCallCheck2["default"])(this, Spawner);
@@ -80,7 +75,7 @@ var Spawner = /*#__PURE__*/function () {
     value: function spawnItem() {
       var location = this.pickRandomLocation();
       var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
-      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, getRandonValues(), getRandonValues(), getRandonValues(), _utils.WeaponTypes.MELEE, "Description");
+      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), _utils.WeaponTypes.MELEE, "Description");
       this.objectsCreated.push(item);
       this.addObject(item.id, item);
     }

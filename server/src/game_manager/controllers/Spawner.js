@@ -1,4 +1,4 @@
-import { SpawnerType, randomNumber, WeaponTypes } from "../utils";
+import { SpawnerType, randomNumber, WeaponTypes, getRandonValues } from "../utils";
 import ChestModel from "../../models/ChestModel";
 import MonsterModel from "../../models/MonsterModel";
 import ItemModel from "../../models/ItemModel";
@@ -7,12 +7,7 @@ import * as enemyData from "../../../public/assets/Enemies/enemies.json";
 
 import NpcModel from "../../models/NpcModel";
 
-function getRandonValues() {
-  const bonus = [
-    -3, -5, -6, 0, 5, 3, 4, 7, 2, 1, 8, 10, 11, 23, 12, 13, 14, 15, 16, 9,
-  ];
-  return bonus[Math.floor(Math.random() * bonus.length)];
-}
+
 
 export default class Spawner {
   constructor(config, spawnLocations, addObject, deleteObject, moveObjects) {

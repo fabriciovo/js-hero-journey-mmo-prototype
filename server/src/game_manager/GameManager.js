@@ -7,8 +7,14 @@ import * as levelData from "../../public/assets/level/new_level.json";
 import * as itemData from "../../public/assets/level/tools.json";
 
 import Spawner from "./controllers/Spawner";
-import { SpawnerType } from "./utils";
+import {
+  getRandonValues,
+  randomNumber,
+  SpawnerType,
+  WeaponTypes,
+} from "./utils";
 import ItemModel from "../models/ItemModel";
+import ChestModel from "../models/ChestModel";
 import { v4 } from "uuid";
 
 export default class GameManager {
@@ -29,6 +35,12 @@ export default class GameManager {
     this.npcLocations = {};
 
     this.itemsLocations = itemData.locations;
+
+    this.itemDictionary = {
+      chest: this.createChest,
+      item: this.createItem,
+      "": this.drop,
+    };
   }
 
   setup() {
@@ -200,7 +212,7 @@ export default class GameManager {
       socket.on("pickUpItem", (itemId) => {
         // update the spawner
         if (this.items[itemId]) {
-          console.log(itemId)
+          console.log(itemId);
           if (this.players[socket.id].canPickupItem()) {
             this.players[socket.id].addItem(this.items[itemId]);
             socket.emit("updateItems", this.players[socket.id]);
@@ -211,7 +223,7 @@ export default class GameManager {
             );
 
             // removing the item
-           this.deleteItems(itemId)
+            this.deleteItems(itemId);
           }
         }
       });
@@ -278,7 +290,6 @@ export default class GameManager {
 
       socket.on("attackedPlayer", (attackedPlayerId) => {
         if (this.players[attackedPlayerId]) {
-
           // get required info from attacked player
           const { gold } = this.players[attackedPlayerId];
           const playerAttackValue = this.players[socket.id].attack;
@@ -347,8 +358,7 @@ export default class GameManager {
             // this.spawners[this.monsters[monsterId].spawnerId].removeObject(
             //   monsterId
             // );
-            this.deleteMonster(monsterId)
-
+            this.deleteMonster(monsterId);
           } else {
             // update the monsters health
             this.io.emit(
@@ -416,27 +426,13 @@ export default class GameManager {
         this.monsters[monster.id].x = monster.x;
         this.monsters[monster.id].y = monster.y;
         // emit a message to all players about the monster that moved
-        
+
         this.io.emit("monsterMoved", this.monsters[monster.id]);
       });
 
-      socket.on("dropItem", (x, y) => {
-        const item = new ItemModel(
-          x,
-          y,
-          `item-${v4()}`,
-          "adsdas",
-          7,
-          1,
-          1,
-          1,
-          "MELEE",
-          "Description"
-        );
-        this.addItems(item.id, item);
+      socket.on("dropItem", (x, y, item) => {
+        this.itemDictionary[item](x, y);
       });
-      
-      
 
       // player connected to our game
       console.log("player connected to our game");
@@ -555,5 +551,33 @@ export default class GameManager {
   deleteNpc(npcId) {
     delete this.npcs[npcId];
     this.io.emit("npcRemoved", npcId);
+  }
+
+  drop(x, y) {}
+
+  createChest(x, y) {
+    const chest = new ChestModel(x, y, randomNumber(10, 20), `chest-${v4()}`);
+
+    this.addChest(chest.id, chest);
+  }
+
+  createItem(x, y) {
+    const randomItem =
+      itemData.items[Math.floor(Math.random() * itemData.items.length)];
+
+    const item = new ItemModel(
+      x,
+      y,
+      `item-${v4()}`,
+      randomItem.name,
+      randomItem.frame,
+      getRandonValues(),
+      getRandonValues(),
+      getRandonValues(),
+      WeaponTypes.MELEE,
+      "Description"
+    );
+
+    this.addItems(item.id, item);
   }
 }

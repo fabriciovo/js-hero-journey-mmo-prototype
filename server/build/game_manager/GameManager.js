@@ -35,6 +35,8 @@ var _utils = require("./utils");
 
 var _ItemModel = _interopRequireDefault(require("../models/ItemModel"));
 
+var _ChestModel = _interopRequireDefault(require("../models/ChestModel"));
+
 var _uuid = require("uuid");
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -57,6 +59,11 @@ var GameManager = /*#__PURE__*/function () {
     this.monsterLocations = {};
     this.npcLocations = {};
     this.itemsLocations = itemData.locations;
+    this.itemDictionary = {
+      "chest": this.createChest,
+      "item": this.createItem,
+      "": this.drop
+    };
   }
 
   (0, _createClass2["default"])(GameManager, [{
@@ -445,10 +452,8 @@ var GameManager = /*#__PURE__*/function () {
 
           _this2.io.emit("monsterMoved", _this2.monsters[monster.id]);
         });
-        socket.on("dropItem", function (x, y) {
-          var item = new _ItemModel["default"](x, y, "item-".concat((0, _uuid.v4)()), "adsdas", 7, 1, 1, 1, "MELEE", "Description");
-
-          _this2.addItems(item.id, item);
+        socket.on("dropItem", function (x, y, item) {
+          _this2.itemDictionary[item](x, y);
         }); // player connected to our game
 
         console.log("player connected to our game");
@@ -546,6 +551,22 @@ var GameManager = /*#__PURE__*/function () {
     value: function deleteNpc(npcId) {
       delete this.npcs[npcId];
       this.io.emit("npcRemoved", npcId);
+    }
+  }, {
+    key: "drop",
+    value: function drop(x, y) {}
+  }, {
+    key: "createChest",
+    value: function createChest(x, y) {
+      var chest = new _ChestModel["default"](x, y, (0, _utils.randomNumber)(10, 20), "chest-".concat((0, _uuid.v4)()));
+      this.addChest(chest.id, chest);
+    }
+  }, {
+    key: "createItem",
+    value: function createItem(x, y) {
+      var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
+      var item = new _ItemModel["default"](x, y, "item-".concat((0, _uuid.v4)()), randomItem.name, randomItem.frame, (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), _utils.WeaponTypes.MELEE, "Description");
+      this.addItems(item.id, item);
     }
   }]);
   return GameManager;
