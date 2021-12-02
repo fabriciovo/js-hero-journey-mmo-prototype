@@ -416,7 +416,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.potionA.makeInactive();
 
     this.scene.add.existing(this.actionA);
-    this.actionA.setScale(1.5);
+    this.actionA.setScale(2);
 
     this.scene.physics.world.enable(this.actionA);
     this.add(this.actionA);

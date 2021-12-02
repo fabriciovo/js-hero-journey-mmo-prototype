@@ -42,8 +42,7 @@ export default class InventoryWindow extends ModalWindow {
     if (this.rect) {
       this.rect.setPosition(x + 1, y + 1);
       this.rect.setDisplaySize(rectWidth - 1, rectHeight - 1);
-      console.log(rectWidth, "INVENTORY");
-      console.log(rectHeight, "INVENTORY");
+
 
       // update the position of our inventory container
       this.inventoryContainer.setPosition(x + 1, y + 1);

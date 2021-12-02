@@ -9,7 +9,6 @@ import DialogWindow from "../classes/window/DialogWindow";
 import Item from "../classes/items/Item";
 import Npc from "../classes/Entities/Npcs/Npc";
 
-
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("Game");
@@ -557,8 +556,8 @@ export default class GameScene extends Phaser.Scene {
     if (!chest) {
       chest = new Chest(
         this,
-        chestObject.x ,
-        chestObject.y ,
+        chestObject.x,
+        chestObject.y,
         "items",
         0,
         chestObject.gold,
@@ -681,6 +680,22 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     );
+
+    // check for overlaps between the player's weapon and monster game objects
+    this.physics.add.overlap(
+      this.monsters,
+      this.playerList,
+      this.monsterAttackOverlap,
+      null,
+      this
+    );
+  }
+
+  monsterAttackOverlap(monster, player) {
+    if (monster.monsterAttackActive && !monster.hitbox) {
+      monster.hitbox = true;
+      this.socket.emit("monsterAttack", monster.id, player.id);
+    }
   }
 
   weaponOverlapEnemy(weapon, enemyPlayer) {
@@ -728,7 +743,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   sendMonsterDropItemMessage(x, y, item) {
-    console.log(item)
+    console.log(item);
     this.socket.emit("dropItem", x, y, item);
   }
 

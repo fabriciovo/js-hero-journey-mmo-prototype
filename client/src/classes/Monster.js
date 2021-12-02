@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 import { randomNumber } from "../../../server/src/game_manager/utils";
-import { DEPTH, healthBarTypes } from "../utils/utils";
+import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
 import Bar from "./UI/Bar";
 
@@ -25,23 +25,19 @@ export default class Monster extends Entity {
     this.stateTime = stateTime;
     this.randomPosition = randomPosition;
     this.dead = false;
-    // this.enemyStates = {
-    //   idle: this.idle(),
-    //   move: this.move(),
-    //   followPlayer: this.followPlayer(),
-    //   attack: this.attack(),
-    //   damage: this.damage(),
-    // };
+    this.hitbox = false;
+    this.monsterAttackActive = false;
 
-    this.text = this.scene.add.text(
-      this.x,
-      this.y - 50,
-      "this.state.toString()",
-      {
-        fontSize: "46px",
-        fill: "#fff",
-      }
-    );
+
+    // this.text = this.scene.add.text(
+    //   this.x,
+    //   this.y - 50,
+    //   "",
+    //   {
+    //     fontSize: "46px",
+    //     fill: "#fff",
+    //   }
+    // );
 
     this.scene.anims.create({
       key: `normal_${this.key}`,
@@ -79,6 +75,17 @@ export default class Monster extends Entity {
       this
     );
 
+    this.monsterAttack = this.scene.add.sprite(
+      40,
+      0,
+      "iconset",
+      iconsetWeaponTypes.SMALL_WOODEN_SWORD);
+
+      this.scene.add.existing(this.monsterAttack);
+      this.monsterAttack.setScale(2);
+      this.scene.physics.world.enable(this.monsterAttack);
+      this.monsterAttack.alpha = 0;
+
     this.move();
   }
 
@@ -115,9 +122,9 @@ export default class Monster extends Entity {
       this.updateHealthBar();
       this.animation();
 
-      this.text.setText("this.state.toString()");
-      this.text.x = this.x;
-      this.text.y = this.y - 40;
+      // this.text.setText("this.state.toString()");
+      // this.text.x = this.x;
+      // this.text.y = this.y - 40;
 
       if (this.timer.getProgress().toString().substr(0, 4) === 0.0) {
         this.move();
@@ -126,7 +133,7 @@ export default class Monster extends Entity {
   }
 
   move() {
-    const distance = 64;
+    const distance = 164;
     switch (this.randomPosition) {
       case 1:
         this.body.setVelocityX(distance);
@@ -156,8 +163,6 @@ export default class Monster extends Entity {
         this.body.setVelocityX(-distance);
         this.body.setVelocityY(-distance);
         break;
-      case 8:
-        break;
     }
     this.stateTime = Phaser.Math.Between(1000, 3000);
     this.timer = this.scene.time.delayedCall(
@@ -177,12 +182,27 @@ export default class Monster extends Entity {
       this.y
     );
 
-    if (dis < 120) {
-      this.scene.physics.moveToObject(this, targetPosition, 90);
+    if (dis < 200) {
+      this.scene.physics.moveToObject(this, targetPosition, 220);
+    }
+
+    if(dis < 90){
+      this.attack();
     }
   }
 
-  attack() {}
+  attack() {
+    this.monsterAttackActive = true;
+    this.scene.time.delayedCall(
+      150,
+      () => {
+        this.monsterAttackActive = false;
+        this.hitbox = false;
+      },
+      [],
+      this
+    );
+  }
 
   animation() {}
 

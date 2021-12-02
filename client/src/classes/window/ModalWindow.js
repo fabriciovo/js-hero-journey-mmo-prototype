@@ -53,7 +53,6 @@ export default class ModalWindow {
   }
 
   createWindow() {
-    console.log(this.name)
 
     const windowDimensions = this.calculateWindowDimension();
     this.createOuterWindow(windowDimensions);
