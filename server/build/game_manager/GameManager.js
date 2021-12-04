@@ -29,6 +29,8 @@ var levelData = _interopRequireWildcard(require("../../public/assets/level/new_l
 
 var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.json"));
 
+var enemyData = _interopRequireWildcard(require("../../public/assets/Enemies/enemies.json"));
+
 var _Spawner = _interopRequireDefault(require("./controllers/Spawner"));
 
 var _utils = require("./utils");
@@ -38,6 +40,8 @@ var _ItemModel = _interopRequireDefault(require("../models/ItemModel"));
 var _ChestModel = _interopRequireDefault(require("../models/ChestModel"));
 
 var _uuid = require("uuid");
+
+var _MonsterModel = _interopRequireDefault(require("../models/MonsterModel"));
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
@@ -399,8 +403,7 @@ var GameManager = /*#__PURE__*/function () {
           }
         });
         socket.on("monsterAttack", function (monsterId, playerId) {
-          var attack = _this2.monsters[monsterId].attack;
-          console.log(monsterId, playerId); // update the players health
+          var attack = _this2.monsters[monsterId].attack; // update the players health
 
           _this2.players[playerId].playerAttacked(attack);
 
@@ -490,6 +493,9 @@ var GameManager = /*#__PURE__*/function () {
       config.spawnerType = _utils.SpawnerType.ITEM;
       spawner = new _Spawner["default"](config, this.itemsLocations, this.addItems.bind(this), this.deleteItems.bind(this));
       this.spawners[spawner.id] = spawner;
+      setInterval(function () {
+        _this3.spawnMonster();
+      }, 3000);
     }
   }, {
     key: "spawnPlayer",
@@ -560,6 +566,39 @@ var GameManager = /*#__PURE__*/function () {
       var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
       var item = new _ItemModel["default"](x, y, "item-".concat((0, _uuid.v4)()), randomItem.name, randomItem.frame, (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), _utils.WeaponTypes.MELEE, "Description");
       this.addItems(item.id, item);
+    }
+  }, {
+    key: "pickRandomLocation",
+    value: function pickRandomLocation() {
+      var location = this.monsterLocations[Math.floor(Math.random() * this.monsterLocations.length)];
+
+      if (this.monsters.length > 0) {
+        var invalidLocation = this.monsters.some(function (obj) {
+          if (obj.x === location[0] && obj.y === location[1]) {
+            return true;
+          }
+
+          return false;
+        });
+        if (invalidLocation) return this.pickRandomLocation();
+      }
+
+      console.log(location);
+      return location || [200, 200];
+    }
+  }, {
+    key: "spawnMonster",
+    value: function spawnMonster() {
+      var randomEnemy = enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
+      var location = this.pickRandomLocation();
+      var monster = new _MonsterModel["default"](location[0], location[1], randomEnemy.goldValue, // gold value
+      this.id, randomEnemy.key, // key
+      randomEnemy.healthValue, // health value
+      randomEnemy.attackValue, // attack value
+      randomEnemy.expValue, // exp value
+      3000 //timer
+      );
+      this.addMonster(monster.id, monster);
     }
   }]);
   return GameManager;

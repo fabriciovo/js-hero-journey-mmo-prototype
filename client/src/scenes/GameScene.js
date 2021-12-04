@@ -30,6 +30,7 @@ export default class GameScene extends Phaser.Scene {
     this.selectedCharacter = data.selectedCharacter || "characters_3";
 
     this.cameras.main.roundPixels = true;
+
   }
   listenForSocketEvents() {
     // spawn player game objects
@@ -92,6 +93,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("monsterSpawned", (monster) => {
+      console.log("monsterSpawned")
       this.spawnMonster(monster);
     });
 
@@ -692,7 +694,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   monsterAttackOverlap(monster, player) {
-    if (monster.monsterAttackActive && !monster.hitbox) {
+    if (monster.monsterAttackActive && !monster.hitbox && !monster.dead) {
       monster.hitbox = true;
       this.socket.emit("monsterAttack", monster.id, player.id);
     }
@@ -775,6 +777,7 @@ export default class GameScene extends Phaser.Scene {
     this.uiScene.playerStatsWindow.hideWindow();
     this.uiScene.playerStatsWindow.showWindow(this.player);
   }
+
 
   createMap() {
     // create map

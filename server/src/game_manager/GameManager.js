@@ -5,6 +5,7 @@ import ChatModel from "../models/ChatModel";
 
 import * as levelData from "../../public/assets/level/new_level.json";
 import * as itemData from "../../public/assets/level/tools.json";
+import * as enemyData from "../../public/assets/Enemies/enemies.json";
 
 import Spawner from "./controllers/Spawner";
 import {
@@ -16,6 +17,7 @@ import {
 import ItemModel from "../models/ItemModel";
 import ChestModel from "../models/ChestModel";
 import { v4 } from "uuid";
+import MonsterModel from "../models/MonsterModel";
 
 export default class GameManager {
   constructor(io) {
@@ -491,6 +493,12 @@ export default class GameManager {
       this.deleteItems.bind(this)
     );
     this.spawners[spawner.id] = spawner;
+
+    setInterval(() => {
+      if ((Object.keys(this.monsters).length< 8)) {
+        this.spawnMonster();
+      }
+    }, 3000);
   }
   spawnPlayer(playerId, name, key, playerSchema) {
     const player = new PlayerModel(
@@ -571,5 +579,46 @@ export default class GameManager {
     );
 
     this.addItems(item.id, item);
+  }
+
+  pickRandomLocation() {
+    const location =
+      this.monsterLocations[
+        Math.floor(Math.random() * this.monsterLocations.length)
+      ];
+
+    if (this.monsters.length > 0) {
+      const invalidLocation = this.monsters.some((obj) => {
+        if (obj.x === location[0] && obj.y === location[1]) {
+          return true;
+        }
+        return false;
+      });
+      console.log(location);
+
+      if (invalidLocation) return this.pickRandomLocation();
+      return location || [200, 200];
+    }
+    console.log(location);
+    return location || [200, 200];
+  }
+
+  spawnMonster() {
+    const randomEnemy =
+      enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
+
+    const location = this.pickRandomLocation();
+    const monster = new MonsterModel(
+      location[0],
+      location[1],
+      randomEnemy.goldValue, // gold value
+      this.id,
+      randomEnemy.key, // key
+      randomEnemy.healthValue, // health value
+      randomEnemy.attackValue, // attack value
+      randomEnemy.expValue, // exp value
+      3000 //timer
+    );
+    this.addMonster(monster.id, monster);
   }
 }

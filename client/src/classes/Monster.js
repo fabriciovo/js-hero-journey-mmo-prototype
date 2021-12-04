@@ -192,6 +192,7 @@ export default class Monster extends Entity {
   }
 
   attack() {
+    if(this.dead) return
     this.monsterAttackActive = true;
     this.scene.time.delayedCall(
       150,
