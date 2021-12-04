@@ -164,7 +164,7 @@ export default class Monster extends Entity {
         this.body.setVelocityY(-distance);
         break;
     }
-    this.stateTime = Phaser.Math.Between(1000, 3000);
+    this.stateTime = 8000;
     this.timer = this.scene.time.delayedCall(
       this.stateTime,
       this.idle,
