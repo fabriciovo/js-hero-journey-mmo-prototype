@@ -594,12 +594,10 @@ export default class GameManager {
         }
         return false;
       });
-      console.log(location);
 
       if (invalidLocation) return this.pickRandomLocation();
       return location || [200, 200];
     }
-    console.log(location);
     return location || [200, 200];
   }
 

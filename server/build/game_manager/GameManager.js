@@ -494,7 +494,9 @@ var GameManager = /*#__PURE__*/function () {
       spawner = new _Spawner["default"](config, this.itemsLocations, this.addItems.bind(this), this.deleteItems.bind(this));
       this.spawners[spawner.id] = spawner;
       setInterval(function () {
-        _this3.spawnMonster();
+        if (Object.keys(_this3.monsters).length < 8) {
+          _this3.spawnMonster();
+        }
       }, 3000);
     }
   }, {
@@ -581,9 +583,9 @@ var GameManager = /*#__PURE__*/function () {
           return false;
         });
         if (invalidLocation) return this.pickRandomLocation();
+        return location || [200, 200];
       }
 
-      console.log(location);
       return location || [200, 200];
     }
   }, {
