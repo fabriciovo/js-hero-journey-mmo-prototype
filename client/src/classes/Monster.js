@@ -134,6 +134,7 @@ export default class Monster extends Entity {
 
   move() {
     const distance = 164;
+    console.log(this.randomPosition);
     switch (this.randomPosition) {
       case 1:
         this.body.setVelocityX(distance);
@@ -164,7 +165,7 @@ export default class Monster extends Entity {
         this.body.setVelocityY(-distance);
         break;
     }
-    this.stateTime = 8000;
+    this.stateTime = Phaser.Math.Between(1000, 3000);
     this.timer = this.scene.time.delayedCall(
       this.stateTime,
       this.idle,
@@ -195,7 +196,7 @@ export default class Monster extends Entity {
     if(this.dead) return
     this.monsterAttackActive = true;
     this.scene.time.delayedCall(
-      150,
+      3000,
       () => {
         this.monsterAttackActive = false;
         this.hitbox = false;
