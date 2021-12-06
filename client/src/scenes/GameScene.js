@@ -120,7 +120,7 @@ export default class GameScene extends Phaser.Scene {
         if (monster.id === thisMonster.id) {
           thisMonster.stateTime = monster.stateTime;
           thisMonster.randomPosition = monster.randomPosition;
-          //thisMonster.setPosition(monster.x, monster.y);
+          thisMonster.setPosition(monster.x, monster.y);
         }
       });
     });
