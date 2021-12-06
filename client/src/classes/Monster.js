@@ -28,7 +28,6 @@ export default class Monster extends Entity {
     this.hitbox = false;
     this.monsterAttackActive = false;
 
-
     // this.text = this.scene.add.text(
     //   this.x,
     //   this.y - 50,
