@@ -421,7 +421,7 @@ export default class GameManager {
         this.monsters[monsterData.id].randomPosition = monsterData.randomPosition;
         // emit a message to all players about the monster that moved
 
-        //this.io.emit("monsterMoved", this.monsters[monsterData.id]);
+        this.io.emit("monsterMoved", this.monsters[monsterData.id]);
       });
 
       socket.on("dropItem", (x, y, item) => {

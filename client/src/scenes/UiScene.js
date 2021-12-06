@@ -369,51 +369,51 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerExpBar(playerObject) {
-    this.expBar = new Bar(
-      this,
-      40,
-      this.scale.height / 14,
-      "bar_sheet",
-      healthBarTypes.EXP,
-      healthBarTypes.HOLDER,
-      DEPTH.UI,
-      300
-    );
+    // this.expBar = new Bar(
+    //   this,
+    //   40,
+    //   this.scale.height / 14,
+    //   "bar_sheet",
+    //   healthBarTypes.EXP,
+    //   healthBarTypes.HOLDER,
+    //   DEPTH.UI,
+    //   300
+    // );
 
-    this.updatePlayerExpBar(playerObject);
+    // this.updatePlayerExpBar(playerObject);
   }
 
   updatePlayerExpBar(playerObject) {
-    this.expBar.UpdateBar(
-      40,
-      this.scale.height / 14,
-      playerObject.exp,
-      playerObject.maxExp
-    );
+    // this.expBar.UpdateBar(
+    //   40,
+    //   this.scale.height / 14,
+    //   playerObject.exp,
+    //   playerObject.maxExp
+    // );
   }
 
   createPlayerHealthBar(playerObject) {
-    this.healthBar = new Bar(
-      this,
-      40,
-      this.scale.height / 24,
-      "bar_sheet",
-      healthBarTypes.LIFE_BAR,
-      healthBarTypes.HOLDER,
-      DEPTH.UI,
-      300
-    );
+    // this.healthBar = new Bar(
+    //   this,
+    //   40,
+    //   this.scale.height / 24,
+    //   "bar_sheet",
+    //   healthBarTypes.LIFE_BAR,
+    //   healthBarTypes.HOLDER,
+    //   DEPTH.UI,
+    //   300
+    // );
 
-    this.updatePlayerHealthBar(playerObject);
+    // this.updatePlayerHealthBar(playerObject);
   }
 
   updatePlayerHealthBar(playerObject) {
-    this.healthBar.UpdateBar(
-      40,
-      this.scale.height / 28 - 5,
-      playerObject.health,
-      playerObject.maxHealth
-    );
+    // this.healthBar.UpdateBar(
+    //   40,
+    //   this.scale.height / 28 - 5,
+    //   playerObject.health,
+    //   playerObject.maxHealth
+    // );
   }
 
   resize(gameSize) {

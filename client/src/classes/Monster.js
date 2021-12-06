@@ -90,25 +90,25 @@ export default class Monster extends Entity {
 
   createHealthBar() {
     //Health bar
-    this.healthBar = new Bar(
-      this.scene,
-      this.x,
-      this.y,
-      "bar_sheet",
-      healthBarTypes.LIFE_BAR,
-      healthBarTypes.HOLDER,
-      DEPTH.BARS
-    );
-    this.updateHealthBar();
+    // this.healthBar = new Bar(
+    //   this.scene,
+    //   this.x,
+    //   this.y,
+    //   "bar_sheet",
+    //   healthBarTypes.LIFE_BAR,
+    //   healthBarTypes.HOLDER,
+    //   DEPTH.BARS
+    // );
+    // this.updateHealthBar();
   }
 
   updateHealthBar() {
-    this.healthBar.UpdateBar(
-      this.x - 22,
-      this.y - 22,
-      this.health,
-      this.maxHealth
-    );
+    // this.healthBar.UpdateBar(
+    //   this.x - 22,
+    //   this.y - 22,
+    //   this.health,
+    //   this.maxHealth
+    // );
   }
 
   updateHealth(health) {
@@ -133,7 +133,6 @@ export default class Monster extends Entity {
 
   move() {
     const distance = 164;
-    console.log(this.randomPosition);
     switch (this.randomPosition) {
       case 1:
         this.body.setVelocityX(distance);
@@ -225,7 +224,7 @@ export default class Monster extends Entity {
   makeInactive() {
     super.makeInactive();
     this.updateHealthBar();
-    this.healthBar.DestroyBar();
+    // this.healthBar.DestroyBar();
     this.dead = true;
   }
 

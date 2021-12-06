@@ -3,9 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.randomNumber = randomNumber;
-exports.getRandonValues = getRandonValues;
 exports.WeaponTypes = exports.SpawnerType = void 0;
+exports.getRandonValues = getRandonValues;
+exports.randomNumber = randomNumber;
 var SpawnerType = {
   MONSTER: 'MONSTER',
   CHEST: 'CHEST',

@@ -439,14 +439,14 @@ var GameManager = /*#__PURE__*/function () {
           socket.emit("updateScore", _this2.players[socket.id].gold);
           socket.broadcast.emit("updatePlayersScore", socket.id, _this2.players[socket.id].gold);
         });
-        socket.on("monsterMovement", function (monster) {
-          if (!_this2.monsters[monster.id]) return;
-          _this2.monsters[monster.id].stateTime = monster.stateTime;
-          _this2.monsters[monster.id].randomPosition = monster.randomPosition;
-          _this2.monsters[monster.id].x = monster.x;
-          _this2.monsters[monster.id].y = monster.y; // emit a message to all players about the monster that moved
+        socket.on("monsterMovement", function (monsterData) {
+          if (!_this2.monsters[monsterData.id]) return;
+          _this2.monsters[monsterData.id].x = monsterData.x;
+          _this2.monsters[monsterData.id].y = monsterData.y;
+          _this2.monsters[monsterData.id].stateTime = monsterData.stateTime;
+          _this2.monsters[monsterData.id].randomPosition = monsterData.randomPosition; // emit a message to all players about the monster that moved
 
-          _this2.io.emit("monsterMoved", _this2.monsters[monster.id]);
+          _this2.io.emit("monsterMoved", _this2.monsters[monsterData.id]);
         });
         socket.on("dropItem", function (x, y, item) {
           _this2.itemDictionary[item](x, y);
