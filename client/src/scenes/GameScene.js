@@ -120,7 +120,7 @@ export default class GameScene extends Phaser.Scene {
         if (monster.id === thisMonster.id) {
           thisMonster.stateTime = monster.stateTime;
           thisMonster.randomPosition = monster.randomPosition;
-          thisMonster.setPosition(monster.x, monster.y);
+          //thisMonster.setPosition(monster.x, monster.y);
         }
       });
     });
@@ -413,12 +413,36 @@ export default class GameScene extends Phaser.Scene {
     }
 
     this.monsters.getChildren().forEach((monster) => {
-      
+      if (monster.health > 0) {
+        const { x, y, id, stateTime, randomPosition } = monster;
+
+        if (
+          monster.oldPosition &&
+          (x !== monster.oldPosition.x ||
+            y !== monster.oldPosition.y ||
+            stateTime !== monster.oldPosition.stateTime ||
+            randomPosition !== monster.oldPosition.randomPosition)
+        ) {
+          this.socket.emit("monsterMovement", {
+            x,
+            y,
+            id,
+            stateTime,
+            randomPosition,
+          });
+        }
+        // save old position data
+        monster.oldPosition = {
+          x: monster.x,
+          y: monster.y,
+          stateTime: monster.stateTime,
+          randomPosition: monster.randomPosition,
+        };
 
         this.playerList.getChildren().forEach((otherPlayer) => {
           monster.followPlayer(otherPlayer, 90);
         });
-      
+      }
     });
   }
 

@@ -413,15 +413,15 @@ export default class GameManager {
         );
       });
 
-      socket.on("monsterMovement", (monster) => {
-        if (!this.monsters[monster.id]) return;
-        this.monsters[monster.id].stateTime = monster.stateTime;
-        this.monsters[monster.id].randomPosition = monster.randomPosition;
-        this.monsters[monster.id].x = monster.x;
-        this.monsters[monster.id].y = monster.y;
+      socket.on("monsterMovement", (monsterData) => {
+        if (!this.monsters[monsterData.id]) return;
+        this.monsters[monsterData.id].stateTime = monsterData.stateTime;
+        this.monsters[monsterData.id].randomPosition = monsterData.randomPosition;
+        this.monsters[monsterData.id].x = monsterData.x;
+        this.monsters[monsterData.id].y = monsterData.y;
         // emit a message to all players about the monster that moved
 
-        this.io.emit("monsterMoved", this.monsters[monster.id]);
+        this.io.emit("monsterMoved", this.monsters[monsterData.id]);
       });
 
       socket.on("dropItem", (x, y, item) => {
