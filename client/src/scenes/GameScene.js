@@ -115,12 +115,15 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    this.socket.on("monsterMoved", (monster) => {
-      this.monsters.getChildren().forEach((thisMonster) => {
-        if (monster.id === thisMonster.id) {
-          thisMonster.stateTime = monster.stateTime;
-          thisMonster.randomPosition = monster.randomPosition;
-          thisMonster.setPosition(monster.x, monster.y);
+    this.socket.on("monsterMoved", (monsterData) => {
+      this.monsters.getChildren().forEach((monster) => {
+        if (monsterData.id === monster.id) {
+          monster.x = monsterData.x;
+          monster.y = monsterData.y;
+
+          //monster.setPosition(monsterData.x, monsterData.y);
+          monster.stateTime = monsterData.stateTime;
+          monster.randomPosition = monsterData.randomPosition;
         }
       });
     });
