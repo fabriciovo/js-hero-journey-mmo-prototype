@@ -1,15 +1,15 @@
 import * as Phaser from "phaser";
 
-export default class Bar extends Phaser.Physics.Arcade.Image {
+export default class Bar {
   constructor(scene, x, y, key, frame, holder, depth, size = 100) {
-    super(scene, x, y, key, frame);
-    this.scene = scene; // the scene this container will be added to
-    this.key = key;
-    this.frame = frame;
-    this.holder = holder;
-    this.size = size;
+    // super(scene, x, y, key, frame);
+    // this.scene = scene; // the scene this container will be added to
+    // this.key = key;
+    // this.frame = frame;
+    // this.holder = holder;
+    // this.size = size;
     
-    this.scene.add.existing(this);
+    // this.scene.add.existing(this);
     //this.CreateBar(x, y, depth);
   }
 
