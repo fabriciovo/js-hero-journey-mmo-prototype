@@ -133,45 +133,45 @@ export default class Monster extends Entity {
   }
 
   move() {
-    // const distance = 164;
-    // console.log(this.randomPosition);
-    // switch (this.randomPosition) {
-    //   case 1:
-    //     this.body.setVelocityX(distance);
-    //     break;
-    //   case 2:
-    //     this.body.setVelocityX(-distance);
-    //     break;
-    //   case 3:
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 4:
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    //   case 5:
-    //     this.body.setVelocityX(distance);
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 6:
-    //     this.body.setVelocityX(distance);
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    //   case 7:
-    //     this.body.setVelocityX(-distance);
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 8:
-    //     this.body.setVelocityX(-distance);
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    //}
-    // this.stateTime = Phaser.Math.Between(1000, 3000);
-    // this.timer = this.scene.time.delayedCall(
-    //   this.stateTime,
-    //   this.idle,
-    //   [],
-    //   this
-    // );
+    const distance = 164;
+    console.log(this.randomPosition);
+    switch (this.randomPosition) {
+      case 1:
+        this.body.setVelocityX(distance);
+        break;
+      case 2:
+        this.body.setVelocityX(-distance);
+        break;
+      case 3:
+        this.body.setVelocityY(distance);
+        break;
+      case 4:
+        this.body.setVelocityY(-distance);
+        break;
+      case 5:
+        this.body.setVelocityX(distance);
+        this.body.setVelocityY(distance);
+        break;
+      case 6:
+        this.body.setVelocityX(distance);
+        this.body.setVelocityY(-distance);
+        break;
+      case 7:
+        this.body.setVelocityX(-distance);
+        this.body.setVelocityY(distance);
+        break;
+      case 8:
+        this.body.setVelocityX(-distance);
+        this.body.setVelocityY(-distance);
+        break;
+    }
+    this.stateTime = Phaser.Math.Between(1000, 3000);
+    this.timer = this.scene.time.delayedCall(
+      this.stateTime,
+      this.idle,
+      [],
+      this
+    );
   }
 
   followPlayer(targetPosition) {
