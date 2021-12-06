@@ -119,8 +119,8 @@ export default class GameScene extends Phaser.Scene {
       this.monsters.getChildren().forEach((monster) => {
         if (monsterData.id === monster.id) {
           monster.setPosition(monsterData.x, monsterData.y);
-          monster.stateTime = monsterData.stateTime;
           monster.randomPosition = monsterData.randomPosition;
+          monster.stateTime = monsterData.stateTime;
         }
       });
     });
