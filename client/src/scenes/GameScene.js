@@ -415,6 +415,10 @@ export default class GameScene extends Phaser.Scene {
     }
 
     this.monsters.getChildren().forEach((monster) => {
+      monster.update();
+    });
+
+    this.monsters.getChildren().forEach((monster) => {
       if (monster.health > 0) {
         const { x, y, id, stateTime, randomPosition } = monster;
 
@@ -442,6 +446,7 @@ export default class GameScene extends Phaser.Scene {
         };
 
         this.playerList.getChildren().forEach((otherPlayer) => {
+          monster
           monster.followPlayer(otherPlayer, 90);
         });
       }
