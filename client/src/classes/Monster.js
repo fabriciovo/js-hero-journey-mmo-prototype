@@ -67,12 +67,12 @@ export default class Monster extends Entity {
 
     this.play(`normal_${this.key}`);
     this.createHealthBar();
-    this.timer = this.scene.time.delayedCall(
-      this.stateTime,
-      this.idle,
-      [],
-      this
-    );
+    // this.timer = this.scene.time.delayedCall(
+    //   this.stateTime,
+    //   this.idle,
+    //   [],
+    //   this
+    // );
 
     this.monsterAttack = this.scene.add.sprite(
       40,
@@ -85,30 +85,30 @@ export default class Monster extends Entity {
       this.scene.physics.world.enable(this.monsterAttack);
       this.monsterAttack.alpha = 0;
 
-    this.move();
+    //this.move();
   }
 
   createHealthBar() {
     //Health bar
-    // this.healthBar = new Bar(
-    //   this.scene,
-    //   this.x,
-    //   this.y,
-    //   "bar_sheet",
-    //   healthBarTypes.LIFE_BAR,
-    //   healthBarTypes.HOLDER,
-    //   DEPTH.BARS
-    // );
-    // this.updateHealthBar();
+    this.healthBar = new Bar(
+      this.scene,
+      this.x,
+      this.y,
+      "bar_sheet",
+      healthBarTypes.LIFE_BAR,
+      healthBarTypes.HOLDER,
+      DEPTH.BARS
+    );
+    this.updateHealthBar();
   }
 
   updateHealthBar() {
-    // this.healthBar.UpdateBar(
-    //   this.x - 22,
-    //   this.y - 22,
-    //   this.health,
-    //   this.maxHealth
-    // );
+    this.healthBar.UpdateBar(
+      this.x - 22,
+      this.y - 22,
+      this.health,
+      this.maxHealth
+    );
   }
 
   updateHealth(health) {
@@ -125,51 +125,51 @@ export default class Monster extends Entity {
       // this.text.x = this.x;
       // this.text.y = this.y - 40;
 
-      if (this.timer.getProgress().toString().substr(0, 4) === 0.0) {
-        this.move();
-      }
+      // if (this.timer.getProgress().toString().substr(0, 4) === 0.0) {
+      //   this.move();
+      // }
     }
   }
 
   move() {
-    const distance = 164;
-    switch (this.randomPosition) {
-      case 1:
-        this.body.setVelocityX(distance);
-        break;
-      case 2:
-        this.body.setVelocityX(-distance);
-        break;
-      case 3:
-        this.body.setVelocityY(distance);
-        break;
-      case 4:
-        this.body.setVelocityY(-distance);
-        break;
-      case 5:
-        this.body.setVelocityX(distance);
-        this.body.setVelocityY(distance);
-        break;
-      case 6:
-        this.body.setVelocityX(distance);
-        this.body.setVelocityY(-distance);
-        break;
-      case 7:
-        this.body.setVelocityX(-distance);
-        this.body.setVelocityY(distance);
-        break;
-      case 8:
-        this.body.setVelocityX(-distance);
-        this.body.setVelocityY(-distance);
-        break;
-    }
-    this.stateTime = Phaser.Math.Between(1000, 3000);
-    this.timer = this.scene.time.delayedCall(
-      this.stateTime,
-      this.idle,
-      [],
-      this
-    );
+    // const distance = 164;
+    // switch (this.randomPosition) {
+    //   case 1:
+    //     this.body.setVelocityX(distance);
+    //     break;
+    //   case 2:
+    //     this.body.setVelocityX(-distance);
+    //     break;
+    //   case 3:
+    //     this.body.setVelocityY(distance);
+    //     break;
+    //   case 4:
+    //     this.body.setVelocityY(-distance);
+    //     break;
+    //   case 5:
+    //     this.body.setVelocityX(distance);
+    //     this.body.setVelocityY(distance);
+    //     break;
+    //   case 6:
+    //     this.body.setVelocityX(distance);
+    //     this.body.setVelocityY(-distance);
+    //     break;
+    //   case 7:
+    //     this.body.setVelocityX(-distance);
+    //     this.body.setVelocityY(distance);
+    //     break;
+    //   case 8:
+    //     this.body.setVelocityX(-distance);
+    //     this.body.setVelocityY(-distance);
+    //     break;
+    // }
+    // this.stateTime = Phaser.Math.Between(1000, 3000);
+    // this.timer = this.scene.time.delayedCall(
+    //   this.stateTime,
+    //   this.idle,
+    //   [],
+    //   this
+    // );
   }
 
   followPlayer(targetPosition) {
@@ -211,20 +211,20 @@ export default class Monster extends Entity {
   idle() {
     this.body.setVelocityX(0);
     this.body.setVelocityY(0);
-    this.stateTime = Phaser.Math.Between(1000, 3000);
-    this.randomPosition = randomNumber(1, 8);
-    this.timer = this.scene.time.delayedCall(
-      this.stateTime,
-      this.move,
-      [],
-      this
-    );
+    // this.stateTime = Phaser.Math.Between(1000, 3000);
+    // this.randomPosition = randomNumber(1, 8);
+    // this.timer = this.scene.time.delayedCall(
+    //   this.stateTime,
+    //   this.move,
+    //   [],
+    //   this
+    // );
   }
 
   makeInactive() {
     super.makeInactive();
     this.updateHealthBar();
-    // this.healthBar.DestroyBar();
+    this.healthBar.DestroyBar();
     this.dead = true;
   }
 

@@ -341,7 +341,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   cleanUp() {
     this.setActive(false);
     this.setVisible(false);
-    //this.healthBar.DestroyBar();
+    this.healthBar.DestroyBar();
 
     this.playerNameText.setText("");
 
