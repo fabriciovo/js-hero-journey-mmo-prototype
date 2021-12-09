@@ -4,10 +4,7 @@ import MonsterModel from "../../models/MonsterModel";
 import ItemModel from "../../models/ItemModel";
 import * as itemData from "../../../public/assets/level/tools.json";
 import * as enemyData from "../../../public/assets/Enemies/enemies.json";
-
 import NpcModel from "../../models/NpcModel";
-
-
 
 export default class Spawner {
   constructor(config, spawnLocations, addObject, deleteObject, moveObjects) {
@@ -31,6 +28,8 @@ export default class Spawner {
         this.spawnObject();
       }
     }, this.spawnInterval);
+    if (this.objectType === SpawnerType.MONSTER) this.moveMonsters();
+
   }
 
   spawnObject() {
@@ -126,4 +125,14 @@ export default class Spawner {
     this.objectsCreated = this.objectsCreated.filter((obj) => obj.id !== id);
     this.deleteObject(id);
   }
+
+  moveMonsters() {
+    this.moveMonsterInterval = setInterval(() => {
+      this.objectsCreated.forEach((monster) => {
+        monster.move();
+      });
+      this.moveObjects();
+    }, 1000);
+  }
+
 }

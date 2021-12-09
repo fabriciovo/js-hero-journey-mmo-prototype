@@ -351,7 +351,11 @@ export default class GameManager {
             this.players[socket.id].updateExp(exp);
             this.io.emit("updateXp", exp, socket.id);
 
-            this.deleteMonster(monsterId);
+            this.spawners[this.monsters[monsterId].spawnerId].removeObject(
+              monsterId
+            );
+            this.io.emit("monsterRemoved", monsterId);
+
           } else {
             // update the monsters health
             this.io.emit(
@@ -413,20 +417,42 @@ export default class GameManager {
         );
       });
 
-      socket.on("monsterMovement", (monsterData) => {
-        if (!this.monsters[monsterData.id]) return;
-        this.monsters[monsterData.id].x = monsterData.x;
-        this.monsters[monsterData.id].y = monsterData.y;
-        this.monsters[monsterData.id].stateTime = monsterData.stateTime;
-        this.monsters[monsterData.id].randomPosition = monsterData.randomPosition;
-        // emit a message to all players about the monster that moved
+      // socket.on("monsterMovement", (monsterData) => {
+      //   if (!this.monsters[monsterData.id]) return;
+      //   this.monsters[monsterData.id].x = monsterData.x;
+      //   this.monsters[monsterData.id].y = monsterData.y;
+      //   this.monsters[monsterData.id].stateTime = monsterData.stateTime;
+      //   this.monsters[monsterData.id].randomPosition = monsterData.randomPosition;
+      //   // emit a message to all players about the monster that moved
 
-        //this.io.emit("monsterMoved", this.monsters[monsterData.id]);
-      });
+      //   //this.io.emit("monsterMoved", this.monsters[monsterData.id]);
+      // });
 
       socket.on("dropItem", (x, y, item) => {
         this.itemDictionary[item](x, y);
       });
+
+      socket.on("monsterFollowPlayer", (monsterId,x,y) => {
+        if(!this.monsters[monsterId]) return
+        console.log("monsterFollowPlayer")
+        this.monsters[monsterId].setChasing(true)
+        this.monsters[monsterId].setTargetPos({x,y})
+      });
+
+      socket.on("monsterStopFollowingPlayer", (monsterId,x,y) => {
+        if(!this.monsters[monsterId]) return
+        console.log("monsterFollowPlayer")
+        this.monsters[monsterId].setChasing(false)
+        this.monsters[monsterId].setTargetPos({x,y})
+      });
+
+      socket.on("monsterStartMove", (monsterId,x,y) => {
+        if(!this.monsters[monsterId]) return
+        console.log("monsterFollowPlayer")
+        this.monsters[monsterId].setChasing(true)
+        this.monsters[monsterId].setTargetPos({x,y})
+      });
+
 
       // player connected to our game
       console.log("player connected to our game");
@@ -456,18 +482,23 @@ export default class GameManager {
 
     // create monster spawners
     Object.keys(this.monsterLocations).forEach((key) => {
+      debugger
       config.id = `monster-${key}`;
       config.limit = 8;
+
       config.spawnerType = SpawnerType.MONSTER;
 
       spawner = new Spawner(
         config,
         this.monsterLocations[key],
         this.addMonster.bind(this),
-        this.deleteMonster.bind(this)
+        this.deleteMonster.bind(this),
+        this.moveMonsters.bind(this)
       );
       this.spawners[spawner.id] = spawner;
     });
+
+
 
     // create npc spawners
     Object.keys(this.npcLocations).forEach((key) => {
@@ -494,11 +525,7 @@ export default class GameManager {
     );
     this.spawners[spawner.id] = spawner;
 
-    setInterval(() => {
-      if ((Object.keys(this.monsters).length< 8)) {
-        this.spawnMonster();
-      }
-    }, 3000);
+
   }
   spawnPlayer(playerId, name, key, playerSchema) {
     const player = new PlayerModel(
@@ -542,6 +569,11 @@ export default class GameManager {
     delete this.monsters[monsterId];
     this.io.emit("monsterRemoved", monsterId);
   }
+
+  moveMonsters() {
+    this.io.emit("monsterMovement", this.monsters);
+  }
+
 
   addNpc(npcId, npc) {
     this.npcs[npcId] = npc;

@@ -395,7 +395,9 @@ var GameManager = /*#__PURE__*/function () {
 
               _this2.io.emit("updateXp", exp, socket.id);
 
-              _this2.deleteMonster(monsterId);
+              _this2.spawners[_this2.monsters[monsterId].spawnerId].removeObject(monsterId);
+
+              _this2.io.emit("monsterRemoved", monsterId);
             } else {
               // update the monsters health
               _this2.io.emit("updateMonsterHealth", monsterId, _this2.monsters[monsterId].health);
@@ -438,16 +440,16 @@ var GameManager = /*#__PURE__*/function () {
 
           socket.emit("updateScore", _this2.players[socket.id].gold);
           socket.broadcast.emit("updatePlayersScore", socket.id, _this2.players[socket.id].gold);
-        });
-        socket.on("monsterMovement", function (monsterData) {
-          if (!_this2.monsters[monsterData.id]) return;
-          _this2.monsters[monsterData.id].x = monsterData.x;
-          _this2.monsters[monsterData.id].y = monsterData.y;
-          _this2.monsters[monsterData.id].stateTime = monsterData.stateTime;
-          _this2.monsters[monsterData.id].randomPosition = monsterData.randomPosition; // emit a message to all players about the monster that moved
+        }); // socket.on("monsterMovement", (monsterData) => {
+        //   if (!this.monsters[monsterData.id]) return;
+        //   this.monsters[monsterData.id].x = monsterData.x;
+        //   this.monsters[monsterData.id].y = monsterData.y;
+        //   this.monsters[monsterData.id].stateTime = monsterData.stateTime;
+        //   this.monsters[monsterData.id].randomPosition = monsterData.randomPosition;
+        //   // emit a message to all players about the monster that moved
+        //   //this.io.emit("monsterMoved", this.monsters[monsterData.id]);
+        // });
 
-          _this2.io.emit("monsterMoved", _this2.monsters[monsterData.id]);
-        });
         socket.on("dropItem", function (x, y, item) {
           _this2.itemDictionary[item](x, y);
         }); // player connected to our game
@@ -475,10 +477,11 @@ var GameManager = /*#__PURE__*/function () {
       }); // create monster spawners
 
       Object.keys(this.monsterLocations).forEach(function (key) {
+        debugger;
         config.id = "monster-".concat(key);
         config.limit = 8;
         config.spawnerType = _utils.SpawnerType.MONSTER;
-        spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3));
+        spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
       }); // create npc spawners
 
@@ -493,11 +496,6 @@ var GameManager = /*#__PURE__*/function () {
       config.spawnerType = _utils.SpawnerType.ITEM;
       spawner = new _Spawner["default"](config, this.itemsLocations, this.addItems.bind(this), this.deleteItems.bind(this));
       this.spawners[spawner.id] = spawner;
-      setInterval(function () {
-        if (Object.keys(_this3.monsters).length < 8) {
-          _this3.spawnMonster();
-        }
-      }, 3000);
     }
   }, {
     key: "spawnPlayer",
@@ -540,6 +538,13 @@ var GameManager = /*#__PURE__*/function () {
     value: function deleteMonster(monsterId) {
       delete this.monsters[monsterId];
       this.io.emit("monsterRemoved", monsterId);
+    }
+  }, {
+    key: "moveMonsters",
+    value: function moveMonsters() {
+      debugger;
+      console.log("moveMonsters");
+      this.io.emit("monsterMovement", this.monsters);
     }
   }, {
     key: "addNpc",

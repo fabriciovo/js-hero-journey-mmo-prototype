@@ -30,7 +30,6 @@ export default class GameScene extends Phaser.Scene {
     this.selectedCharacter = data.selectedCharacter || "characters_3";
 
     this.cameras.main.roundPixels = true;
-
   }
   listenForSocketEvents() {
     // spawn player game objects
@@ -93,7 +92,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("monsterSpawned", (monster) => {
-      console.log("monsterSpawned")
       this.spawnMonster(monster);
     });
 
@@ -115,17 +113,17 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    this.socket.on("monsterMoved", (monsterData) => {
-      this.monsters.getChildren().forEach((monster) => {
-        if (monsterData.id === monster.id) {
-          monster.setPosition(monsterData.x, monsterData.y);
-          //monster.body.x = monsterData.x;
-          //monster.body.y = monsterData.y;
-          monster.randomPosition = monsterData.randomPosition;
-          monster.stateTime = monsterData.stateTime;
-        }
-      });
-    });
+    // this.socket.on("monsterMoved", (monsterData) => {
+    //   this.monsters.getChildren().forEach((monster) => {
+    //     if (monsterData.id === monster.id) {
+    //       monster.setPosition(monsterData.x, monsterData.y);
+    //       //monster.body.x = monsterData.x;
+    //       //monster.body.y = monsterData.y;
+    //       monster.randomPosition = monsterData.randomPosition;
+    //       monster.stateTime = monsterData.stateTime;
+    //     }
+    //   });
+    // });
 
     //Npc
     this.socket.on("npcSpawned", (npc) => {
@@ -302,6 +300,24 @@ export default class GameScene extends Phaser.Scene {
         }
       });
     });
+
+    this.socket.on("monsterMovement", (monsters) => {
+      console.log("monsterMovement");
+      this.monsters.getChildren().forEach((monster) => {
+        Object.keys(monsters).forEach((monsterId) => {
+          if (monster.id === monsterId) {
+            debugger;
+            monster.move(monsters[monsterId].targetPosition);
+
+            this.playerList.getChildren().forEach((otherPlayer) => {
+              monster.followPlayer(otherPlayer, 90);
+            });
+
+
+          }
+        });
+      });
+    });
   }
 
   create() {
@@ -414,38 +430,38 @@ export default class GameScene extends Phaser.Scene {
       };
     }
 
-    this.monsters.getChildren().forEach((monster) => {
-      if (monster.health > 0) {
-        const { x, y, id, stateTime, randomPosition } = monster;
+    // this.monsters.getChildren().forEach((monster) => {
+    //   if (monster.health > 0) {
+    //     const { x, y, id, stateTime, randomPosition } = monster;
 
-        if (
-          monster.oldPosition &&
-          (x !== monster.oldPosition.x ||
-            y !== monster.oldPosition.y ||
-            stateTime !== monster.oldPosition.stateTime ||
-            randomPosition !== monster.oldPosition.randomPosition)
-        ) {
-          this.socket.emit("monsterMovement", {
-            x,
-            y,
-            id,
-            stateTime,
-            randomPosition,
-          });
-        }
-        // save old position data
-        monster.oldPosition = {
-          x: monster.x,
-          y: monster.y,
-          stateTime: monster.stateTime,
-          randomPosition: monster.randomPosition,
-        };
+    //     if (
+    //       monster.oldPosition &&
+    //       (x !== monster.oldPosition.x ||
+    //         y !== monster.oldPosition.y ||
+    //         stateTime !== monster.oldPosition.stateTime ||
+    //         randomPosition !== monster.oldPosition.randomPosition)
+    //     ) {
+    //       this.socket.emit("monsterMovement", {
+    //         x,
+    //         y,
+    //         id,
+    //         stateTime,
+    //         randomPosition,
+    //       });
+    //     }
+    //     // save old position data
+    //     monster.oldPosition = {
+    //       x: monster.x,
+    //       y: monster.y,
+    //       stateTime: monster.stateTime,
+    //       randomPosition: monster.randomPosition,
+    //     };
 
-        this.playerList.getChildren().forEach((otherPlayer) => {
-          monster.followPlayer(otherPlayer, 90);
-        });
-      }
-    });
+    //     this.playerList.getChildren().forEach((otherPlayer) => {
+    //       monster.followPlayer(otherPlayer, 90);
+    //     });
+    //   }
+    // });
   }
 
   createAudio() {
@@ -751,6 +767,10 @@ export default class GameScene extends Phaser.Scene {
     this.socket.emit("dropItem", x, y, item);
   }
 
+  sendPlayerNearMonster(monsterId,{x, y}) {
+    this.socket.emit("monsterFollowPlayer", monsterId, x, y);
+  }
+
   sendEquipItemMessage(itemId) {
     this.socket.emit("playerEquipedItem", itemId);
     this.uiScene.inventoryWindow.updateInventory(this.player);
@@ -779,7 +799,6 @@ export default class GameScene extends Phaser.Scene {
     this.uiScene.playerStatsWindow.hideWindow();
     this.uiScene.playerStatsWindow.showWindow(this.player);
   }
-
 
   createMap() {
     // create map
