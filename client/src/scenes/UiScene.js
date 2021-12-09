@@ -369,18 +369,19 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerExpBar(playerObject) {
-    // this.expBar = new Bar(
-    //   this,
-    //   40,
-    //   this.scale.height / 14,
-    //   "bar_sheet",
-    //   healthBarTypes.EXP,
-    //   healthBarTypes.HOLDER,
-    //   DEPTH.UI,
-    //   300
-    // );
+    debugger
+    this.expBar = new Bar(
+      this,
+      40,
+      this.scale.height / 14,
+      "bar_sheet",
+      healthBarTypes.EXP,
+      healthBarTypes.HOLDER,
+      DEPTH.UI,
+      300
+    );
 
-    // this.updatePlayerExpBar(playerObject);
+    this.updatePlayerExpBar(playerObject);
   }
 
   updatePlayerExpBar(playerObject) {
@@ -393,6 +394,7 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerHealthBar(playerObject) {
+    debugger
     this.healthBar = new Bar(
       this,
       40,

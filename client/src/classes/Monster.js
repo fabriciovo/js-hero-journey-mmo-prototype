@@ -1,5 +1,4 @@
 import * as Phaser from "phaser";
-import { randomNumber } from "../../../server/src/game_manager/utils";
 import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
 import Bar from "./UI/Bar";
@@ -66,7 +65,7 @@ export default class Monster extends Entity {
     });
 
     this.play(`normal_${this.key}`);
-    this.createHealthBar();
+    //this.createHealthBar();
     // this.timer = this.scene.time.delayedCall(
     //   this.stateTime,
     //   this.idle,
@@ -89,17 +88,18 @@ export default class Monster extends Entity {
   }
 
   createHealthBar() {
+    debugger
     //Health bar
-    this.healthBar = new Bar(
-      this.scene,
-      this.x,
-      this.y,
-      "bar_sheet",
-      healthBarTypes.LIFE_BAR,
-      healthBarTypes.HOLDER,
-      DEPTH.BARS
-    );
-    this.updateHealthBar();
+    // this.healthBar = new Bar(
+    //   this.scene,
+    //   this.x,
+    //   this.y,
+    //   "bar_sheet",
+    //   healthBarTypes.LIFE_BAR,
+    //   healthBarTypes.HOLDER,
+    //   DEPTH.BARS
+    // );
+    // this.updateHealthBar();
   }
 
   updateHealthBar() {
@@ -112,8 +112,8 @@ export default class Monster extends Entity {
   }
 
   updateHealth(health) {
-    this.health = health;
-    this.updateHealthBar();
+    // this.health = health;
+    // this.updateHealthBar();
   }
 
   update() {
@@ -225,14 +225,14 @@ export default class Monster extends Entity {
 
   makeInactive() {
     super.makeInactive();
-    this.updateHealthBar();
-    this.healthBar.DestroyBar();
+    //this.updateHealthBar();
+    //this.healthBar.DestroyBar();
     this.dead = true;
   }
 
   makeActive() {
     super.makeActive();
-    this.createHealthBar();
+    //this.createHealthBar();
     this.dead = false;
   }
 }

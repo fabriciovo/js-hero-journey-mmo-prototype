@@ -133,18 +133,19 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   createPlayerBars() {
-    // //Health bar
-    // this.healthBar = new Bar(
-    //   this.scene,
-    //   this.x,
-    //   this.y,
-    //   "bar_sheet",
-    //   healthBarTypes.LIFE_BAR,
-    //   healthBarTypes.HOLDER,
-    //   DEPTH.BARS
-    // );
-    // this.expBar = this.scene.add.graphics();
-    // this.updateHealthBar();
+    debugger
+    //Health bar
+    this.healthBar = new Bar(
+      this.scene,
+      this.x,
+      this.y,
+      "bar_sheet",
+      healthBarTypes.LIFE_BAR,
+      healthBarTypes.HOLDER,
+      DEPTH.BARS
+    );
+    this.expBar = this.scene.add.graphics();
+    this.updateHealthBar();
   }
 
   createPlayerName() {
@@ -191,12 +192,12 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   updateHealthBar() {
-    // this.healthBar.UpdateBar(
-    //   this.x - 48,
-    //   this.y - 40,
-    //   this.health,
-    //   this.maxHealth
-    // );
+    this.healthBar.UpdateBar(
+      this.x - 48,
+      this.y - 40,
+      this.health,
+      this.maxHealth
+    );
   }
 
   updateHealth(health) {
