@@ -41,7 +41,7 @@ export default class GameManager {
     this.itemDictionary = {
       chest: this.createChest.bind(this),
       item: this.createItem.bind(this),
-      "": this.drop,
+      "": this.drop.bind(this),
     };
   }
 
@@ -336,17 +336,13 @@ export default class GameManager {
       socket.on("monsterAttacked", (monsterId, dis) => {
         // update the spawner
         if (this.monsters[monsterId]) {
-          const { gold, attack, exp } = this.monsters[monsterId];
+          const { exp } = this.monsters[monsterId];
           const playerAttackValue = this.players[socket.id].attack;
           // subtract health monster model
           this.monsters[monsterId].loseHealth(playerAttackValue);
 
           // check the monsters health, and if dead remove that object
           if (this.monsters[monsterId].health <= 0) {
-            // updating the players gold
-            this.players[socket.id].updateGold(gold);
-            socket.emit("updateScore", this.players[socket.id].gold);
-
             //update xp
             this.players[socket.id].updateExp(exp);
             this.io.emit("updateXp", exp, socket.id);
@@ -368,6 +364,7 @@ export default class GameManager {
       });
 
       socket.on("monsterAttack", (monsterId, playerId) => {
+        if(!this.monsters[monsterId]) return;
         const { attack } = this.monsters[monsterId];
         // update the players health
         this.players[playerId].playerAttacked(attack);
@@ -383,6 +380,9 @@ export default class GameManager {
           this.players[playerId].updateGold(
             parseInt(-this.players[playerId].gold / 2, 10)
           );
+          this.players[playerId].updateExp(
+            parseInt(-this.players[playerId].exp / 2, 10)
+          );
           socket.emit("updateScore", this.players[playerId].gold);
 
           // respawn the player
@@ -391,7 +391,6 @@ export default class GameManager {
         }
       });
 
-      socket.on("playerHit", (damage) => {});
 
       socket.on("healthPotion", (playerId, health) => {
         if (socket.id === playerId) {
@@ -429,6 +428,8 @@ export default class GameManager {
       // });
 
       socket.on("dropItem", (x, y, item) => {
+        console.log(item)
+        console.log(x,y)
         this.itemDictionary[item](x, y);
       });
 
@@ -467,25 +468,10 @@ export default class GameManager {
       id: "",
     };
     let spawner;
-    // create chest spawners
-    Object.keys(this.chestLocations).forEach((key) => {
-      config.id = `chest-${key}`;
-
-      spawner = new Spawner(
-        config,
-        this.chestLocations[key],
-        this.addChest.bind(this),
-        this.deleteChest.bind(this)
-      );
-      this.spawners[spawner.id] = spawner;
-    });
-
     // create monster spawners
     Object.keys(this.monsterLocations).forEach((key) => {
-      debugger
       config.id = `monster-${key}`;
-      config.limit = 8;
-
+      config.limit = 16;
       config.spawnerType = SpawnerType.MONSTER;
 
       spawner = new Spawner(
@@ -497,14 +483,11 @@ export default class GameManager {
       );
       this.spawners[spawner.id] = spawner;
     });
-
-
-
     // create npc spawners
     Object.keys(this.npcLocations).forEach((key) => {
       config.id = `npc-${key}`;
       config.spawnerType = SpawnerType.NPC;
-
+      config.limit = 1;
       spawner = new Spawner(
         config,
         this.npcLocations[key],
@@ -513,19 +496,6 @@ export default class GameManager {
       );
       this.spawners[spawner.id] = spawner;
     });
-
-    // create items spawners
-    config.id = "item";
-    config.spawnerType = SpawnerType.ITEM;
-    spawner = new Spawner(
-      config,
-      this.itemsLocations,
-      this.addItems.bind(this),
-      this.deleteItems.bind(this)
-    );
-    this.spawners[spawner.id] = spawner;
-
-
   }
   spawnPlayer(playerId, name, key, playerSchema) {
     const player = new PlayerModel(

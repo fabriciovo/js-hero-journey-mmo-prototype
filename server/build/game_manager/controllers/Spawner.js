@@ -138,14 +138,10 @@ var Spawner = /*#__PURE__*/function () {
     value: function moveMonsters() {
       var _this2 = this;
 
-      debugger;
-      console.log("moveMonsters");
       this.moveMonsterInterval = setInterval(function () {
         _this2.objectsCreated.forEach(function (monster) {
           monster.move();
         });
-
-        console.log("monster.move();");
 
         _this2.moveObjects();
       }, 1000);

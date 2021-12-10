@@ -65,7 +65,7 @@ export default class Monster extends Entity {
     });
 
     this.play(`normal_${this.key}`);
-    //this.createHealthBar();
+    this.createHealthBar();
     // this.timer = this.scene.time.delayedCall(
     //   this.stateTime,
     //   this.idle,
@@ -90,30 +90,30 @@ export default class Monster extends Entity {
   createHealthBar() {
     debugger
     //Health bar
-    // this.healthBar = new Bar(
-    //   this.scene,
-    //   this.x,
-    //   this.y,
-    //   "bar_sheet",
-    //   healthBarTypes.LIFE_BAR,
-    //   healthBarTypes.HOLDER,
-    //   DEPTH.BARS
-    // );
-    // this.updateHealthBar();
+    this.healthBar = new Bar(
+      this.scene,
+      this.x,
+      this.y,
+      "bar_sheet",
+      healthBarTypes.LIFE_BAR,
+      healthBarTypes.HOLDER,
+      DEPTH.BARS
+    );
+    this.updateHealthBar();
   }
 
   updateHealthBar() {
-    // this.healthBar.UpdateBar(
-    //   this.x - 22,
-    //   this.y - 22,
-    //   this.health,
-    //   this.maxHealth
-    // );
+    this.healthBar.UpdateBar(
+      this.x - 22,
+      this.y - 22,
+      this.health,
+      this.maxHealth
+    );
   }
 
   updateHealth(health) {
-    // this.health = health;
-    // this.updateHealthBar();
+    this.health = health;
+    this.updateHealthBar();
   }
 
   update() {
@@ -225,14 +225,14 @@ export default class Monster extends Entity {
 
   makeInactive() {
     super.makeInactive();
-    //this.updateHealthBar();
-    //this.healthBar.DestroyBar();
+    this.updateHealthBar();
+    this.healthBar.DestroyBar();
     this.dead = true;
   }
 
   makeActive() {
     super.makeActive();
-    //this.createHealthBar();
+    this.createHealthBar();
     this.dead = false;
   }
 }

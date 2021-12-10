@@ -1,15 +1,14 @@
 import * as Phaser from "phaser";
-import { healthBarTypes } from "../../utils/utils";
 
 export default class Bar extends Phaser.Physics.Arcade.Image {
-  constructor(scene, x, y, key, frame, holder, depth) {
+  constructor(scene, x, y, key, frame, holder, depth, size = 100) {
     super(scene, x, y, key, frame);
     this.scene = scene; // the scene this container will be added to
     this.key = key;
     this.frame = frame;
     this.holder = holder;
+    this.size = size;
 
-    this.scene.add.existing(this);
     this.CreateBar(x, y, depth);
   }
 
@@ -26,14 +25,14 @@ export default class Bar extends Phaser.Physics.Arcade.Image {
       .setScale(3.5)
       .setOrigin(0, 0.5)
       .setDepth(depth);
-    this.bar.displayWidth = 100;
+    this.bar.displayWidth = this.size;
   }
 
   UpdateBar(x, y, value, maxValue) {
     this.bar.setPosition(x, y);
     this.holderBar.setPosition(x, y);
     this.bar.displayWidth = (value / maxValue) * 100;
-    this.holderBar.displayWidth = 100;
+    this.holderBar.displayWidth = this.size;
 
   }
 

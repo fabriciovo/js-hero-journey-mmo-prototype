@@ -86,12 +86,11 @@ export function getRandomArbitrary(min, max) {
 export function getRandomItem() {
   const randomNumber = getRandomArbitrary(0,9);
 
-  if(randomNumber < 3){
+  if(randomNumber <= 3){
     return "";
-  }else if(randomNumber > 3 && randomNumber < 7){
+  }else if(randomNumber >= 4 && randomNumber <= 6){
     return "chest";
-
-  }else if(randomNumber > 6){
+  }else if(randomNumber >= 7){
     return "item";
   }
 

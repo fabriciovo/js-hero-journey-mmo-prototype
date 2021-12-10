@@ -34,7 +34,7 @@ var MonsterModel = /*#__PURE__*/function () {
       x: 0,
       y: 0
     };
-    console.log("monstrocriado");
+    this.monsterChasing = false;
   }
 
   (0, _createClass2["default"])(MonsterModel, [{
@@ -46,47 +46,79 @@ var MonsterModel = /*#__PURE__*/function () {
       };
     }
   }, {
+    key: "setChasing",
+    value: function setChasing(value) {
+      this.monsterChasing = value;
+    }
+  }, {
     key: "move",
     value: function move() {
-      var randomPosition = (0, _utils.randomNumber)(1, 8);
+      if (this.monsterChasing) return;
+      var randomPosition = (0, _utils.randomNumber)(1, 9);
       var distance = 64;
-      console.log("pokfespokdsfopk");
 
       switch (randomPosition) {
         case 1:
-          this.x += distance;
+          this.setTargetPos({
+            x: this.x += distance,
+            y: this.y
+          });
           break;
 
         case 2:
-          this.x -= distance;
+          this.setTargetPos({
+            x: this.x -= distance,
+            y: this.y
+          });
           break;
 
         case 3:
-          this.y += distance;
+          this.setTargetPos({
+            x: this.x,
+            y: this.y += distance
+          });
           break;
 
         case 4:
-          this.y -= distance;
+          this.setTargetPos({
+            x: this.x,
+            y: this.y -= distance
+          });
           break;
 
         case 5:
-          this.x += distance;
-          this.y += distance;
+          this.setTargetPos({
+            x: this.x += distance,
+            y: this.y += distance
+          });
           break;
 
         case 6:
-          this.x += distance;
-          this.y -= distance;
+          this.setTargetPos({
+            x: this.x += distance,
+            y: this.y -= distance
+          });
           break;
 
         case 7:
-          this.x -= distance;
-          this.y += distance;
+          this.setTargetPos({
+            x: this.x -= distance,
+            y: this.y += distance
+          });
           break;
 
         case 8:
-          this.x -= distance;
-          this.y -= distance;
+          this.setTargetPos({
+            x: this.x -= distance,
+            y: this.y -= distance
+          });
+          break;
+
+        case 8:
+          this.setTargetPos({
+            x: this.x,
+            y: this.y
+          });
           break;
 
         default:

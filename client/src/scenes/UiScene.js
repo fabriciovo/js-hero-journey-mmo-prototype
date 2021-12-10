@@ -369,7 +369,7 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerExpBar(playerObject) {
-    debugger
+  
     this.expBar = new Bar(
       this,
       40,
@@ -394,7 +394,7 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerHealthBar(playerObject) {
-    debugger
+    
     this.healthBar = new Bar(
       this,
       40,
