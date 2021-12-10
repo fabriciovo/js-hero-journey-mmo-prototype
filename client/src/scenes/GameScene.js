@@ -106,7 +106,6 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("monsterRemoved", (monsterId) => {
       this.monsters.getChildren().forEach((monster) => {
         if (monster.id === monsterId && !monster.dead) {
-          console.log("teste")
           monster.makeInactive();
           this.monsterDeathAudio.play();
           this.dropItem(monster);
@@ -304,7 +303,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("monsterMovement", (monsters) => {
-      console.log("monsterMovement");
       this.monsters.getChildren().forEach((monster) => {
         Object.keys(monsters).forEach((monsterId) => {
           if (monster.id === monsterId) {
@@ -764,12 +762,15 @@ export default class GameScene extends Phaser.Scene {
   }
 
   sendMonsterDropItemMessage(x, y, item) {
-    console.log("sendMonsterDropItemMessage")
     this.socket.emit("dropItem", x, y, item);
   }
 
   sendPlayerNearMonster(monsterId, { x, y }) {
     this.socket.emit("monsterFollowPlayer", monsterId, x, y);
+  }
+
+  sendMonsterStopFollowingPlayer(monsterId) {
+    this.socket.emit("monsterStopFollowingPlayer", monsterId);
   }
 
   sendEquipItemMessage(itemId) {

@@ -56,7 +56,7 @@ export default class ItemDescriptionWindow extends ModalWindow {
   hideWindow() {
     this.rect.disableInteractive();
     this.descriptionContainer.setAlpha(0);
-    this.graphics.setAlpha(0); 
+    this.graphics.setAlpha(0);
   }
 
   showWindow() {
@@ -81,6 +81,22 @@ export default class ItemDescriptionWindow extends ModalWindow {
       { fontSize: "22px", fill: "#ffffff", align: "center" }
     );
     this.description.setOrigin(0.5);
+
+    this.shopItemDesriptionText = this.scene.add
+      .text(this.descriptionContainer.width / 2, 60, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
+
+    this.shopItemPriceText = this.scene.add
+      .text(this.descriptionContainer.width / 2, 90, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
 
     this.attackText = this.scene.add
       .text(0, 0, "", {
@@ -128,6 +144,10 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.descriptionContainer.add(this.swordIcon);
     this.descriptionContainer.add(this.shieldIcon);
 
+
+    this.descriptionContainer.add(this.shopItemPriceText);
+    this.descriptionContainer.add(this.shopItemDesriptionText);
+
     this.title.setPosition(this.descriptionContainer.width / 2, 20);
     this.description.setPosition(this.descriptionContainer.width / 2, 60);
 
@@ -168,8 +188,13 @@ export default class ItemDescriptionWindow extends ModalWindow {
 
   setShopItemDescription(item) {
     this.title.setText("Item Description");
-    this.attackText.setText(`Restore ${item.value} health points`);
-    this.healthText.setText(`Price: ${item.price}`);
+
+    this.shopItemDesriptionText.setText(`Restore ${item.value} health points`);
+    this.shopItemPriceText.setText(`Price: ${item.price}`);
+
+    this.healthIcon.setAlpha(0);
+    this.swordIcon.setAlpha(0);
+    this.shieldIcon.setAlpha(0);
   }
 
   showBookDescription(item) {
@@ -184,6 +209,10 @@ export default class ItemDescriptionWindow extends ModalWindow {
       this.attackText.setText("");
       this.healthText.setText("");
       this.defenseText.setText("");
+
+      this.shopItemDesriptionText.setText("");
+      this.shopItemPriceText.setText("");
+
       this.healthIcon.setAlpha(0);
       this.swordIcon.setAlpha(0);
       this.shieldIcon.setAlpha(0);

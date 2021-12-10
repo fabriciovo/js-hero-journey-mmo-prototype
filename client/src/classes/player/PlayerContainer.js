@@ -116,7 +116,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.player = new Player(this.scene, 0, 0, this.key, frame);
 
     this.add(this.player);
-    this.setDepth(DEPTH.NORMAL);
+    this.setDepth(DEPTH.ENTITIES);
     //Actions
     this.actionAActive = false;
     this.actionCActive = false;

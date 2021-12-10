@@ -26,7 +26,10 @@ export default class MonsterModel {
   setChasing(value) {
     this.monsterChasing = value
   }
-
+  
+  getMonsterChase() {
+    return this.monsterChasing;
+  }
   move() {
     if(this.monsterChasing) return
     const randomPosition = randomNumber(1, 9);

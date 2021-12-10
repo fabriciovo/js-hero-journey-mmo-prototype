@@ -36,7 +36,7 @@ export default class Monster extends Entity {
     //     fill: "#fff",
     //   }
     // );
-
+    this.setDepth(DEPTH.ENTITIES);
     this.scene.anims.create({
       key: `normal_${this.key}`,
       frames: this.scene.anims.generateFrameNumbers(this.key, {
@@ -185,6 +185,8 @@ export default class Monster extends Entity {
 
     if (dis < 200) {
       this.scene.sendPlayerNearMonster(this.id, playerPosition);
+    }else{
+      this.scene.sendMonsterStopFollowingPlayer(this.id);
     }
 
     if (dis < 90) {

@@ -446,14 +446,10 @@ var GameManager = /*#__PURE__*/function () {
         // });
 
         socket.on("dropItem", function (x, y, item) {
-          console.log(item);
-          console.log(x, y);
-
           _this2.itemDictionary[item](x, y);
         });
         socket.on("monsterFollowPlayer", function (monsterId, x, y) {
           if (!_this2.monsters[monsterId]) return;
-          console.log("monsterFollowPlayer");
 
           _this2.monsters[monsterId].setChasing(true);
 
@@ -462,20 +458,13 @@ var GameManager = /*#__PURE__*/function () {
             y: y
           });
         });
-        socket.on("monsterStopFollowingPlayer", function (monsterId, x, y) {
-          if (!_this2.monsters[monsterId]) return;
-          console.log("monsterFollowPlayer");
+        socket.on("monsterStopFollowingPlayer", function (monsterId) {
+          if (!_this2.monsters[monsterId] && _this2.monsters[monsterId].getMonsterChase()) return;
 
           _this2.monsters[monsterId].setChasing(false);
-
-          _this2.monsters[monsterId].setTargetPos({
-            x: x,
-            y: y
-          });
         });
         socket.on("monsterStartMove", function (monsterId, x, y) {
           if (!_this2.monsters[monsterId]) return;
-          console.log("monsterFollowPlayer");
 
           _this2.monsters[monsterId].setChasing(true);
 

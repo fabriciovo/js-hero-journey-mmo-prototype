@@ -51,6 +51,11 @@ var MonsterModel = /*#__PURE__*/function () {
       this.monsterChasing = value;
     }
   }, {
+    key: "getMonsterChase",
+    value: function getMonsterChase() {
+      return this.monsterChasing;
+    }
+  }, {
     key: "move",
     value: function move() {
       if (this.monsterChasing) return;

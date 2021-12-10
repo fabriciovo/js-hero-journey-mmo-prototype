@@ -31,7 +31,7 @@ export default class Bar extends Phaser.Physics.Arcade.Image {
   UpdateBar(x, y, value, maxValue) {
     this.bar.setPosition(x, y);
     this.holderBar.setPosition(x, y);
-    this.bar.displayWidth = (value / maxValue) * 100;
+    this.bar.displayWidth = (value / maxValue) * this.size;
     this.holderBar.displayWidth = this.size;
 
   }

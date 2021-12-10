@@ -92,6 +92,8 @@ export function getRandomItem() {
     return "chest";
   }else if(randomNumber >= 7){
     return "item";
+  }else {
+    return "";
   }
 
 

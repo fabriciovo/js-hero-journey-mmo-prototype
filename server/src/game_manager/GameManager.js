@@ -428,28 +428,23 @@ export default class GameManager {
       // });
 
       socket.on("dropItem", (x, y, item) => {
-        console.log(item)
-        console.log(x,y)
+
         this.itemDictionary[item](x, y);
       });
 
       socket.on("monsterFollowPlayer", (monsterId,x,y) => {
         if(!this.monsters[monsterId]) return
-        console.log("monsterFollowPlayer")
         this.monsters[monsterId].setChasing(true)
         this.monsters[monsterId].setTargetPos({x,y})
       });
 
-      socket.on("monsterStopFollowingPlayer", (monsterId,x,y) => {
-        if(!this.monsters[monsterId]) return
-        console.log("monsterFollowPlayer")
+      socket.on("monsterStopFollowingPlayer", (monsterId) => {
+        if(!this.monsters[monsterId] && this.monsters[monsterId].getMonsterChase()) return
         this.monsters[monsterId].setChasing(false)
-        this.monsters[monsterId].setTargetPos({x,y})
       });
 
       socket.on("monsterStartMove", (monsterId,x,y) => {
         if(!this.monsters[monsterId]) return
-        console.log("monsterFollowPlayer")
         this.monsters[monsterId].setChasing(true)
         this.monsters[monsterId].setTargetPos({x,y})
       });
