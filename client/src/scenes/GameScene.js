@@ -785,6 +785,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   sendBuyItemMessage(item) {
+    this.uiScene.popup.cantBuy(this.player);
+
     this.socket.emit("sendBuyItemMessage", item);
     this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
     this.uiScene.potionACountText.setText(this.player.potions);

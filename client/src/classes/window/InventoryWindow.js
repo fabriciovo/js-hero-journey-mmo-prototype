@@ -1,5 +1,5 @@
 import ModalWindow from "./ModalWindow";
-import UiButton from "../UiButton";
+import UiButton from "../UI/UiButton";
 import { DEPTH, iconsetSlotsTypes } from "../../utils/utils";
 export default class InventoryWindow extends ModalWindow {
   constructor(scene, opts) {

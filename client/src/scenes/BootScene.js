@@ -21,6 +21,7 @@ export default class BootScene extends Phaser.Scene {
   loadImages() {
     this.load.image("button1", "assets/images/ui/blue_button01.png");
     this.load.image("button2", "assets/images/ui/blue_button02.png");
+
     // load the map tileset image
     this.load.image("atlas_32x", "assets/level/atlas_32x.png");
 
@@ -142,6 +143,12 @@ export default class BootScene extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16,
     });
+
+    this.load.spritesheet("buttons", "assets/images/ui/buttons.png", {
+      frameWidth: 48,
+      frameHeight: 16,
+    });
+
   }
 
   loadAudio() {

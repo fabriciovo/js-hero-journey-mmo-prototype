@@ -35,7 +35,7 @@ export default class GameMap {
     );
 
     // create our background
-    this.backgroundLayer = this.tilemap.createStaticLayer(
+    this.backgroundLayer = this.tilemap.createLayer(
       this.bgLayerName,
       this.tiles,
       0,
@@ -44,7 +44,7 @@ export default class GameMap {
     this.backgroundLayer.setScale(2.01);
 
     // create blocked layer
-    this.blockedLayer = this.tilemap.createStaticLayer(
+    this.blockedLayer = this.tilemap.createLayer(
       this.blockedLayerName,
       this.tiles,
       0,
@@ -54,7 +54,7 @@ export default class GameMap {
     this.blockedLayer.setScale(2.01);
 
     // create enviroment layer
-    this.enviromentLayer = this.tilemap.createStaticLayer(
+    this.enviromentLayer = this.tilemap.createLayer(
       this.enviromentLayerName,
       this.tiles,
       0,
@@ -64,7 +64,7 @@ export default class GameMap {
     this.enviromentLayer.setScale(2.01);
 
     // create watter layer
-    this.watterLayer = this.tilemap.createStaticLayer(
+    this.watterLayer = this.tilemap.createLayer(
       this.watterLayer,
       this.tiles,
       0,

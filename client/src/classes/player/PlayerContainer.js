@@ -386,6 +386,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.potions++;
       this.gold -= item.price;
       this.scene.sendBuyItemMessage(item);
+    }else{
     }
   }
 

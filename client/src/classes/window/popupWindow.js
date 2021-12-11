@@ -108,4 +108,11 @@ export default class PopupWindow extends ModalWindow {
     this.popupText.setText(`You advance from ${playerObject.level} to ${newLevel}`)
 
   }
+
+  cantBuy(playerObject){
+    this.showWindow();
+    this.popupTitle.setText("Not enough gold")
+    this.popupText.setText(`You have only ${playerObject.gold}`)
+
+  }
 }
