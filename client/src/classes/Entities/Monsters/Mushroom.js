@@ -3,7 +3,7 @@ import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
 import Bar from "./UI/Bar";
 
-export default class Monster extends Entity {
+export default class Monster extends Monster {
   constructor(
     scene,
     x,

@@ -109,7 +109,6 @@ export default class GameScene extends Phaser.Scene {
           monster.makeInactive();
           this.monsterDeathAudio.play();
           this.dropItem(monster);
-
         }
       });
     });
@@ -302,18 +301,27 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    this.socket.on("monsterMovement", (monsters) => {
+    this.socket.on("monsterMovement", ({ id, targetPos }) => {
       this.monsters.getChildren().forEach((monster) => {
-        Object.keys(monsters).forEach((monsterId) => {
-          if (monster.id === monsterId) {
-            debugger;
-            monster.move(monsters[monsterId].targetPosition);
+        if (monster.id === id) {
+          this.playerList.getChildren().forEach((player) => {
+            const dis = Phaser.Math.Distance.Between(
+              player.x,
+              player.y,
+              monster.x,
+              monster.y
+            );
+            if (dis < 200) {
+              this.sendPlayerNearMonster(monster.id, player.id);
+            }
 
-            this.playerList.getChildren().forEach((otherPlayer) => {
-              monster.followPlayer(otherPlayer, 90);
-            });
-          }
-        });
+            if (dis < 90) {
+              monster.attack();
+            }
+          });
+
+          monster.move(targetPos, 90);
+        }
       });
     });
   }
@@ -613,8 +621,12 @@ export default class GameScene extends Phaser.Scene {
       monster.id = monsterObject.id;
       monster.health = monsterObject.health;
       monster.maxHealth = monsterObject.maxHealth;
+      monster.stateTime = monsterObject.stateTime;
+      monster.randomPosition = monsterObject.randomPosition;
+
       monster.setTexture(monsterObject.key, 0);
       monster.setPosition(monsterObject.x, monsterObject.y);
+      monster.body.setVelocity(monsterObject.velocity);
       monster.makeActive();
     }
   }
@@ -719,7 +731,6 @@ export default class GameScene extends Phaser.Scene {
 
   weaponOverlapEnemy(weapon, enemyPlayer) {
     if (this.player.actionAActive && !this.player.hitbox) {
-      debugger;
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
@@ -765,8 +776,8 @@ export default class GameScene extends Phaser.Scene {
     this.socket.emit("dropItem", x, y, item);
   }
 
-  sendPlayerNearMonster(monsterId, { x, y }) {
-    this.socket.emit("monsterFollowPlayer", monsterId, x, y);
+  sendPlayerNearMonster(monsterId, playerId) {
+    //this.socket.emit("monsterChasingPlayer", monsterId, playerId);
   }
 
   sendMonsterStopFollowingPlayer(monsterId) {

@@ -30,97 +30,85 @@ var MonsterModel = /*#__PURE__*/function () {
     this.exp = exp;
     this.stateTime = stateTime;
     this.randomPosition = (0, _utils.randomNumber)(1, 8);
-    this.targetPosition = {
+    this.targetPos = {
       x: 0,
       y: 0
     };
-    this.monsterChasing = false;
   }
 
   (0, _createClass2["default"])(MonsterModel, [{
-    key: "setTargetPos",
-    value: function setTargetPos(position) {
-      this.targetPosition = {
-        x: position.x,
-        y: position.y
+    key: "setTarget",
+    value: function setTarget(target) {
+      this.targetPos = {
+        x: target.x,
+        y: target.y
       };
-    }
-  }, {
-    key: "setChasing",
-    value: function setChasing(value) {
-      this.monsterChasing = value;
-    }
-  }, {
-    key: "getMonsterChase",
-    value: function getMonsterChase() {
-      return this.monsterChasing;
     }
   }, {
     key: "move",
     value: function move() {
-      if (this.monsterChasing) return;
       var randomPosition = (0, _utils.randomNumber)(1, 9);
       var distance = 64;
 
       switch (randomPosition) {
         case 1:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x += distance,
             y: this.y
           });
           break;
 
         case 2:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x -= distance,
             y: this.y
           });
           break;
 
         case 3:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x,
             y: this.y += distance
           });
           break;
 
         case 4:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x,
             y: this.y -= distance
           });
           break;
 
         case 5:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x += distance,
             y: this.y += distance
           });
           break;
 
         case 6:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x += distance,
             y: this.y -= distance
           });
           break;
 
         case 7:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x -= distance,
             y: this.y += distance
           });
           break;
 
         case 8:
-          this.setTargetPos({
+          this.setTarget({
             x: this.x -= distance,
             y: this.y -= distance
           });
           break;
 
-        case 8:
-          this.setTargetPos({
+        case 9:
+          this.setTarget({
             x: this.x,
             y: this.y
           });
@@ -134,6 +122,11 @@ var MonsterModel = /*#__PURE__*/function () {
     key: "loseHealth",
     value: function loseHealth(attack) {
       this.health -= attack;
+    }
+  }, {
+    key: "getId",
+    value: function getId() {
+      return this.id;
     }
   }]);
   return MonsterModel;

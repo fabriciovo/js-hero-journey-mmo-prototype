@@ -133,7 +133,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
   }
 
   createPlayerBars() {
-    debugger
     //Health bar
     this.healthBar = new Bar(
       this.scene,
