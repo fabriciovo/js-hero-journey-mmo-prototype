@@ -76,9 +76,28 @@ export function refreshTokenInterval() {
   }, parseInt(TOKEN_INTERVAL, 10));
 }
 
+export function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+export function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+export function getRandomItem() {
+  const randomNumber = getRandomArbitrary(0,9);
+
+  if(randomNumber <= 3){
+    return "";
+  }else if(randomNumber >= 4 && randomNumber <= 6){
+    return "chest";
+  }else if(randomNumber >= 7){
+    return "item";
+  }else {
+    return "";
+  }
 
 
-
+}
 
 export const iconsetWeaponTypes = {
   SMALL_WOODEN_SWORD: 0,

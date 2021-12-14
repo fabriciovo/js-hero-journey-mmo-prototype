@@ -25,16 +25,11 @@ var itemData = _interopRequireWildcard(require("../../../public/assets/level/too
 
 var enemyData = _interopRequireWildcard(require("../../../public/assets/Enemies/enemies.json"));
 
-var _npcModel = _interopRequireDefault(require("../../models/npcModel"));
+var _NpcModel = _interopRequireDefault(require("../../models/NpcModel"));
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function getRandonValues() {
-  var bonus = [-3, -5, -6, 0, 5, 3, 4, 7, 2, 1, 8, 10, 11, 23, 12, 13, 14, 15, 16, 9];
-  return bonus[Math.floor(Math.random() * bonus.length)];
-}
 
 var Spawner = /*#__PURE__*/function () {
   function Spawner(config, spawnLocations, addObject, deleteObject, moveObjects) {
@@ -47,6 +42,7 @@ var Spawner = /*#__PURE__*/function () {
     this.addObject = addObject;
     this.deleteObject = deleteObject;
     this.moveObjects = moveObjects;
+    this.monsterIntervalTimer = 1000;
     this.objectsCreated = [];
     this.start();
   }
@@ -81,7 +77,7 @@ var Spawner = /*#__PURE__*/function () {
     value: function spawnItem() {
       var location = this.pickRandomLocation();
       var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
-      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, getRandonValues(), getRandonValues(), getRandonValues(), _utils.WeaponTypes.MELEE, "Description");
+      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), (0, _utils.getRandonValues)(), _utils.WeaponTypes.MELEE, "Description");
       this.objectsCreated.push(item);
       this.addObject(item.id, item);
     }
@@ -102,7 +98,8 @@ var Spawner = /*#__PURE__*/function () {
       this.id, randomEnemy.key, // key
       randomEnemy.healthValue, // health value
       randomEnemy.attackValue, // attack value
-      randomEnemy.expValue // exp value
+      randomEnemy.expValue, // exp value
+      3000 //timer
       );
       this.objectsCreated.push(monster);
       this.addObject(monster.id, monster);
@@ -111,7 +108,7 @@ var Spawner = /*#__PURE__*/function () {
     key: "spawnNpc",
     value: function spawnNpc() {
       var location = this.pickRandomLocation();
-      var npc = new _npcModel["default"](location[0], location[1], this.id);
+      var npc = new _NpcModel["default"](location[0], location[1], this.id);
       this.objectsCreated.push(npc);
       this.addObject(npc.id, npc);
     }
@@ -148,7 +145,16 @@ var Spawner = /*#__PURE__*/function () {
         });
 
         _this2.moveObjects();
-      }, 1000);
+      }, this.monsterIntervalTimer);
+    }
+  }, {
+    key: "resetMonsterInterval",
+    value: function resetMonsterInterval(value) {
+      // clear the existing interval
+      this.monsterIntervalTimer = value;
+      clearInterval(this.moveMonsterInterval); // just start a new one
+
+      startInterval(this.moveMonsterInterval);
     }
   }]);
   return Spawner;

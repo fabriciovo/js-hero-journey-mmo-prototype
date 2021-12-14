@@ -5,9 +5,19 @@ import ChatModel from "../models/ChatModel";
 
 import * as levelData from "../../public/assets/level/new_level.json";
 import * as itemData from "../../public/assets/level/tools.json";
+import * as enemyData from "../../public/assets/Enemies/enemies.json";
 
 import Spawner from "./controllers/Spawner";
-import { SpawnerType } from "./utils";
+import {
+  getRandonValues,
+  randomNumber,
+  SpawnerType,
+  WeaponTypes,
+} from "./utils";
+import ItemModel from "../models/ItemModel";
+import ChestModel from "../models/ChestModel";
+import { v4 } from "uuid";
+import MonsterModel from "../models/MonsterModel";
 
 export default class GameManager {
   constructor(io) {
@@ -21,13 +31,18 @@ export default class GameManager {
 
     this.rangedObjects = {};
 
-
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
     this.npcLocations = {};
 
     this.itemsLocations = itemData.locations;
+
+    this.itemDictionary = {
+      chest: this.createChest.bind(this),
+      item: this.createItem.bind(this),
+      "": this.drop.bind(this),
+    };
   }
 
   setup() {
@@ -75,24 +90,6 @@ export default class GameManager {
     this.io.on("connection", (socket) => {
       // player disconnected
 
-      /*socket.on("disconnect", async () => {
-        // delete user data from server
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { data } = decoded.user;
-          console.log(data)
-          await UserModel.save({ data });
-          console.log(this.players[socket.id]);
-
-          delete this.players[socket.id];
-
-          // emit a message to all players to remove this player
-          this.io.emit("disconnected", socket.id);
-        } catch (error) {
-          console.log(error);
-        }
-      });*/
-
       socket.on("savePlayerData", async () => {
         try {
           if (!this.players[socket.id].items) {
@@ -127,10 +124,10 @@ export default class GameManager {
         this.io.emit("disconnected", socket.id);
       });
 
-      socket.on("sendMessage", async (message, token, player) => {
+      socket.on("sendMessage", async (message, token) => {
         try {
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { name, email } = decoded.user;
+          const { email } = decoded.user;
           await ChatModel.create({ email, message });
           this.io.emit("newMessage", {
             message,
@@ -187,18 +184,14 @@ export default class GameManager {
           this.players[socket.id].y = playerData.y;
           this.players[socket.id].flipX = playerData.flipX;
           this.players[socket.id].actionAActive = playerData.actionAActive;
-          this.players[socket.id].actionBActive = playerData.actionBActive;
           this.players[socket.id].potionAActive = playerData.potionAActive;
           this.players[socket.id].frame = playerData.frame;
           this.players[socket.id].currentDirection =
             playerData.currentDirection;
-            this.players[socket.id].actionB =
-            playerData.actionB;
           // emit a message to all players about the player that moved
           this.io.emit("playerMoved", this.players[socket.id]);
         }
       });
-
 
       socket.on("pickUpChest", (chestId) => {
         // update the spawner
@@ -214,7 +207,7 @@ export default class GameManager {
             this.players[socket.id].gold
           );
           // removing the chest
-          this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
+          this.deleteChest(chestId);
         }
       });
 
@@ -231,7 +224,7 @@ export default class GameManager {
             );
 
             // removing the item
-            this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
+            this.deleteItems(itemId);
           }
         }
       });
@@ -343,26 +336,17 @@ export default class GameManager {
       socket.on("monsterAttacked", (monsterId, dis) => {
         // update the spawner
         if (this.monsters[monsterId]) {
-          const { gold, attack, exp } = this.monsters[monsterId];
+          const { exp } = this.monsters[monsterId];
           const playerAttackValue = this.players[socket.id].attack;
           // subtract health monster model
           this.monsters[monsterId].loseHealth(playerAttackValue);
 
           // check the monsters health, and if dead remove that object
           if (this.monsters[monsterId].health <= 0) {
-            // updating the players gold
-            this.players[socket.id].updateGold(gold);
-            socket.emit("updateScore", this.players[socket.id].gold);
-
-            //socket.emit("dropItem", item);
-
             //update xp
             this.players[socket.id].updateExp(exp);
             this.io.emit("updateXp", exp, socket.id);
 
-            //this.io.emit("dropItem",this.monsters[monsterId] );
-
-            // removing the monster
             this.spawners[this.monsters[monsterId].spawnerId].removeObject(
               monsterId
             );
@@ -374,38 +358,41 @@ export default class GameManager {
               monsterId,
               this.monsters[monsterId].health
             );
-
-            if (dis < 90) {
-              // update the players health
-              this.players[socket.id].playerAttacked(attack);
-              this.io.emit(
-                "updatePlayerHealth",
-                socket.id,
-                this.players[socket.id].health
-              );
-
-              // check the player's health, if below 0 have the player respawn
-              if (this.players[socket.id].health <= 0) {
-                // update the gold the player has
-                this.players[socket.id].updateGold(
-                  parseInt(-this.players[socket.id].gold / 2, 10)
-                );
-                socket.emit("updateScore", this.players[socket.id].gold);
-
-                // respawn the player
-                this.players[socket.id].respawn(this.players);
-                this.io.emit("respawnPlayer", this.players[socket.id]);
-              }
-            }
           }
         }
       });
 
-      socket.on("playerHit", (damage) => {});
+      socket.on("monsterAttack", (monsterId, playerId) => {
+        if (!this.monsters[monsterId]) return;
+        const { attack } = this.monsters[monsterId];
+        // update the players health
+        this.players[playerId].playerAttacked(attack);
+        this.io.emit(
+          "updatePlayerHealth",
+          playerId,
+          this.players[playerId].health
+        );
+
+        // check the player's health, if below 0 have the player respawn
+        if (this.players[playerId].health <= 0) {
+          // update the gold the player has
+          this.players[playerId].updateGold(
+            parseInt(-this.players[playerId].gold / 2, 10)
+          );
+          this.players[playerId].updateExp(
+            parseInt(-this.players[playerId].exp / 2, 10)
+          );
+          socket.emit("updateScore", this.players[playerId].gold);
+
+          // respawn the player
+          this.players[playerId].respawn(this.players);
+          this.io.emit("respawnPlayer", this.players[playerId]);
+        }
+      });
 
       socket.on("healthPotion", (playerId, health) => {
         if (socket.id === playerId) {
-          this.players[socket.id]
+          this.players[socket.id];
           this.players[socket.id].potion(health);
           this.io.emit(
             "updatePlayerHealth",
@@ -427,6 +414,48 @@ export default class GameManager {
         );
       });
 
+      // socket.on("monsterMovement", (monsterData) => {
+      //   if (!this.monsters[monsterData.id]) return;
+      //   this.monsters[monsterData.id].x = monsterData.x;
+      //   this.monsters[monsterData.id].y = monsterData.y;
+      //   this.monsters[monsterData.id].stateTime = monsterData.stateTime;
+      //   this.monsters[monsterData.id].randomPosition = monsterData.randomPosition;
+      //   // emit a message to all players about the monster that moved
+
+      //   //this.io.emit("monsterMoved", this.monsters[monsterData.id]);
+      // });
+
+      socket.on("dropItem", (x, y, item) => {
+        this.itemDictionary[item](x, y);
+      });
+
+      socket.on("monsterFollowPlayer", (monsterId, x, y) => {
+        if (!this.monsters[monsterId]) return;
+        if (!this.monsters[monsterId].monsterChasing) {
+          this.spawners[
+            this.monsters[monsterId].spawnerId
+          ].resetMonsterInterval(100);
+          this.monsters[monsterId].setChasing(true);
+        }
+        this.monsters[monsterId].setTargetPos({ x, y });
+      });
+
+      socket.on("monsterStopFollowingPlayer", (monsterId) => {
+        if (!this.monsters[monsterId]) return;
+        if (this.monsters[monsterId].monsterChasing) {
+          this.spawners[
+            this.monsters[monsterId].spawnerId
+          ].resetMonsterInterval(1000);
+          this.monsters[monsterId].setChasing(false);
+        }
+      });
+
+      socket.on("monsterStartMove", (monsterId, x, y) => {
+        if (!this.monsters[monsterId]) return;
+        this.monsters[monsterId].setChasing(true);
+        this.monsters[monsterId].setTargetPos({ x, y });
+      });
+
       // player connected to our game
       console.log("player connected to our game");
     });
@@ -440,24 +469,10 @@ export default class GameManager {
       id: "",
     };
     let spawner;
-    // create chest spawners
-    Object.keys(this.chestLocations).forEach((key) => {
-      config.id = `chest-${key}`;
-
-      spawner = new Spawner(
-        config,
-        this.chestLocations[key],
-        this.addChest.bind(this),
-        this.deleteChest.bind(this)
-      );
-      this.spawners[spawner.id] = spawner;
-    });
-
     // create monster spawners
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
-      config.limit = 8;
-
+      config.limit = 16;
       config.spawnerType = SpawnerType.MONSTER;
 
       spawner = new Spawner(
@@ -469,12 +484,11 @@ export default class GameManager {
       );
       this.spawners[spawner.id] = spawner;
     });
-
     // create npc spawners
     Object.keys(this.npcLocations).forEach((key) => {
       config.id = `npc-${key}`;
       config.spawnerType = SpawnerType.NPC;
-
+      config.limit = 1;
       spawner = new Spawner(
         config,
         this.npcLocations[key],
@@ -483,17 +497,6 @@ export default class GameManager {
       );
       this.spawners[spawner.id] = spawner;
     });
-
-    // create items spawners
-    config.id = "item";
-    config.spawnerType = SpawnerType.ITEM;
-    spawner = new Spawner(
-      config,
-      this.itemsLocations,
-      this.addItems.bind(this),
-      this.deleteItems.bind(this)
-    );
-    this.spawners[spawner.id] = spawner;
   }
   spawnPlayer(playerId, name, key, playerSchema) {
     const player = new PlayerModel(
@@ -550,5 +553,72 @@ export default class GameManager {
   deleteNpc(npcId) {
     delete this.npcs[npcId];
     this.io.emit("npcRemoved", npcId);
+  }
+
+  drop(x, y) {}
+
+  createChest(x, y) {
+    const chest = new ChestModel(x, y, randomNumber(10, 20), `chest-${v4()}`);
+
+    this.addChest(chest.id, chest);
+  }
+
+  createItem(x, y) {
+    const randomItem =
+      itemData.items[Math.floor(Math.random() * itemData.items.length)];
+
+    const item = new ItemModel(
+      x,
+      y,
+      `item-${v4()}`,
+      randomItem.name,
+      randomItem.frame,
+      getRandonValues(),
+      getRandonValues(),
+      getRandonValues(),
+      WeaponTypes.MELEE,
+      "Description"
+    );
+
+    this.addItems(item.id, item);
+  }
+
+  pickRandomLocation() {
+    const location =
+      this.monsterLocations[
+        Math.floor(Math.random() * this.monsterLocations.length)
+      ];
+
+    if (this.monsters.length > 0) {
+      const invalidLocation = this.monsters.some((obj) => {
+        if (obj.x === location[0] && obj.y === location[1]) {
+          return true;
+        }
+        return false;
+      });
+
+      if (invalidLocation) return this.pickRandomLocation();
+      return location || [200, 200];
+    }
+    return location || [200, 200];
+  }
+
+  spawnMonster() {
+    const randomEnemy =
+      enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
+
+    const location = this.pickRandomLocation();
+    const monster = new MonsterModel(
+      location[0],
+      location[1],
+      randomEnemy.goldValue, // gold value
+      this.id,
+      randomEnemy.key, // key
+      randomEnemy.healthValue, // health value
+      randomEnemy.attackValue, // attack value
+      randomEnemy.expValue, // exp value
+      3000 //timer
+    );
+    this.addMonster(monster.id, monster);
   }
 }

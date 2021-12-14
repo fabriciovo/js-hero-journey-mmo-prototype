@@ -1,11 +1,9 @@
-import * as Phaser from "phaser";
-import Direction from "../../utils/direction";
+import Direction from "../../../utils/direction";
 
-export default class RangedWeapon extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, key, frame, damage, id, direction) {
+export default class Bow extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene, x, y, key, frame, id, direction) {
     super(scene, x, y, key, frame);
     this.scene = scene; // the scene this game object will be added to
-    this.damage = damage;
     this.id = id;
     this.direction = direction;
     // enable physics
@@ -14,6 +12,7 @@ export default class RangedWeapon extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     // scale the chest game object
     this.setScale(2);
+    this.hitbox = false;
   }
 
   makeActive() {

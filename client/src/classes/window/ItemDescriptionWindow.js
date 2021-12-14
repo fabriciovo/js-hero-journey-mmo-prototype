@@ -65,46 +65,77 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.graphics.setAlpha(1);
   }
 
-
   createItemDescriptionText() {
-    this.itemsText = this.scene.add.text(
+    this.title = this.scene.add.text(
       this.descriptionContainer.width / 2,
       140,
       "Item Description",
       { fontSize: "22px", fill: "#ffffff", align: "center" }
     );
-    this.itemsText.setOrigin(0.5);
+    this.title.setOrigin(0.5);
 
-    this.attackText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-      align: 'center',
-    }).setOrigin(0.5);
+    this.description = this.scene.add.text(
+      this.descriptionContainer.width / 2,
+      260,
+      "",
+      { fontSize: "22px", fill: "#ffffff", align: "center" }
+    );
+    this.description.setOrigin(0.5);
 
-    this.defenseText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-      align: 'center',
+    this.shopItemDesriptionText = this.scene.add
+      .text(this.descriptionContainer.width / 2, 60, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
 
-    }).setOrigin(0.5);
+    this.shopItemPriceText = this.scene.add
+      .text(this.descriptionContainer.width / 2, 90, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
 
-    this.healthText = this.scene.add.text(0, 0, "", {
-      fontSize: "14px",
-      fill: "#00ff00",
-      align: 'center',
+    this.attackText = this.scene.add
+      .text(0, 0, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
 
-    }).setOrigin(0.5);
+    this.defenseText = this.scene.add
+      .text(0, 0, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
+
+    this.healthText = this.scene.add
+      .text(0, 0, "", {
+        fontSize: "14px",
+        fill: "#00ff00",
+        align: "center",
+      })
+      .setOrigin(0.5);
     this.healthIcon = this.scene.add
       .image(0, 0, "inventoryHealth")
-      .setOrigin(.5);
+      .setOrigin(0.5);
 
-    this.swordIcon = this.scene.add.image(0, 0, "inventorySword").setOrigin(.5);
+    this.swordIcon = this.scene.add
+      .image(0, 0, "inventorySword")
+      .setOrigin(0.5);
 
     this.shieldIcon = this.scene.add
       .image(0, 0, "inventoryShield")
-      .setOrigin(.5);
+      .setOrigin(0.5);
 
-    this.descriptionContainer.add(this.itemsText);
+    this.descriptionContainer.add(this.title);
+    this.descriptionContainer.add(this.description);
+
     this.descriptionContainer.add(this.attackText);
     this.descriptionContainer.add(this.healthText);
     this.descriptionContainer.add(this.defenseText);
@@ -113,7 +144,13 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.descriptionContainer.add(this.swordIcon);
     this.descriptionContainer.add(this.shieldIcon);
 
-    this.itemsText.setPosition(this.descriptionContainer.width / 2, 20);
+
+    this.descriptionContainer.add(this.shopItemPriceText);
+    this.descriptionContainer.add(this.shopItemDesriptionText);
+
+    this.title.setPosition(this.descriptionContainer.width / 2, 20);
+    this.description.setPosition(this.descriptionContainer.width / 2, 60);
+
     this.attackText.setPosition(this.descriptionContainer.width / 2 - 90, 60);
     this.healthText.setPosition(this.descriptionContainer.width / 2 + 90, 60);
     this.defenseText.setPosition(this.descriptionContainer.width / 2, 60);
@@ -124,6 +161,10 @@ export default class ItemDescriptionWindow extends ModalWindow {
   }
 
   setItemDescription(item) {
+    this.title.setText("Item Description");
+    this.healthIcon.setAlpha(1);
+    this.swordIcon.setAlpha(1);
+    this.shieldIcon.setAlpha(1);
     if (item.attack > 0) {
       this.attackText.setFill("#00ff00");
     } else {
@@ -145,8 +186,36 @@ export default class ItemDescriptionWindow extends ModalWindow {
     this.healthText.setText(item.health);
   }
 
-  setShopItemDescription(item) {    
-    this.attackText.setText(`Restore ${item.value} health points`);
-    this.healthText.setText(`Price: ${item.price}`);
+  setShopItemDescription(item) {
+    this.title.setText("Item Description");
+
+    this.shopItemDesriptionText.setText(`Restore ${item.value} health points`);
+    this.shopItemPriceText.setText(`Price: ${item.price}`);
+
+    this.healthIcon.setAlpha(0);
+    this.swordIcon.setAlpha(0);
+    this.shieldIcon.setAlpha(0);
+  }
+
+  showBookDescription(item) {
+    this.title.setText(item.name);
+    this.description.setText(item.description);
+  }
+
+  resetWindow() {
+    if (this.descriptionContainer) {
+      this.title.setText("");
+      this.description.setText("");
+      this.attackText.setText("");
+      this.healthText.setText("");
+      this.defenseText.setText("");
+
+      this.shopItemDesriptionText.setText("");
+      this.shopItemPriceText.setText("");
+
+      this.healthIcon.setAlpha(0);
+      this.swordIcon.setAlpha(0);
+      this.shieldIcon.setAlpha(0);
+    }
   }
 }

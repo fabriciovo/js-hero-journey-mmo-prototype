@@ -28,14 +28,14 @@ var _GameManager = _interopRequireDefault(require("./game_manager/GameManager"))
 
 var app = (0, _express["default"])();
 
-var server = require("http").Server(app);
+var server = require("http").Server(app); //const io = require("socket.io")(server);
 
-var io = require("socket.io")(server); // const io = require("socket.io")(server, {
-//   cors: {
-//     origin: process.env.CORS_ORIGIN,
-//   },
-// });
 
+var io = require("socket.io")(server, {
+  cors: {
+    origin: process.env.CORS_ORIGIN
+  }
+});
 
 var gameManager = new _GameManager["default"](io);
 gameManager.setup();

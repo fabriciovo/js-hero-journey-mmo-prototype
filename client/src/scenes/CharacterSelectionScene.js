@@ -1,5 +1,5 @@
 import * as Phaser from "phaser";
-import UiButton from "../classes/UiButton";
+import UiButton from "../classes/UI/UiButton";
 import { getParam } from "../utils/utils";
 
 export default class CharacterSelectionScene extends Phaser.Scene {

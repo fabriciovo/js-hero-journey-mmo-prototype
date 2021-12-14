@@ -1,8 +1,7 @@
-import SlotsWindow from "../slotsWindow";
-import * as weaponsData from "../../../../assets/json/Books/weaponsBook.json";
+import SlotsWindow from "../SlotsWindow";
 
 export default class WeaponsBook extends SlotsWindow {
-  constructor(scene, opts) {
-    super(scene, opts);
+  constructor(scene, opts, data) {
+    super(scene, opts, data);
   }
 }

@@ -26,17 +26,10 @@ export default class Monster extends Entity {
     this.dead = false;
     this.hitbox = false;
     this.monsterAttackActive = false;
+    this.tag = "monster";
 
-    // this.text = this.scene.add.text(
-    //   this.x,
-    //   this.y - 50,
-    //   "",
-    //   {
-    //     fontSize: "46px",
-    //     fill: "#fff",
-    //   }
-    // );
     this.setDepth(DEPTH.ENTITIES);
+
     this.scene.anims.create({
       key: `normal_${this.key}`,
       frames: this.scene.anims.generateFrameNumbers(this.key, {
@@ -46,49 +39,26 @@ export default class Monster extends Entity {
       repeat: -1,
     });
 
-    this.scene.anims.create({
-      key: `sides_${this.key}${this.id}`,
-      frames: this.scene.anims.generateFrameNumbers(key, {
-        frames: [4, 5, 6, 7],
-      }),
-      frameRate: 8,
-      repeat: -1,
-    });
-
-    this.scene.anims.create({
-      key: `up_${this.key}${this.id}`,
-      frames: this.scene.anims.generateFrameNumbers(key, {
-        frames: [4, 5, 6, 7],
-      }),
-      frameRate: 8,
-      repeat: -1,
-    });
-
     this.play(`normal_${this.key}`);
+
     this.createHealthBar();
-    // this.timer = this.scene.time.delayedCall(
-    //   this.stateTime,
-    //   this.idle,
-    //   [],
-    //   this
-    // );
 
     this.monsterAttack = this.scene.add.sprite(
       40,
       0,
       "iconset",
-      iconsetWeaponTypes.SMALL_WOODEN_SWORD);
+      iconsetWeaponTypes.SMALL_WOODEN_SWORD
+    );
 
-      this.scene.add.existing(this.monsterAttack);
-      this.monsterAttack.setScale(2);
-      this.scene.physics.world.enable(this.monsterAttack);
-      this.monsterAttack.alpha = 0;
+    this.scene.add.existing(this.monsterAttack);
+    this.monsterAttack.setScale(2);
+    this.scene.physics.world.enable(this.monsterAttack);
+    this.monsterAttack.alpha = 0;
 
     //this.move();
   }
 
   createHealthBar() {
-    debugger
     //Health bar
     this.healthBar = new Bar(
       this.scene,
@@ -119,11 +89,50 @@ export default class Monster extends Entity {
   update() {
     if (!this.dead) {
       this.updateHealthBar();
+      this.animation();
     }
   }
 
   move(targetPosition) {
     this.scene.physics.moveToObject(this, targetPosition, 90);
+    // const distance = 164;
+    // switch (this.randomPosition) {
+    //   case 1:
+    //     this.body.setVelocityX(distance);
+    //     break;
+    //   case 2:
+    //     this.body.setVelocityX(-distance);
+    //     break;
+    //   case 3:
+    //     this.body.setVelocityY(distance);
+    //     break;
+    //   case 4:
+    //     this.body.setVelocityY(-distance);
+    //     break;
+    //   case 5:
+    //     this.body.setVelocityX(distance);
+    //     this.body.setVelocityY(distance);
+    //     break;
+    //   case 6:
+    //     this.body.setVelocityX(distance);
+    //     this.body.setVelocityY(-distance);
+    //     break;
+    //   case 7:
+    //     this.body.setVelocityX(-distance);
+    //     this.body.setVelocityY(distance);
+    //     break;
+    //   case 8:
+    //     this.body.setVelocityX(-distance);
+    //     this.body.setVelocityY(-distance);
+    //     break;
+    // }
+    // this.stateTime = Phaser.Math.Between(1000, 3000);
+    // // this.timer = this.scene.time.delayedCall(
+    // //   this.stateTime,
+    // //   this.idle,
+    // //   [],
+    // //   this
+    // // );
   }
 
   followPlayer(playerPosition) {
@@ -136,18 +145,18 @@ export default class Monster extends Entity {
     );
 
     if (dis < 200) {
-      this.scene.sendPlayerNearMonster(this.id, playerPosition, dis);
-    }else{
+      this.scene.sendPlayerNearMonster(this.id, playerPosition);
+    } else {
       this.scene.sendMonsterStopFollowingPlayer(this.id);
     }
 
-    if (dis < 90 && !this.monsterAttackActive) {
+    if (dis < 90) {
       this.attack();
     }
   }
 
   attack() {
-    if(this.dead) return
+    if (this.dead) return;
     this.monsterAttackActive = true;
     this.scene.time.delayedCall(
       1000,
@@ -158,6 +167,15 @@ export default class Monster extends Entity {
       [],
       this
     );
+  }
+
+  animation() {}
+
+  damage() {}
+
+  idle() {
+    this.body.setVelocityX(0);
+    this.body.setVelocityY(0);
   }
 
   makeInactive() {
@@ -171,5 +189,19 @@ export default class Monster extends Entity {
     super.makeActive();
     this.createHealthBar();
     this.dead = false;
+  }
+
+  createMonsterAttack() {
+    this.monsterAttack = this.scene.add.sprite(
+      40,
+      0,
+      "iconset",
+      iconsetWeaponTypes.SMALL_WOODEN_SWORD
+    );
+
+    this.scene.add.existing(this.monsterAttack);
+    this.monsterAttack.setScale(2);
+    this.scene.physics.world.enable(this.monsterAttack);
+    this.monsterAttack.alpha = 0;
   }
 }

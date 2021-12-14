@@ -7,8 +7,8 @@ const config = {
 
   scene: scenes,
   scale: {
-    width: 1252,
-    height: 937,
+    width: "100%",
+    height: "100%",
     mode: Phaser.Scale.RESIZE,
     parent: "phaser-game",
   },

@@ -13,6 +13,7 @@ export default class ModalWindow {
       windowColor = 0x303030,
       windowWidth = 305,
       windowHeight = scene.scale.height,
+      name = ""
     } = opts;
 
     this.scene = scene;
@@ -28,7 +29,7 @@ export default class ModalWindow {
     this.windowColor = windowColor;
     this.windowWidth = windowWidth;
     this.windowHeight = windowHeight;
-
+    this.name = name
     this.graphics = this.scene.add.graphics();
   }
 
@@ -52,6 +53,7 @@ export default class ModalWindow {
   }
 
   createWindow() {
+
     const windowDimensions = this.calculateWindowDimension();
     this.createOuterWindow(windowDimensions);
     this.createInnerWindow(windowDimensions);

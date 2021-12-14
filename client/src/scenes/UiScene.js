@@ -1,12 +1,11 @@
 import * as Phaser from "phaser";
 import Bar from "../classes/UI/Bar";
-import WeaponsBook from "../classes/window/BooksWindows/WeaponsBook";
 import InventoryWindow from "../classes/window/InventoryWindow";
 import ItemDescriptionWindow from "../classes/window/ItemDescriptionWindow";
 import PlayerWindow from "../classes/window/PlayerWindow";
 import PopupWindow from "../classes/window/popupWindow";
 import ShopWindow from "../classes/window/ShopWindow";
-import SlotsWindow from "../classes/window/slotsWindow";
+import SlotsWindow from "../classes/window/SlotsWindow";
 import {
   DEPTH,
   healthBarTypes,
@@ -27,7 +26,8 @@ export default class UiScene extends Phaser.Scene {
     this.showPlayerStats = false;
     this.showShopWindow = false;
     this.showWeaponsBook = false;
-
+    this.showMaterialsBook = false;
+    this.showPotionsBook = false;
   }
 
   create() {
@@ -50,79 +50,6 @@ export default class UiScene extends Phaser.Scene {
 
   setupUiElements() {
     this.createWindows();
-
-
-    //create Popup window
-    this.shopWindow = new ShopWindow(this, {
-      x: this.scale.width / 2 - 174,
-      y: this.scale.height / 2 - 200,
-      windowWidth: 360,
-      windowHeight: 220,
-      borderAlpha: 1,
-      windowAlpha: 0.9,
-      debug: false,
-      textAlpha: 1,
-      windowColor: 0x000000,
-    });
-
-    //create Popup window
-    this.popup = new PopupWindow(this, {
-      x: this.scale.width / 2 - 174,
-      y: this.scale.height / 2 - 200,
-      windowWidth: 360,
-      windowHeight: 120,
-      borderAlpha: 1,
-      windowAlpha: 0.9,
-      debug: false,
-      textAlpha: 1,
-      windowColor: 0x000000,
-    });
-
-    // create playerStats window
-    this.playerStatsWindow = new PlayerWindow(this, {
-      windowWidth: this.scale.width / 5,
-      windowHeight: this.scale.height * 0.3,
-      borderAlpha: 1,
-      windowAlpha: 0.9,
-      debug: false,
-      textAlpha: 1,
-      windowColor: 0x000000,
-    });
-
-    // create inventory window
-    this.inventoryWindow = new InventoryWindow(this, {
-      windowWidth: this.scale.width / 4 - 300,
-      windowHeight: this.scale.height * 0.3,
-      borderAlpha: 1,
-      windowAlpha: 0.9,
-      debug: false,
-      textAlpha: 1,
-      windowColor: 0x000000,
-    });
-
-    this.descriptionWindow = new ItemDescriptionWindow(this, {
-      x: this.gameScene.input.mousePointer.x,
-      y: this.gameScene.input.mousePointer.y,
-      windowWidth: 360,
-      windowHeight: 120,
-      borderAlpha: 1,
-      windowAlpha: 1,
-      debug: false,
-      textAlpha: 1,
-      windowColor: 0x000000,
-    });
-
-
-    // create weaponsBook Window
-    this.weaponsBook = new WeaponsBook(this, {
-      windowWidth: this.scale.width / 4 - 300,
-      windowHeight: this.scale.height * 0.3,
-      borderAlpha: 1,
-      windowAlpha: 0.9,
-      debug: false,
-      textAlpha: 1,
-      windowColor: 0x000000,
-    });
 
     //Create equiped weapons text
     this.actionAText = this.add
@@ -163,15 +90,35 @@ export default class UiScene extends Phaser.Scene {
       this.togglePlayerStats(this.gameScene.player);
     });
 
-    // // create WeaponsBook button
-    // this.weaponsBookButton = this.add
-    //   .image(this.scale.width / 2 - 120, this.scale.height - 50, "iconset", 56)
-    //   .setScale(3)
-    //   .setInteractive({ cursor: "pointer" });
+    // create WeaponsBook button
+    this.weaponsBookButton = this.add
+      .image(this.scale.width / 2 - 120, this.scale.height - 50, "iconset", 56)
+      .setScale(3)
+      .setInteractive({ cursor: "pointer" });
 
-    // this.weaponsBookButton.on("pointerdown", () => {
-    //   this.weaponsBook.showWindow(this.gameScene.player);
-    // });
+    this.weaponsBookButton.on("pointerdown", () => {
+      this.toggleWeaponsBook();
+    });
+
+    // create potionsBook button
+    this.potionsBookButton = this.add
+      .image(this.scale.width / 2 - 220, this.scale.height - 50, "iconset", 56)
+      .setScale(3)
+      .setInteractive({ cursor: "pointer" });
+
+    this.potionsBookButton.on("pointerdown", () => {
+      this.togglePotionsBook();
+    });
+
+    // create MaterialsBook button
+    this.materialsBookButton = this.add
+      .image(this.scale.width / 2 - 320, this.scale.height - 50, "iconset", 56)
+      .setScale(3)
+      .setInteractive({ cursor: "pointer" });
+
+    this.materialsBookButton.on("pointerdown", () => {
+      this.toggleMaterialsBook();
+    });
 
     // create inventory button
     this.inventoryButton = this.add
@@ -184,7 +131,6 @@ export default class UiScene extends Phaser.Scene {
       .setInteractive({ cursor: "pointer" });
 
     this.inventoryButton.on("pointerdown", () => {
-      console.log("inventoryButton", this.gameScene.player);
 
       this.toggleInventory(this.gameScene.player);
     });
@@ -207,7 +153,10 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.playerStatsWindow.equipedItems[1].item) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[2].item) &&
         !gameObjects.includes(this.playerStatsWindow.equipedItems[3].item) &&
-        !gameObjects.includes(this.playerStatsWindow.equipedItems[4].item)
+        !gameObjects.includes(this.playerStatsWindow.equipedItems[4].item) &&
+        !gameObjects.includes(this.weaponsBookButton) &&
+        !gameObjects.includes(this.potionsBookButton) &&
+        !gameObjects.includes(this.materialsBookButton)
       ) {
         this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();
@@ -215,6 +164,15 @@ export default class UiScene extends Phaser.Scene {
 
         this.playerStatsWindow.hideWindow();
         this.showPlayerStats = false;
+
+        this.weaponsBook.hideWindow();
+        this.showWeaponsBook = false;
+
+        this.potionsBook.hideWindow();
+        this.showPotionsBook = false;
+
+        this.materialsBook.hideWindow();
+        this.showMaterialsBook = false;
 
         this.popup.hideWindow();
       }
@@ -225,6 +183,51 @@ export default class UiScene extends Phaser.Scene {
     this.gameScene.events.on("showInventory", (playerObject) => {
       this.toggleInventory(playerObject);
     });
+  }
+
+  toggleWeaponsBook() {
+    this.potionsBook.hideWindow();
+    this.showPotionsBook = false;
+
+    this.materialsBook.hideWindow();
+    this.showMaterialsBook = false;
+
+    this.showWeaponsBook = !this.showWeaponsBook;
+    if (this.showWeaponsBook) {
+      this.weaponsBook.showWindow(this.gameScene.player);
+    } else {
+      this.weaponsBook.hideWindow();
+    }
+  }
+
+  toggleMaterialsBook() {
+    this.weaponsBook.hideWindow();
+    this.showWeaponsBook = false;
+
+    this.potionsBook.hideWindow();
+    this.showPotionsBook = false;
+
+    this.showMaterialsBook = !this.showMaterialsBook;
+    if (this.showMaterialsBook) {
+      this.materialsBook.showWindow(this.gameScene.player);
+    } else {
+      this.materialsBook.hideWindow();
+    }
+  }
+
+  togglePotionsBook() {
+    this.weaponsBook.hideWindow();
+    this.showWeaponsBook = false;
+
+    this.materialsBook.hideWindow();
+    this.showMaterialsBook = false;
+
+    this.showPotionsBook = !this.showPotionsBook;
+    if (this.showPotionsBook) {
+      this.potionsBook.showWindow(this.gameScene.player);
+    } else {
+      this.potionsBook.hideWindow();
+    }
   }
 
   toggleInventory(playerObject) {
@@ -241,11 +244,9 @@ export default class UiScene extends Phaser.Scene {
   toggleShop(playerObject, active) {
     this.showShopWindow = active;
     if (this.showShopWindow) {
-      console.log("this.shopWindow adsdasdsasda");
 
       this.shopWindow.showWindow(playerObject);
     } else {
-      console.log("this.shopWindow");
       this.shopWindow.hideWindow();
     }
   }
@@ -359,13 +360,16 @@ export default class UiScene extends Phaser.Scene {
   }
 
   updatePlayerStatsUi(playerObject) {
-    this.levelText.setText(`Level: ${playerObject.exp} /  ${playerObject.maxExp} - ${playerObject.level}`);
+    this.levelText.setText(
+      `Level: ${playerObject.exp} /  ${playerObject.maxExp} - ${playerObject.level}`
+    );
     this.healtText.setText(
       `HP: ${playerObject.health} /  ${playerObject.maxHealth}`
     );
   }
 
   createPlayerExpBar(playerObject) {
+  
     this.expBar = new Bar(
       this,
       40,
@@ -376,8 +380,8 @@ export default class UiScene extends Phaser.Scene {
       DEPTH.UI,
       300
     );
-    
-    this.updatePlayerExpBar(playerObject)
+
+    this.updatePlayerExpBar(playerObject);
   }
 
   updatePlayerExpBar(playerObject) {
@@ -390,30 +394,28 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createPlayerHealthBar(playerObject) {
-
+    
     this.healthBar = new Bar(
       this,
-      40, this.scale.height / 24,
+      40,
+      this.scale.height / 24,
       "bar_sheet",
       healthBarTypes.LIFE_BAR,
       healthBarTypes.HOLDER,
       DEPTH.UI,
       300
     );
-    
-    this.updatePlayerHealthBar(playerObject)
 
+    this.updatePlayerHealthBar(playerObject);
   }
 
   updatePlayerHealthBar(playerObject) {
-
     this.healthBar.UpdateBar(
       40,
       this.scale.height / 28 - 5,
       playerObject.health,
       playerObject.maxHealth
     );
-
   }
 
   resize(gameSize) {
@@ -434,6 +436,117 @@ export default class UiScene extends Phaser.Scene {
   }
 
   createWindows() {
+    // create weaponsBook Window
+    this.weaponsBook = new SlotsWindow(
+      this,
+      {
+        windowWidth: this.scale.width / 2,
+        windowHeight: this.scale.height * 0.8,
+        borderAlpha: 1,
+        windowAlpha: 0.9,
+        debug: false,
+        textAlpha: 1,
+        windowColor: 0x000000,
+        name: "weaponsBook",
+      },
+      this.gameScene.cache.json.get("weaponsData")
+    );
 
+    // create potionsBook Window
+    this.potionsBook = new SlotsWindow(
+      this,
+      {
+        windowWidth: this.scale.width / 2,
+        windowHeight: this.scale.height * 0.8,
+        borderAlpha: 1,
+        windowAlpha: 0.9,
+        debug: false,
+        textAlpha: 1,
+        windowColor: 0x000000,
+        name: "potionsBook",
+      },
+      this.gameScene.cache.json.get("potionsData")
+    );
+
+    // create materialsBook Window
+    this.materialsBook = new SlotsWindow(
+      this,
+      {
+        windowWidth: this.scale.width / 2,
+        windowHeight: this.scale.height * 0.8,
+        borderAlpha: 1,
+        windowAlpha: 0.9,
+        debug: false,
+        textAlpha: 1,
+        windowColor: 0x000000,
+        name: "materialsBook",
+      },
+      this.gameScene.cache.json.get("materialsData")
+    );
+
+    //create Popup window
+    this.shopWindow = new ShopWindow(this, {
+      x: this.scale.width / 2 - 174,
+      y: this.scale.height / 2 - 200,
+      windowWidth: 360,
+      windowHeight: 220,
+      borderAlpha: 1,
+      windowAlpha: 0.9,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+      name: "shopWindow",
+    });
+
+    //create Popup window
+    this.popup = new PopupWindow(this, {
+      x: this.scale.width / 2 - 174,
+      y: this.scale.height / 2 - 200,
+      windowWidth: 360,
+      windowHeight: 120,
+      borderAlpha: 1,
+      windowAlpha: 0.9,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+      name: "popup",
+    });
+
+    // create playerStats window
+    this.playerStatsWindow = new PlayerWindow(this, {
+      windowWidth: this.scale.width / 5,
+      windowHeight: this.scale.height * 0.3,
+      borderAlpha: 1,
+      windowAlpha: 0.9,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+      name: "playerStatsWindow",
+    });
+
+    // create inventory window
+    this.inventoryWindow = new InventoryWindow(this, {
+      windowWidth: this.scale.width / 4 - 300,
+      windowHeight: this.scale.height * 0.3,
+      borderAlpha: 1,
+      windowAlpha: 0.9,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+      name: "inventoryWindow",
+    });
+
+    this.descriptionWindow = new ItemDescriptionWindow(this, {
+      x: this.gameScene.input.mousePointer.x,
+      y: this.gameScene.input.mousePointer.y,
+      windowWidth: 360,
+      windowHeight: 120,
+      borderAlpha: 1,
+      windowAlpha: 1,
+      debug: false,
+      textAlpha: 1,
+      windowColor: 0x000000,
+      name: "descriptionWindow",
+    });
   }
 }

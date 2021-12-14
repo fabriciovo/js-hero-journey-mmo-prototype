@@ -1,18 +1,15 @@
-import { SpawnerType, randomNumber, WeaponTypes } from "../utils";
+import {
+  SpawnerType,
+  randomNumber,
+  WeaponTypes,
+  getRandonValues,
+} from "../utils";
 import ChestModel from "../../models/ChestModel";
 import MonsterModel from "../../models/MonsterModel";
 import ItemModel from "../../models/ItemModel";
 import * as itemData from "../../../public/assets/level/tools.json";
 import * as enemyData from "../../../public/assets/Enemies/enemies.json";
-
-import NpcModel from "../../models/npcModel";
-
-function getRandonValues() {
-  const bonus = [
-    -3, -5, -6, 0, 5, 3, 4, 7, 2, 1, 8, 10, 11, 23, 12, 13, 14, 15, 16, 9,
-  ];
-  return bonus[Math.floor(Math.random() * bonus.length)];
-}
+import NpcModel from "../../models/NpcModel";
 
 export default class Spawner {
   constructor(config, spawnLocations, addObject, deleteObject, moveObjects) {
@@ -24,7 +21,7 @@ export default class Spawner {
     this.addObject = addObject;
     this.deleteObject = deleteObject;
     this.moveObjects = moveObjects;
-
+    this.monsterIntervalTimer = 1000;
     this.objectsCreated = [];
 
     this.start();
@@ -98,7 +95,8 @@ export default class Spawner {
       randomEnemy.key, // key
       randomEnemy.healthValue, // health value
       randomEnemy.attackValue, // attack value
-      randomEnemy.expValue // exp value
+      randomEnemy.expValue, // exp value
+      3000 //timer
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);
@@ -137,8 +135,20 @@ export default class Spawner {
       this.objectsCreated.forEach((monster) => {
         monster.move();
       });
-
       this.moveObjects();
-    }, 1000);
+    }, this.monsterIntervalTimer);
+  }
+
+  resetMonsterInterval(value) {
+    // clear the existing interval
+    this.monsterIntervalTimer = value;
+    clearInterval(this.moveMonsterInterval);
+    // just start a new one
+    this.moveMonsterInterval = setInterval(() => {
+      this.objectsCreated.forEach((monster) => {
+        monster.move();
+      });
+      this.moveObjects();
+    }, this.monsterIntervalTimer);
   }
 }

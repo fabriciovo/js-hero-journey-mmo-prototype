@@ -1,6 +1,7 @@
 import { DEPTH, iconsetPotionsTypes } from "../../utils/utils";
 import ModalWindow from "./ModalWindow";
 import * as potionData from "../../../assets/Items/potions.json";
+import UiButton from "../UI/UiButton";
 
 export default class ShopWindow extends ModalWindow {
   constructor(scene, opts) {
@@ -75,7 +76,6 @@ export default class ShopWindow extends ModalWindow {
     this.graphics.setAlpha(1);
   }
 
-
   createShopText() {
     this.shopTitle = this.scene.add
       .text(this.shopContainer.width / 2, 140, "Shop", {
@@ -131,20 +131,17 @@ export default class ShopWindow extends ModalWindow {
   }
 
   createButtons() {
-    this.buyButton = this.scene.add
-      .image(
-        this.shopContainer.width / 2 + 90,
-        this.shopContainer.height / 2 + 180,
-        "inventoryEquip",
-        0
-      )
-      .setScale(0.1)
-      .setOrigin(0.5)
-      .setInteractive({ cursor: "pointer" });
-
-    this.buyButton.on("pointerdown", () => {
-      this.buyItem(this.selectItem);
-    });
+    this.buyButton = new UiButton(
+      this.scene,
+      this.shopContainer.width / 2 + 90,
+      this.shopContainer.height / 2 + 180,
+      "buttons",
+      6,
+      7,
+      "Buy",
+      1.8,
+      this.buyItem.bind(this, this.selectItem)
+    );
 
     this.shopContainer.add(this.buyButton);
 
@@ -171,13 +168,11 @@ export default class ShopWindow extends ModalWindow {
   }
 
   showButtons() {
-    this.buyButton.setInteractive({ cursor: "pointer" });
     this.buyButton.setAlpha(1);
   }
 
   hideButtons() {
     if (!this.selectedItem) {
-      this.buyButton.disableInteractive();
       this.buyButton.setAlpha(0);
     }
   }
@@ -185,7 +180,6 @@ export default class ShopWindow extends ModalWindow {
   buyItem() {
     if (this.selectedItem && this.playerObject) {
       this.playerObject.buyItem(this.selectedItem);
-      
     }
   }
 

@@ -1,5 +1,4 @@
 import * as Phaser from "phaser";
-import { healthBarTypes } from "../../utils/utils";
 
 export default class Bar extends Phaser.Physics.Arcade.Image {
   constructor(scene, x, y, key, frame, holder, depth, size = 100) {
@@ -9,8 +8,7 @@ export default class Bar extends Phaser.Physics.Arcade.Image {
     this.frame = frame;
     this.holder = holder;
     this.size = size;
-    
-    this.scene.add.existing(this);
+
     this.CreateBar(x, y, depth);
   }
 

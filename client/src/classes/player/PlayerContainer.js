@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import Player from "./Player";
 import Direction from "../../utils/direction";
-import RangedWeapon from "../weapons/RangedWeapon";
+import Bow from "../Entities/weapons/Bow";
 import Potion from "../Armory/Potion/Potion";
 import {
   DEPTH,
@@ -11,6 +11,36 @@ import {
   iconsetWeaponTypes,
 } from "../../utils/utils";
 import Bar from "../UI/Bar";
+
+const weaponsTemp = [
+  {
+    frame: 0,
+    name: "Small Wooden Sword",
+    Description: "",
+    PlayerHave: false,
+  },
+  {
+    frame: 2,
+    name: "Bow",
+    Description: "",
+    PlayerHave: false,
+  },
+];
+
+const potionsTemp = [
+  {
+    frame: 0,
+    name: "Small Potion",
+    Description: "",
+    PlayerHave: false,
+  },
+  {
+    frame: 2,
+    name: "Potion",
+    Description: "",
+    PlayerHave: false,
+  },
+];
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
   constructor(
@@ -33,7 +63,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     exp,
     maxExp,
     level,
-    potions
+    potions,
+    weapons
   ) {
     super(scene, x, y);
     this.scene = scene; // the scene this container will be added to
@@ -53,6 +84,8 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.attackValue = attackValue;
     this.items = items || {};
     this.equipedItems = equipedItems || {};
+    this.weapons = weaponsTemp;
+
     this.exp = exp;
     this.maxExp = maxExp;
     this.level = level;
@@ -83,70 +116,24 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.player = new Player(this.scene, 0, 0, this.key, frame);
 
     this.add(this.player);
-    this.setDepth(DEPTH.NORMAL);
+    this.setDepth(DEPTH.ENTITIES);
     //Actions
     this.actionAActive = false;
-    this.actionBActive = false;
     this.actionCActive = false;
 
+    //creeate player input
+    this.createInput();
+
     // create the weapons game object
-    this.actionA = this.scene.add.sprite(
-      40,
-      0,
-      "iconset",
-      iconsetWeaponTypes.SMALL_WOODEN_SWORDzz
-    );
-    this.actionB = new RangedWeapon(
-      this.scene,
-      this.x,
-      this.y,
-      "iconset",
-      iconsetWeaponTypes.ARROW,
-      this.id
-    );
-    this.actionB.makeInactive();
-    this.scene.rangedObjects.add(this.actionB);
-
-    //this.actionB = new Bullet(this.scene,this.x,this.y);
-    //this.actionB = new Bullet(this.scene, this.x, this.y);
-    // create the potion game object
-    this.potionA = new Potion(
-      this.scene,
-      this.x,
-      this.y,
-      "iconset",
-      iconsetPotionsTypes.HEALTH_POTION,
-      this.id
-    );
-    this.potionA.makeInactive();
-
-    this.scene.add.existing(this.actionA);
-    this.actionA.setScale(1.5);
-
-    this.scene.physics.world.enable(this.actionA);
-    this.add(this.actionA);
-    this.actionA.alpha = 0;
-
+    this.createWeapons();
     // create the player healthbar
     this.createPlayerBars();
 
     this.createPlayerName();
-
-    //set actions
-    this.actionAButton = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.Z
-    );
-
-    this.actionBButton = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.X
-    );
-
-    this.potionAButton = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.C
-    );
   }
 
   createPlayerBars() {
+    debugger
     //Health bar
     this.healthBar = new Bar(
       this.scene,
@@ -171,6 +158,19 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         fill: "#ffffff",
       },
     });
+  }
+
+  createInput() {
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
+
+    //set actions
+    this.actionAButton = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.Z
+    );
+
+    this.potionAButton = this.scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.C
+    );
   }
 
   updatePlayerName() {
@@ -212,24 +212,24 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.updatePlayerName();
   }
 
-  update(cursors) {
+  update() {
     this.body.setVelocity(0);
     if (this.mainPlayer) {
-      if (cursors.left.isDown || this.mobileLeft) {
+      if (this.cursors.left.isDown || this.mobileLeft) {
         this.body.setVelocityX(-this.velocity);
         this.currentDirection = Direction.LEFT;
         this.player.flipX = false;
         this.flipX = false;
-      } else if (cursors.right.isDown || this.mobileRight) {
+      } else if (this.cursors.right.isDown || this.mobileRight) {
         this.body.setVelocityX(this.velocity);
         this.currentDirection = Direction.RIGHT;
         this.player.flipX = true;
         this.flipX = true;
       }
-      if (cursors.up.isDown || this.mobileUp) {
+      if (this.cursors.up.isDown || this.mobileUp) {
         this.body.setVelocityY(-this.velocity);
         this.currentDirection = Direction.UP;
-      } else if (cursors.down.isDown || this.mobileDown) {
+      } else if (this.cursors.down.isDown || this.mobileDown) {
         this.body.setVelocityY(this.velocity);
         this.currentDirection = Direction.DOWN;
       }
@@ -238,30 +238,15 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
         (Phaser.Input.Keyboard.JustDown(this.actionAButton) ||
           this.mobileActionA) &&
         !this.actionAActive &&
-        !this.potionAActive &&
-        !this.actionBActive
+        !this.potionAActive
       ) {
         this.actionAFunction();
       }
 
       if (
-        Phaser.Input.Keyboard.JustDown(this.actionBButton) &&
-        !this.actionBActive &&
-        !this.actionAActive &&
-        !this.potionAActive
-      ) {
-        this.actionB.setPosition(this.x, this.y);
-        this.actionB.direction = this.currentDirection;
-        this.actionB.makeActive();
-        this.actionBFunction();
-      }
-
-      if (
         Phaser.Input.Keyboard.JustDown(this.potionAButton) &&
         !this.potionAActive &&
-        !this.actionAActive &&
-        !this.actionBActive
-      ) {
+        !this.actionAActive      ) {
         this.potionAFunction();
       }
     }
@@ -271,12 +256,15 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.player.playAnimation(`up_${this.key}`);
     } else if (this.currentDirection === Direction.DOWN) {
       this.actionA.setPosition(0, 40);
+
       this.player.playAnimation(`down_${this.key}`);
     } else if (this.currentDirection === Direction.RIGHT) {
       this.actionA.setPosition(40, 0);
+
       this.player.playAnimation(`right_${this.key}`);
     } else if (this.currentDirection === Direction.LEFT) {
       this.actionA.setPosition(-40, 0);
+
       this.player.playAnimation(`right_${this.key}`);
     }
 
@@ -298,10 +286,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.actionA.flipX = false;
       if (this.currentDirection === Direction.LEFT) {
         this.actionA.flipX = true;
-      }
-
-      if (!this.actionBActive) {
-        this.actionB.makeInactive();
       }
     }
 
@@ -336,22 +320,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     );
   }
 
-  actionBFunction() {
-    this.actionB.makeActive();
-    this.actionB.Attack();
-    this.actionBActive = true;
-    if (this.mainPlayer) this.attackAudio.play();
-    this.scene.time.delayedCall(
-      2000,
-      () => {
-        this.actionBActive = false;
-        this.hitbox = false;
-      },
-      [],
-      this
-    );
-  }
-
   potionAFunction() {
     if (this.potions > 0 && this.health < this.maxHealth) {
       this.potionAActive = true;
@@ -378,7 +346,6 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
 
     this.playerNameText.setText("");
 
-    this.playerName.destroy();
     this.player.destroy();
     this.destroy();
   }
@@ -419,6 +386,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       this.potions++;
       this.gold -= item.price;
       this.scene.sendBuyItemMessage(item);
+    }else{
     }
   }
 
@@ -428,5 +396,32 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       delete this.equipedItems[keys[itemNumber]];
       this.scene.sendUnequipItemMessage(keys[itemNumber]);
     }
+  }
+
+  createWeapons() {
+    this.actionA = this.scene.add.sprite(
+      40,
+      0,
+      "iconset",
+      iconsetWeaponTypes.SMALL_WOODEN_SWORD
+    );
+
+    // create the potion game object
+    this.potionA = new Potion(
+      this.scene,
+      this.x,
+      this.y,
+      "iconset",
+      iconsetPotionsTypes.HEALTH_POTION,
+      this.id
+    );
+    this.potionA.makeInactive();
+
+    this.scene.add.existing(this.actionA);
+    this.actionA.setScale(2);
+
+    this.scene.physics.world.enable(this.actionA);
+    this.add(this.actionA);
+    this.actionA.alpha = 0;
   }
 }

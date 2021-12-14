@@ -46,7 +46,6 @@ export default class UiSceneMobile extends Phaser.Scene {
     this.chatController =true;
 
     //create equiped weapons icons
-    console.log(this.game.mobile);
 
     this.moveDown = this.add
       .image(90, this.scale.height - 50, "up")

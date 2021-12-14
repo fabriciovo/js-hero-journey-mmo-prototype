@@ -16,7 +16,7 @@ var _uuid = require("uuid");
 var _utils = require("../game_manager/utils");
 
 var MonsterModel = /*#__PURE__*/function () {
-  function MonsterModel(x, y, gold, spawnerId, key, health, attack, exp) {
+  function MonsterModel(x, y, gold, spawnerId, key, health, attack, exp, stateTime) {
     (0, _classCallCheck2["default"])(this, MonsterModel);
     this.id = "".concat(spawnerId, "-").concat((0, _uuid.v4)());
     this.spawnerId = spawnerId;
@@ -28,59 +28,112 @@ var MonsterModel = /*#__PURE__*/function () {
     this.maxHealth = health;
     this.attack = attack;
     this.exp = exp;
+    this.stateTime = stateTime;
+    this.randomPosition = (0, _utils.randomNumber)(1, 8);
+    this.targetPosition = {
+      x: 0,
+      y: 0
+    };
+    this.monsterChasing = false;
   }
 
   (0, _createClass2["default"])(MonsterModel, [{
-    key: "loseHealth",
-    value: function loseHealth(attack) {
-      this.health -= attack;
+    key: "setTargetPos",
+    value: function setTargetPos(position) {
+      this.targetPosition = {
+        x: position.x,
+        y: position.y
+      };
+    }
+  }, {
+    key: "setChasing",
+    value: function setChasing(value) {
+      this.monsterChasing = value;
+    }
+  }, {
+    key: "getMonsterChase",
+    value: function getMonsterChase() {
+      return this.monsterChasing;
     }
   }, {
     key: "move",
     value: function move() {
-      var randomPosition = (0, _utils.randomNumber)(1, 8);
+      if (this.monsterChasing) return;
+      var randomPosition = (0, _utils.randomNumber)(1, 9);
       var distance = 64;
 
       switch (randomPosition) {
         case 1:
-          this.x += distance;
+          this.setTargetPos({
+            x: this.x += distance,
+            y: this.y
+          });
           break;
 
         case 2:
-          this.x -= distance;
+          this.setTargetPos({
+            x: this.x -= distance,
+            y: this.y
+          });
           break;
 
         case 3:
-          this.y += distance;
+          this.setTargetPos({
+            x: this.x,
+            y: this.y += distance
+          });
           break;
 
         case 4:
-          this.y -= distance;
+          this.setTargetPos({
+            x: this.x,
+            y: this.y -= distance
+          });
           break;
 
         case 5:
-          this.x += distance;
-          this.y += distance;
+          this.setTargetPos({
+            x: this.x += distance,
+            y: this.y += distance
+          });
           break;
 
         case 6:
-          this.x += distance;
-          this.y -= distance;
+          this.setTargetPos({
+            x: this.x += distance,
+            y: this.y -= distance
+          });
           break;
 
         case 7:
-          this.x -= distance;
-          this.y += distance;
+          this.setTargetPos({
+            x: this.x -= distance,
+            y: this.y += distance
+          });
           break;
 
         case 8:
-          this.x -= distance;
-          this.y -= distance;
+          this.setTargetPos({
+            x: this.x -= distance,
+            y: this.y -= distance
+          });
+          break;
+
+        case 9:
+          this.setTargetPos({
+            x: this.x,
+            y: this.y
+          });
           break;
 
         default:
           break;
       }
+    }
+  }, {
+    key: "loseHealth",
+    value: function loseHealth(attack) {
+      this.health -= attack;
     }
   }]);
   return MonsterModel;
