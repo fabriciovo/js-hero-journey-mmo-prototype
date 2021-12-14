@@ -119,7 +119,7 @@ var MonsterModel = /*#__PURE__*/function () {
           });
           break;
 
-        case 8:
+        case 9:
           this.setTargetPos({
             x: this.x,
             y: this.y

@@ -1,4 +1,9 @@
-import { SpawnerType, randomNumber, WeaponTypes, getRandonValues } from "../utils";
+import {
+  SpawnerType,
+  randomNumber,
+  WeaponTypes,
+  getRandonValues,
+} from "../utils";
 import ChestModel from "../../models/ChestModel";
 import MonsterModel from "../../models/MonsterModel";
 import ItemModel from "../../models/ItemModel";
@@ -16,7 +21,7 @@ export default class Spawner {
     this.addObject = addObject;
     this.deleteObject = deleteObject;
     this.moveObjects = moveObjects;
-
+    this.monsterIntervalTimer = 1000;
     this.objectsCreated = [];
 
     this.start();
@@ -29,7 +34,6 @@ export default class Spawner {
       }
     }, this.spawnInterval);
     if (this.objectType === SpawnerType.MONSTER) this.moveMonsters();
-
   }
 
   spawnObject() {
@@ -132,7 +136,19 @@ export default class Spawner {
         monster.move();
       });
       this.moveObjects();
-    }, 1000);
+    }, this.monsterIntervalTimer);
   }
 
+  resetMonsterInterval(value) {
+    // clear the existing interval
+    this.monsterIntervalTimer = value;
+    clearInterval(this.moveMonsterInterval);
+    // just start a new one
+    this.moveMonsterInterval = setInterval(() => {
+      this.objectsCreated.forEach((monster) => {
+        monster.move();
+      });
+      this.moveObjects();
+    }, this.monsterIntervalTimer);
+  }
 }

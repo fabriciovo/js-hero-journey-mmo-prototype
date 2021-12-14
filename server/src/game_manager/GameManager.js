@@ -351,7 +351,6 @@ export default class GameManager {
               monsterId
             );
             this.io.emit("monsterRemoved", monsterId);
-
           } else {
             // update the monsters health
             this.io.emit(
@@ -364,7 +363,7 @@ export default class GameManager {
       });
 
       socket.on("monsterAttack", (monsterId, playerId) => {
-        if(!this.monsters[monsterId]) return;
+        if (!this.monsters[monsterId]) return;
         const { attack } = this.monsters[monsterId];
         // update the players health
         this.players[playerId].playerAttacked(attack);
@@ -390,7 +389,6 @@ export default class GameManager {
           this.io.emit("respawnPlayer", this.players[playerId]);
         }
       });
-
 
       socket.on("healthPotion", (playerId, health) => {
         if (socket.id === playerId) {
@@ -428,27 +426,35 @@ export default class GameManager {
       // });
 
       socket.on("dropItem", (x, y, item) => {
-
         this.itemDictionary[item](x, y);
       });
 
-      socket.on("monsterFollowPlayer", (monsterId,x,y) => {
-        if(!this.monsters[monsterId]) return
-        this.monsters[monsterId].setChasing(true)
-        this.monsters[monsterId].setTargetPos({x,y})
+      socket.on("monsterFollowPlayer", (monsterId, x, y) => {
+        if (!this.monsters[monsterId]) return;
+        if (!this.monsters[monsterId].monsterChasing) {
+          this.spawners[
+            this.monsters[monsterId].spawnerId
+          ].resetMonsterInterval(100);
+          this.monsters[monsterId].setChasing(true);
+        }
+        this.monsters[monsterId].setTargetPos({ x, y });
       });
 
       socket.on("monsterStopFollowingPlayer", (monsterId) => {
-        if(!this.monsters[monsterId] && this.monsters[monsterId].getMonsterChase()) return
-        this.monsters[monsterId].setChasing(false)
+        if (!this.monsters[monsterId]) return;
+        if (this.monsters[monsterId].monsterChasing) {
+          this.spawners[
+            this.monsters[monsterId].spawnerId
+          ].resetMonsterInterval(1000);
+          this.monsters[monsterId].setChasing(false);
+        }
       });
 
-      socket.on("monsterStartMove", (monsterId,x,y) => {
-        if(!this.monsters[monsterId]) return
-        this.monsters[monsterId].setChasing(true)
-        this.monsters[monsterId].setTargetPos({x,y})
+      socket.on("monsterStartMove", (monsterId, x, y) => {
+        if (!this.monsters[monsterId]) return;
+        this.monsters[monsterId].setChasing(true);
+        this.monsters[monsterId].setTargetPos({ x, y });
       });
-
 
       // player connected to our game
       console.log("player connected to our game");
@@ -538,7 +544,6 @@ export default class GameManager {
   moveMonsters() {
     this.io.emit("monsterMovement", this.monsters);
   }
-
 
   addNpc(npcId, npc) {
     this.npcs[npcId] = npc;

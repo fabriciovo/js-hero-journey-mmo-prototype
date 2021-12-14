@@ -24,14 +24,14 @@ export default class MonsterModel {
   }
 
   setChasing(value) {
-    this.monsterChasing = value
+    this.monsterChasing = value;
   }
-  
+
   getMonsterChase() {
     return this.monsterChasing;
   }
   move() {
-    if(this.monsterChasing) return
+    if (this.monsterChasing) return;
     const randomPosition = randomNumber(1, 9);
     const distance = 64;
     switch (randomPosition) {
@@ -64,12 +64,11 @@ export default class MonsterModel {
         this.setTargetPos({ x: (this.x -= distance), y: (this.y -= distance) });
 
         break;
-        case 8:
-          this.setTargetPos({ x: this.x , y: this.y  });
-  
-          break;
-      default:
+      case 9:
+        this.setTargetPos({ x: this.x, y: this.y });
 
+        break;
+      default:
         break;
     }
   }

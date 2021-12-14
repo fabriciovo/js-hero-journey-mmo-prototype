@@ -457,11 +457,15 @@ var GameManager = /*#__PURE__*/function () {
             x: x,
             y: y
           });
+
+          _this2.spawner.resetMonsterInterval(50);
         });
         socket.on("monsterStopFollowingPlayer", function (monsterId) {
           if (!_this2.monsters[monsterId] && _this2.monsters[monsterId].getMonsterChase()) return;
 
           _this2.monsters[monsterId].setChasing(false);
+
+          _this2.spawner.resetMonsterInterval(1000);
         });
         socket.on("monsterStartMove", function (monsterId, x, y) {
           if (!_this2.monsters[monsterId]) return;

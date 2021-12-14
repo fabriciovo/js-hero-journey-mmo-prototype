@@ -42,6 +42,7 @@ var Spawner = /*#__PURE__*/function () {
     this.addObject = addObject;
     this.deleteObject = deleteObject;
     this.moveObjects = moveObjects;
+    this.monsterIntervalTimer = 1000;
     this.objectsCreated = [];
     this.start();
   }
@@ -144,7 +145,16 @@ var Spawner = /*#__PURE__*/function () {
         });
 
         _this2.moveObjects();
-      }, 1000);
+      }, this.monsterIntervalTimer);
+    }
+  }, {
+    key: "resetMonsterInterval",
+    value: function resetMonsterInterval(value) {
+      // clear the existing interval
+      this.monsterIntervalTimer = value;
+      clearInterval(this.moveMonsterInterval); // just start a new one
+
+      startInterval(this.moveMonsterInterval);
     }
   }]);
   return Spawner;

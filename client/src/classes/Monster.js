@@ -119,59 +119,11 @@ export default class Monster extends Entity {
   update() {
     if (!this.dead) {
       this.updateHealthBar();
-      this.animation();
-
-      // this.text.setText("this.state.toString()");
-      // this.text.x = this.x;
-      // this.text.y = this.y - 40;
-
-      // if (this.timer.getProgress().toString().substr(0, 4) === 0.0) {
-      //   this.move();
-      // }
     }
   }
 
   move(targetPosition) {
-    debugger
     this.scene.physics.moveToObject(this, targetPosition, 90);
-    // const distance = 164;
-    // switch (this.randomPosition) {
-    //   case 1:
-    //     this.body.setVelocityX(distance);
-    //     break;
-    //   case 2:
-    //     this.body.setVelocityX(-distance);
-    //     break;
-    //   case 3:
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 4:
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    //   case 5:
-    //     this.body.setVelocityX(distance);
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 6:
-    //     this.body.setVelocityX(distance);
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    //   case 7:
-    //     this.body.setVelocityX(-distance);
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 8:
-    //     this.body.setVelocityX(-distance);
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    // }
-    // this.stateTime = Phaser.Math.Between(1000, 3000);
-    // // this.timer = this.scene.time.delayedCall(
-    // //   this.stateTime,
-    // //   this.idle,
-    // //   [],
-    // //   this
-    // // );
   }
 
   followPlayer(playerPosition) {
@@ -184,12 +136,12 @@ export default class Monster extends Entity {
     );
 
     if (dis < 200) {
-      this.scene.sendPlayerNearMonster(this.id, playerPosition);
+      this.scene.sendPlayerNearMonster(this.id, playerPosition, dis);
     }else{
       this.scene.sendMonsterStopFollowingPlayer(this.id);
     }
 
-    if (dis < 90) {
+    if (dis < 90 && !this.monsterAttackActive) {
       this.attack();
     }
   }
@@ -206,23 +158,6 @@ export default class Monster extends Entity {
       [],
       this
     );
-  }
-
-  animation() {}
-
-  damage() {}
-
-  idle() {
-    // this.body.setVelocityX(0);
-    // this.body.setVelocityY(0);
-    // this.stateTime = Phaser.Math.Between(1000, 3000);
-    // this.randomPosition = randomNumber(1, 8);
-    // this.timer = this.scene.time.delayedCall(
-    //   this.stateTime,
-    //   this.move,
-    //   [],
-    //   this
-    // );
   }
 
   makeInactive() {
