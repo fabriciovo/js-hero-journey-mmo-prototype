@@ -138,20 +138,7 @@ var PlayerModel = /*#__PURE__*/function () {
   }, {
     key: "generateLocation",
     value: function generateLocation(players) {
-      var location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)];
-      var invalidLocation = Object.keys(players).some(function (key) {
-        if (players[key].x === location[0] && players[key].y === location[1]) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-
-      if (invalidLocation) {
-        return this.generateLocation(players);
-      } else {
-        return location;
-      }
+      return [200, 200];
     }
   }]);
   return PlayerModel;

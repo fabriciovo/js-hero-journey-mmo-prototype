@@ -4,8 +4,8 @@ import UserModel from "../../models/UserModel";
 import PlayerModel from "../../models/PlayerModel";
 export default class AttackController {
   constructor(io) {
-    this.npcs = {};
-    this.npcsLocations = [];
+    this.players = {};
+    this.playerLocations = [];
     this.io = io;
   }
 
@@ -13,14 +13,5 @@ export default class AttackController {
   setupEventListeners(socket) {
 
   }
-  
-  addNpc(npcId, npc) {
-    this.npcs[npcId] = npc;
-    this.io.emit("npcSpawned", npc);
-  }
 
-  deleteNpc(npcId) {
-    delete this.npcs[npcId];
-    this.io.emit("npcRemoved", npcId);
-  }
 }

@@ -16,51 +16,20 @@ export default class MonsterController {
     this.update();
   }
 
-  setupEventListeners(socket, playerList) {
-    socket.on("monsterAttacked", (monsterId) => {
-      // update the spawner
-      if (this.monsters[monsterId]) {
-        const monster = this.monsters[monsterId];
-        const { exp } = monster;
-        const playerAttackValue = playerList[socket.id].attack;
-        // subtract health monster model
-        monster.loseHealth(playerAttackValue);
-
-        // check the monsters health, and if dead remove that object
-        if (monster.health <= 0) {
-          //update xp
-          playerList[socket.id].updateExp(exp);
-          this.io.emit("updateXp", exp, socket.id);
-
-          this.deleteMonster(monster.id);
-        } else {
-          // update the monsters health
-          this.io.emit("updateMonsterHealth", monsterId, monster.health);
-        }
-      }
-    });
-
-    socket.on("monsterAttack", (monsterId, playerId) => {
+  setupEventListeners(socket) {
+    return socket.on("monsterHit", (monsterId, playerAttack, playerId) => {
       if (!this.monsters[monsterId]) return;
-      const { attack } = this.monsters[monsterId];
-      // update the players health
-      playerList[playerId].playerAttacked(attack);
-      this.io.emit("updatePlayerHealth", playerId, playerList[playerId].health);
+      const monster = this.monsters[monsterId];
+      const { exp } = monster;
+      const playerAttackValue = playerAttack;
+      monster.loseHealth(playerAttackValue);
 
-      // check the player's health, if below 0 have the player respawn
-      if (playerList[playerId].health <= 0) {
-        // update the gold the player has
-        playerList[playerId].updateGold(
-          parseInt(-playerList[playerId].gold / 2, 10)
-        );
-        playerList[playerId].updateExp(
-          parseInt(-playerList[playerId].exp / 2, 10)
-        );
-        socket.emit("updateScore", playerList[playerId].gold);
+      if (monster.health <= 0) {
+        socket.emit("playerUpdateXp", playerId, exp);
 
-        // respawn the player
-        playerList[playerId].respawn(playerList);
-        this.io.emit("respawnPlayer", playerList[playerId]);
+        this.deleteMonster(monster.id);
+      } else {
+        socket.emit("updateMonsterHealth", monsterId, monster.health);
       }
     });
   }
@@ -79,7 +48,7 @@ export default class MonsterController {
       if (Object.keys(this.monsters).length <= 8) {
         this.spawnMonster();
       }
-    }, 8000);
+    }, 3000);
   }
 
   pickRandomLocation() {

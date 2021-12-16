@@ -27,7 +27,7 @@ var MonsterController = /*#__PURE__*/function () {
   function MonsterController(io) {
     (0, _classCallCheck2["default"])(this, MonsterController);
     this.monsters = {};
-    this.monsterLocations = {};
+    this.monsterLocations = [];
     this.io = io;
     this.setupSpawn();
     this.init();
@@ -68,22 +68,22 @@ var MonsterController = /*#__PURE__*/function () {
       socket.on("monsterAttack", function (monsterId, playerId) {
         if (!_this.monsters[monsterId]) return;
         var attack = _this.monsters[monsterId].attack; // update the players health
-        // playerList[playerId].playerAttacked(attack);
-        // this.io.emit("updatePlayerHealth", playerId, playerList[playerId].health);
-        // // check the player's health, if below 0 have the player respawn
-        // if (playerList[playerId].health <= 0) {
-        //   // update the gold the player has
-        //   playerList[playerId].updateGold(
-        //     parseInt(-playerList[playerId].gold / 2, 10)
-        //   );
-        //   playerList[playerId].updateExp(
-        //     parseInt(-playerList[playerId].exp / 2, 10)
-        //   );
-        //   socket.emit("updateScore", playerList[playerId].gold);
-        //   // respawn the player
-        //   playerList[playerId].respawn(playerList);
-        //   this.io.emit("respawnPlayer", playerList[playerId]);
-        // }
+
+        playerList[playerId].playerAttacked(attack);
+
+        _this.io.emit("updatePlayerHealth", playerId, playerList[playerId].health); // check the player's health, if below 0 have the player respawn
+
+
+        if (playerList[playerId].health <= 0) {
+          // update the gold the player has
+          playerList[playerId].updateGold(parseInt(-playerList[playerId].gold / 2, 10));
+          playerList[playerId].updateExp(parseInt(-playerList[playerId].exp / 2, 10));
+          socket.emit("updateScore", playerList[playerId].gold); // respawn the player
+
+          playerList[playerId].respawn(playerList);
+
+          _this.io.emit("respawnPlayer", playerList[playerId]);
+        }
       });
     }
   }, {
@@ -105,7 +105,7 @@ var MonsterController = /*#__PURE__*/function () {
       var _this3 = this;
 
       setInterval(function () {
-        if (Object.keys(_this3.monsters).length <= 16) {
+        if (Object.keys(_this3.monsters).length <= 8) {
           _this3.spawnMonster();
         }
       }, 8000);
