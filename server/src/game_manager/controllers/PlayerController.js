@@ -1,0 +1,331 @@
+import jwt from "jsonwebtoken";
+
+import UserModel from "../../models/UserModel";
+import PlayerModel from "../../models/PlayerModel";
+export default class PlayerController {
+  constructor(io) {
+    this.players = {};
+    this.playerLocations = [];
+    this.io = io;
+  }
+
+  eventSavePlayerData(socket) {
+    return socket.on("savePlayerData", async () => {
+      try {
+        if (!this.players[socket.id].items) {
+          this.players[socket.id].items = null;
+        }
+
+        if (!this.players[socket.id].equipedItems) {
+          this.players[socket.id].equipedItems = null;
+        }
+
+        await UserModel.updateOne(
+          { username: this.players[socket.id].playerName },
+          {
+            $set: {
+              player: this.players[socket.id],
+            },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  eventNewPlayer(socket) {
+    socket.on("newPlayer", async (token, key) => {
+      console.log("Player newPlayer");
+
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const { name, _id } = decoded.user;
+
+        const playerSchema = await UserModel.findById(_id);
+
+        const player = this.spawnPlayer(
+          socket.id,
+          name,
+          key,
+          playerSchema.player
+        );
+
+        socket.emit("currentPlayers", this.players);
+
+        // inform the other players of the new player that joined
+        socket.broadcast.emit("spawnPlayer", player);
+        socket.emit("updateItems", player);
+        socket.broadcast.emit("updatePlayersItems", socket.id, player);
+      } catch (error) {
+        console.log(error);
+        socket.emit("invalidToken");
+      }
+    });
+  }
+
+  eventPlayerMovement(socket) {
+    return socket.on("playerMovement", (playerData) => {
+      if (this.players[socket.id]) {
+        this.players[socket.id].x = playerData.x;
+        this.players[socket.id].y = playerData.y;
+        this.players[socket.id].flipX = playerData.flipX;
+        this.players[socket.id].actionAActive = playerData.actionAActive;
+        this.players[socket.id].potionAActive = playerData.potionAActive;
+        this.players[socket.id].frame = playerData.frame;
+        this.players[socket.id].currentDirection = playerData.currentDirection;
+        // emit a message to all players about the player that moved
+        this.io.emit("playerMoved", this.players[socket.id]);
+      }
+    });
+  }
+
+  eventPickupChest(socket) {
+    return socket.on("pickUpChest", (chestId) => {
+      this.io.emit("playerPickupChest", chestId, this.players[socket.id]);
+    });
+  }
+
+  eventPickupItem(socket) {
+    return socket.on("pickUpItem", (itemId) => {
+      this.io.emit("playerPickupItem", itemId, this.players[socket.id]);
+    });
+  }
+
+  eventPlayerDroppedItem(socket) {
+    return socket.on("playerDroppedItem", (itemId) => {
+      this.players[socket.id].removeItem(itemId);
+      socket.emit("updateItems", this.players[socket.id]);
+      socket.broadcast.emit(
+        "updatePlayersItems",
+        socket.id,
+        this.players[socket.id]
+      );
+    });
+  }
+
+  eventPlayerEquipedItem(socket) {
+    return socket.on("playerEquipedItem", (itemId) => {
+      if (this.players[socket.id].items[itemId]) {
+        if (this.players[socket.id].canEquipItem()) {
+          this.players[socket.id].equipItem(
+            this.players[socket.id].items[itemId]
+          );
+          socket.emit("updateItems", this.players[socket.id]);
+          socket.broadcast.emit(
+            "updatePlayersItems",
+            socket.id,
+            this.players[socket.id]
+          );
+        }
+      }
+    });
+  }
+
+  eventPlayerUnequipedItem(socket) {
+    return socket.on("playerUnequipedItem", (itemId) => {
+      if (this.players[socket.id].equipedItems[itemId]) {
+        if (this.players[socket.id].canPickupItem()) {
+          this.players[socket.id].addItem(
+            this.players[socket.id].equipedItems[itemId]
+          );
+          this.players[socket.id].removeEquipedItem(itemId);
+          socket.emit("updateItems", this.players[socket.id]);
+          socket.broadcast.emit(
+            "updatePlayersItems",
+            socket.id,
+            this.players[socket.id]
+          );
+        }
+      }
+    });
+  }
+  eventPickupItem(socket) {
+    return socket.on("levelUp", () => {
+      this.players[socket.id].levelUp();
+      this.io.emit(
+        "updatePlayerStats",
+        socket.id,
+        this.players[socket.id].level,
+        this.players[socket.id].attack,
+        this.players[socket.id].defense,
+        this.players[socket.id].maxHealth,
+        this.players[socket.id].exp,
+        this.players[socket.id].maxExp
+      );
+    });
+  }
+
+  eventHealthPotion(socket) {
+    return socket.on("healthPotion", (playerId, health) => {
+      this.players[playerId];
+      this.players[playerId].potion(health);
+      this.io.emit(
+        "updatePlayerHealth",
+        playerId,
+        this.players[playerId].health
+      );
+    });
+  }
+
+  eventAttackedPlayer(socket) {
+    return socket.on("attackedPlayer", (attackedPlayerId) => {
+      if (this.players[attackedPlayerId]) {
+        // get required info from attacked player
+        const { gold } = this.players[attackedPlayerId];
+        const playerAttackValue = this.players[socket.id].attack;
+
+        // subtract health from attacked player
+        this.players[attackedPlayerId].playerAttacked(playerAttackValue);
+
+        // check attacked players health, if dead send gold to other player
+        if (this.players[attackedPlayerId].health <= 0) {
+          // get the amount of gold, and update player object
+          this.players[socket.id].updateGold(gold);
+
+          // respawn attacked player
+          this.players[attackedPlayerId].respawn(this.players);
+          this.io.emit("respawnPlayer", this.players[attackedPlayerId]);
+
+          // send update gold message to player
+          socket.emit("updateScore", this.players[socket.id].gold);
+
+          // reset the attacked players gold
+          this.players[attackedPlayerId].updateGold(-gold);
+          this.io
+            .to(`${attackedPlayerId}`)
+            .emit("updateScore", this.players[attackedPlayerId].gold);
+
+          // add bonus health to the player
+          this.players[socket.id].updateHealth(15);
+          this.io.emit(
+            "updatePlayerHealth",
+            socket.id,
+            this.players[socket.id].health
+          );
+        } else {
+          this.io.emit(
+            "updatePlayerHealth",
+            attackedPlayerId,
+            this.players[attackedPlayerId].health
+          );
+        }
+      }
+    });
+  }
+
+  eventPlayerHit(socket) {
+    return socket.on("playerHit", (playerId, monsterAttack) => {
+      this.players[playerId].playerAttacked(monsterAttack);
+      this.io.emit(
+        "updatePlayerHealth",
+        playerId,
+        this.players[playerId].health
+      );
+    });
+  }
+
+  eventSendBuyItemMessage(socket) {
+    return socket.on("sendBuyItemMessage", (item) => {
+      this.players[socket.id].potions++;
+
+      this.players[socket.id].updateGold(-item.price);
+      socket.emit("updateScore", this.players[socket.id].gold);
+      socket.broadcast.emit(
+        "updatePlayersScore",
+        socket.id,
+        this.players[socket.id].gold
+      );
+      // check the player's health, if below 0 have the player respawn
+      if (this.players[playerId].health <= 0) {
+        // update the gold the player has
+        this.players[playerId].updateGold(
+          parseInt(-this.players[playerId].gold / 2, 10)
+        );
+        this.players[playerId].updateExp(
+          parseInt(-this.players[playerId].exp / 2, 10)
+        );
+        socket.emit("updateScore", this.players[playerId].gold);
+
+        // respawn the player
+        this.players[playerId].respawn(this.players);
+        this.io.emit("respawnPlayer", this.players[playerId]);
+      }
+    });
+  }
+
+  eventPlayerUpdateXp(socket) {
+    return socket.on("playerUpdateXp", (playerId, exp) => {
+      this.players[playerId].updateExp(exp);
+      this.io.emit("updateXp", exp, socket.id);
+    });
+  }
+
+  eventDisconnect(socket) {
+    return socket.on("disconnect", () => {
+      // delete user data from server
+
+      console.log("Player Disconnect");
+
+      delete this.players[socket.id];
+
+      // emit a message to all players to remove this player
+      this.io.emit("disconnected", socket.id);
+    });
+  }
+
+  eventPlayerHit(socket) {
+    return socket.on("playerHit", (playerId, monsterAttack, gold = 20) => {
+      this.players[playerId].playerAttacked(monsterAttack);
+      // check attacked players health, if dead send gold to other player
+      if (this.players[playerId].health <= 0) {
+        // get the amount of gold, and update player object
+        this.players[playerId].updateGold(gold);
+
+        // respawn attacked player
+        this.players[playerId].respawn(this.players);
+        this.io.emit("respawnPlayer", this.players[playerId]);
+
+        // send update gold message to player
+        socket.emit("updateScore", this.players[socket.id].gold);
+
+        // reset the attacked players gold
+        this.players[playerId].updateGold(-gold);
+        this.io
+          .to(`${playerId}`)
+          .emit("updateScore", this.players[playerId].gold);
+
+        // add bonus health to the player
+        this.players[socket.id].updateHealth(15);
+        this.io.emit(
+          "updatePlayerHealth",
+          socket.id,
+          this.players[socket.id].health
+        );
+      } else {
+        this.io.emit(
+          "updatePlayerHealth",
+          playerId,
+          this.players[playerId].health
+        );
+      }
+    });
+  }
+
+  spawnPlayer(playerId, name, key, playerSchema) {
+    const player = new PlayerModel(
+      playerId,
+      [
+        [200, 200],
+        [400, 400],
+      ],
+      this.players,
+      name,
+      key,
+      undefined,
+      playerSchema
+    );
+    this.players[playerId] = player;
+    return this.players[playerId];
+  }
+}

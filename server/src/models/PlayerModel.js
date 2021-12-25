@@ -1,5 +1,13 @@
 export default class PlayerModel {
-  constructor(playerId, spawnLocations, players, name, key, actionB, playerSchema) {
+  constructor(
+    playerId,
+    spawnLocations,
+    players,
+    name,
+    key,
+    actionB,
+    playerSchema
+  ) {
     this.attack = playerSchema.attack;
     this.defense = playerSchema.defense;
     this.health = playerSchema.health;
@@ -111,22 +119,6 @@ export default class PlayerModel {
   }
 
   generateLocation(players) {
-    const location =
-      this.spawnLocations[
-        Math.floor(Math.random() * this.spawnLocations.length)
-      ];
-    const invalidLocation = Object.keys(players).some((key) => {
-      if (players[key].x === location[0] && players[key].y === location[1]) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-
-    if (invalidLocation) {
-      return this.generateLocation(players);
-    } else {
-      return location;
-    }
+    return [200, 200];
   }
 }
