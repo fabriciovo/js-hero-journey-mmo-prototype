@@ -1,4 +1,5 @@
 import * as Phaser from "phaser";
+import { randomNumber } from "../../../server/src/game_manager/utils";
 import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
 import Bar from "./UI/Bar";
@@ -27,15 +28,6 @@ export default class Monster extends Entity {
     this.hitbox = false;
     this.monsterAttackActive = false;
 
-    // this.text = this.scene.add.text(
-    //   this.x,
-    //   this.y - 50,
-    //   "",
-    //   {
-    //     fontSize: "46px",
-    //     fill: "#fff",
-    //   }
-    // );
     this.setDepth(DEPTH.ENTITIES);
     this.scene.anims.create({
       key: `normal_${this.key}`,
@@ -66,29 +58,23 @@ export default class Monster extends Entity {
 
     this.play(`normal_${this.key}`);
     this.createHealthBar();
-    // this.timer = this.scene.time.delayedCall(
-    //   this.stateTime,
-    //   this.idle,
-    //   [],
-    //   this
-    // );
 
     this.monsterAttack = this.scene.add.sprite(
       40,
       0,
       "iconset",
-      iconsetWeaponTypes.SMALL_WOODEN_SWORD);
+      iconsetWeaponTypes.SMALL_WOODEN_SWORD
+    );
 
-      this.scene.add.existing(this.monsterAttack);
-      this.monsterAttack.setScale(2);
-      this.scene.physics.world.enable(this.monsterAttack);
-      this.monsterAttack.alpha = 0;
+    this.scene.add.existing(this.monsterAttack);
+    this.monsterAttack.setScale(2);
+    this.scene.physics.world.enable(this.monsterAttack);
+    this.monsterAttack.alpha = 0;
 
     //this.move();
   }
 
   createHealthBar() {
-    debugger
     //Health bar
     this.healthBar = new Bar(
       this.scene,
@@ -122,32 +108,12 @@ export default class Monster extends Entity {
     }
   }
 
-  move(targetPosition) {
-    this.scene.physics.moveToObject(this, targetPosition, 90);
-  }
-
-  followPlayer(playerPosition) {
-    if (!playerPosition || this.dead) return;
-    const dis = Phaser.Math.Distance.Between(
-      playerPosition.x,
-      playerPosition.y,
-      this.x,
-      this.y
-    );
-
-    if (dis < 200) {
-      this.scene.sendPlayerNearMonster(this.id, playerPosition, dis);
-    }else{
-      this.scene.sendMonsterStopFollowingPlayer(this.id);
-    }
-
-    if (dis < 90 && !this.monsterAttackActive) {
-      this.attack();
-    }
+  move(targetPos, speed) {
+    this.scene.physics.moveToObject(this, targetPos, speed);
   }
 
   attack() {
-    if(this.dead) return
+    if (this.dead) return;
     this.monsterAttackActive = true;
     this.scene.time.delayedCall(
       1000,

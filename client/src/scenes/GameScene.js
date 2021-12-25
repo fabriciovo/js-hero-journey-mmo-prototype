@@ -30,6 +30,7 @@ export default class GameScene extends Phaser.Scene {
     this.selectedCharacter = data.selectedCharacter || "characters_3";
 
     this.cameras.main.roundPixels = true;
+    this.socket.emit("currents");
   }
   listenForSocketEvents() {
     // spawn player game objects
@@ -44,6 +45,8 @@ export default class GameScene extends Phaser.Scene {
         }
       });
     });
+
+
 
     // spawn monster game objects
     this.socket.on("currentMonsters", (monsters) => {
@@ -109,7 +112,6 @@ export default class GameScene extends Phaser.Scene {
           monster.makeInactive();
           this.monsterDeathAudio.play();
           this.dropItem(monster);
-
         }
       });
     });
@@ -261,7 +263,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("updateItems", (playerObject) => {
-      this.player.items = playerObject.items;
+      this.player.items = playerObject?.items;
       this.player.attackValue = playerObject.attack;
       this.player.defenseValue = playerObject.defense;
       this.player.maxHealth = playerObject.maxHealth;
@@ -276,7 +278,7 @@ export default class GameScene extends Phaser.Scene {
     this.socket.on("updatePlayersItems", (playerId, playerObject) => {
       this.otherPlayers.getChildren().forEach((otherPlayer) => {
         if (playerId === otherPlayer.id) {
-          otherPlayer.items = playerObject.items;
+          otherPlayer.items = playerObject.items || {};
           otherPlayer.maxHealth = playerObject.maxHealth;
           otherPlayer.attackValue = playerObject.attack;
           otherPlayer.defenseValue = playerObject.defense;
@@ -302,18 +304,27 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    this.socket.on("monsterMovement", (monsters) => {
+    this.socket.on("monsterMovement", ({ id, targetPos }) => {
       this.monsters.getChildren().forEach((monster) => {
-        Object.keys(monsters).forEach((monsterId) => {
-          if (monster.id === monsterId) {
-            debugger;
-            monster.move(monsters[monsterId].targetPosition);
+        if (monster.id === id) {
+          this.playerList.getChildren().forEach((player) => {
+            const dis = Phaser.Math.Distance.Between(
+              player.x,
+              player.y,
+              monster.x,
+              monster.y
+            );
+            if (dis < 200) {
+              //this.sendPlayerNearMonster(monster.id, player.id);
+            }
 
-            this.playerList.getChildren().forEach((otherPlayer) => {
-              monster.followPlayer(otherPlayer, 90);
-            });
-          }
-        });
+            if (dis < 90) {
+              monster.attack();
+            }
+          });
+
+          monster.move(targetPos, 90);
+        }
       });
     });
   }
@@ -613,8 +624,12 @@ export default class GameScene extends Phaser.Scene {
       monster.id = monsterObject.id;
       monster.health = monsterObject.health;
       monster.maxHealth = monsterObject.maxHealth;
+      monster.stateTime = monsterObject.stateTime;
+      monster.randomPosition = monsterObject.randomPosition;
+
       monster.setTexture(monsterObject.key, 0);
       monster.setPosition(monsterObject.x, monsterObject.y);
+      monster.body.setVelocity(monsterObject.velocity);
       monster.makeActive();
     }
   }
@@ -677,7 +692,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(
       this.player.actionA,
       this.monsters,
-      this.enemyOverlap,
+      this.playerOverlapMonster,
       null,
       this
     );
@@ -713,29 +728,28 @@ export default class GameScene extends Phaser.Scene {
   monsterAttackOverlap(monster, player) {
     if (monster.monsterAttackActive && !monster.hitbox && !monster.dead) {
       monster.hitbox = true;
-      this.socket.emit("monsterAttack", monster.id, player.id);
+      this.socket.emit("playerHit",player.id, 30);
     }
   }
 
   weaponOverlapEnemy(weapon, enemyPlayer) {
     if (this.player.actionAActive && !this.player.hitbox) {
-      debugger;
       this.player.hitbox = true;
       this.socket.emit("attackedPlayer", enemyPlayer.id);
     }
   }
-  enemyOverlap(weapon, enemy) {
+  playerOverlapMonster(weapon, enemy) {
     if (this.player.actionAActive && !this.player.hitbox) {
       this.player.hitbox = true;
+      console.log(this.player)
+      console.log(this.player)
 
-      const dis = Phaser.Math.Distance.Between(
-        this.player.x,
-        this.player.y,
-        enemy.x,
-        enemy.y
+      this.socket.emit(
+        "monsterHit",
+        enemy.id,
+        this.player.attackValue,
+        this.player.id
       );
-
-      this.socket.emit("monsterAttacked", enemy.id, dis);
     }
   }
 
@@ -763,14 +777,6 @@ export default class GameScene extends Phaser.Scene {
 
   sendMonsterDropItemMessage(x, y, item) {
     this.socket.emit("dropItem", x, y, item);
-  }
-
-  sendPlayerNearMonster(monsterId, { x, y }) {
-    this.socket.emit("monsterFollowPlayer", monsterId, x, y);
-  }
-
-  sendMonsterStopFollowingPlayer(monsterId) {
-    this.socket.emit("monsterStopFollowingPlayer", monsterId);
   }
 
   sendEquipItemMessage(itemId) {
