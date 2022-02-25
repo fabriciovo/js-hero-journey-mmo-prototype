@@ -95,6 +95,10 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("monsterSpawned", (monster) => {
+      console.log("monsterSpawned")
+      console.log(monster)
+      console.log(this.monsters)
+
       this.spawnMonster(monster);
     });
 
@@ -605,6 +609,7 @@ export default class GameScene extends Phaser.Scene {
 
   spawnMonster(monsterObject) {
     let monster = this.monsters.getFirstDead();
+    debugger
     if (!monster) {
       monster = new Monster(
         this,
@@ -629,7 +634,7 @@ export default class GameScene extends Phaser.Scene {
 
       monster.setTexture(monsterObject.key, 0);
       monster.setPosition(monsterObject.x, monsterObject.y);
-      monster.body.setVelocity(monsterObject.velocity);
+      //monster.body.setVelocity(monsterObject.velocity);
       monster.makeActive();
     }
   }

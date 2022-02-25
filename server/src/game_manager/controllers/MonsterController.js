@@ -74,7 +74,7 @@ export default class MonsterController {
   spawnMonster() {
     const randomEnemy =
       enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
-
+    console.log("spawnMonster")
     const location = this.pickRandomLocation();
     const monster = new MonsterModel(
       location[0],

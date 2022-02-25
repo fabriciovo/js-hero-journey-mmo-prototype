@@ -44,22 +44,8 @@ export default class GameManager {
       this.monsterController.setupEventListeners(socket);
       this.itemController.setupEventListeners(socket);
       this.npcController.setupEventListeners(socket);
+      this.playerController.setupEventListeners(socket);
 
-      this.playerController.eventSavePlayerData(socket);
-      this.playerController.eventNewPlayer(socket);
-      this.playerController.eventPlayerMovement(socket);
-      this.playerController.eventPickupChest(socket);
-      this.playerController.eventPickupItem(socket);
-      this.playerController.eventPlayerDroppedItem(socket);
-      this.playerController.eventPlayerEquipedItem(socket);
-      this.playerController.eventPlayerUnequipedItem(socket);
-      this.playerController.eventHealthPotion(socket);
-      this.playerController.eventPickupItem(socket);
-      this.playerController.eventAttackedPlayer(socket);
-      this.playerController.eventPlayerHit(socket);
-      this.playerController.eventSendBuyItemMessage(socket);
-      this.playerController.eventPlayerUpdateXp(socket);
-      this.playerController.eventDisconnect(socket);
 
       socket.on("sendMessage", async (message, token, player) => {
         try {
@@ -77,8 +63,7 @@ export default class GameManager {
 
       socket.on("currents", () => {
         console.log("currents")
-        //socket.emit("currentPlayers", this.players);
-
+        socket.emit("currentPlayers", this.playerController.players);
         socket.emit("currentMonsters", this.monsterController.monsters);
         socket.emit("currentChests", this.itemController.chests);
         socket.emit("currentItems", this.itemController.items);

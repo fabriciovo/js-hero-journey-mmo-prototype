@@ -9,7 +9,24 @@ export default class PlayerController {
     this.io = io;
   }
 
-  eventSavePlayerData(socket) {
+  setupEventListeners(socket) {
+    this._eventNewPlayer(socket);
+    this._eventPlayerMovement(socket);
+    this._eventPickupChest(socket);
+    this._eventPickupItem(socket);
+    this._eventPlayerDroppedItem(socket);
+    this._eventPlayerEquipedItem(socket);
+    this._eventPlayerUnequipedItem(socket);
+    this._eventHealthPotion(socket);
+    this._eventPickupItem(socket);
+    this._eventAttackedPlayer(socket);
+    this._eventPlayerHit(socket);
+    this._eventSendBuyItemMessage(socket);
+    this._eventPlayerUpdateXp(socket);
+    this._eventDisconnect(socket);
+  }
+
+  _eventSavePlayerData(socket) {
     return socket.on("savePlayerData", async () => {
       try {
         if (!this.players[socket.id].items) {
@@ -34,7 +51,7 @@ export default class PlayerController {
     });
   }
 
-  eventNewPlayer(socket) {
+  _eventNewPlayer(socket) {
     socket.on("newPlayer", async (token, key) => {
       console.log("Player newPlayer");
 
@@ -44,7 +61,7 @@ export default class PlayerController {
 
         const playerSchema = await UserModel.findById(_id);
 
-        const player = this.spawnPlayer(
+        const player = this._spawnPlayer(
           socket.id,
           name,
           key,
@@ -64,7 +81,7 @@ export default class PlayerController {
     });
   }
 
-  eventPlayerMovement(socket) {
+  _eventPlayerMovement(socket) {
     return socket.on("playerMovement", (playerData) => {
       if (this.players[socket.id]) {
         this.players[socket.id].x = playerData.x;
@@ -80,19 +97,19 @@ export default class PlayerController {
     });
   }
 
-  eventPickupChest(socket) {
+  _eventPickupChest(socket) {
     return socket.on("pickUpChest", (chestId) => {
       this.io.emit("playerPickupChest", chestId, this.players[socket.id]);
     });
   }
 
-  eventPickupItem(socket) {
+  _eventPickupItem(socket) {
     return socket.on("pickUpItem", (itemId) => {
       this.io.emit("playerPickupItem", itemId, this.players[socket.id]);
     });
   }
 
-  eventPlayerDroppedItem(socket) {
+  _eventPlayerDroppedItem(socket) {
     return socket.on("playerDroppedItem", (itemId) => {
       this.players[socket.id].removeItem(itemId);
       socket.emit("updateItems", this.players[socket.id]);
@@ -104,7 +121,7 @@ export default class PlayerController {
     });
   }
 
-  eventPlayerEquipedItem(socket) {
+  _eventPlayerEquipedItem(socket) {
     return socket.on("playerEquipedItem", (itemId) => {
       if (this.players[socket.id].items[itemId]) {
         if (this.players[socket.id].canEquipItem()) {
@@ -122,7 +139,7 @@ export default class PlayerController {
     });
   }
 
-  eventPlayerUnequipedItem(socket) {
+  _eventPlayerUnequipedItem(socket) {
     return socket.on("playerUnequipedItem", (itemId) => {
       if (this.players[socket.id].equipedItems[itemId]) {
         if (this.players[socket.id].canPickupItem()) {
@@ -140,7 +157,7 @@ export default class PlayerController {
       }
     });
   }
-  eventPickupItem(socket) {
+  _eventPickupItem(socket) {
     return socket.on("levelUp", () => {
       this.players[socket.id].levelUp();
       this.io.emit(
@@ -156,7 +173,7 @@ export default class PlayerController {
     });
   }
 
-  eventHealthPotion(socket) {
+  _eventHealthPotion(socket) {
     return socket.on("healthPotion", (playerId, health) => {
       this.players[playerId];
       this.players[playerId].potion(health);
@@ -168,7 +185,7 @@ export default class PlayerController {
     });
   }
 
-  eventAttackedPlayer(socket) {
+  _eventAttackedPlayer(socket) {
     return socket.on("attackedPlayer", (attackedPlayerId) => {
       if (this.players[attackedPlayerId]) {
         // get required info from attacked player
@@ -214,7 +231,7 @@ export default class PlayerController {
     });
   }
 
-  eventPlayerHit(socket) {
+  _eventPlayerHit(socket) {
     return socket.on("playerHit", (playerId, monsterAttack) => {
       this.players[playerId].playerAttacked(monsterAttack);
       this.io.emit(
@@ -225,7 +242,7 @@ export default class PlayerController {
     });
   }
 
-  eventSendBuyItemMessage(socket) {
+  _eventSendBuyItemMessage(socket) {
     return socket.on("sendBuyItemMessage", (item) => {
       this.players[socket.id].potions++;
 
@@ -254,14 +271,14 @@ export default class PlayerController {
     });
   }
 
-  eventPlayerUpdateXp(socket) {
+  _eventPlayerUpdateXp(socket) {
     return socket.on("playerUpdateXp", (playerId, exp) => {
       this.players[playerId].updateExp(exp);
       this.io.emit("updateXp", exp, socket.id);
     });
   }
 
-  eventDisconnect(socket) {
+  _eventDisconnect(socket) {
     return socket.on("disconnect", () => {
       // delete user data from server
 
@@ -274,7 +291,7 @@ export default class PlayerController {
     });
   }
 
-  eventPlayerHit(socket) {
+  _eventPlayerHit(socket) {
     return socket.on("playerHit", (playerId, monsterAttack, gold = 20) => {
       this.players[playerId].playerAttacked(monsterAttack);
       // check attacked players health, if dead send gold to other player
@@ -312,7 +329,7 @@ export default class PlayerController {
     });
   }
 
-  spawnPlayer(playerId, name, key, playerSchema) {
+  _spawnPlayer(playerId, name, key, playerSchema) {
     const player = new PlayerModel(
       playerId,
       [
