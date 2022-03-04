@@ -21,7 +21,7 @@
 **Parte técnica:**
 
 - Frontend: Phaser, ES6
-- Backend: NodeJS, Express, Graphql
+- Backend: NodeJS, Express, SocketIO
 - Banco: MongoDB
 
 ## Introdução
