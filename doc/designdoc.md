@@ -2,9 +2,9 @@
 
 **👥 Especificações:**
 
-* Plataformas: PC / Mobile
+* Plataformas: PC
 * Front-end: Phaser, ES6
-* Back-end: NodeJS, Express, Graphql
+* Back-end: NodeJS, Express, SocketIO
 * Banco: MongoDB
 
   
@@ -63,7 +63,6 @@ Os npcs geralmente vivem pelas cidades, podem dar dicas de quests ou vender/comp
 ### Social
 
 * O jogador pode ter amigos e chat de conversa tanto com amigos quanto um geral.
-* 
 
 ## 🧤Profissões
 
