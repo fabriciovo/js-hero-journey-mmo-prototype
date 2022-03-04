@@ -1,6 +1,5 @@
-# In Development
+## In Development
 # [Hero's Journey](https://github.com/fabriciovo/fullstack-hero-journey)
-Action RPG Online
 
 ## About
 - [Concept Doc](./doc/conceptdoc.md)
