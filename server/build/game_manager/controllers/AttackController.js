@@ -20,29 +20,17 @@ var _PlayerModel = _interopRequireDefault(require("../../models/PlayerModel"));
 var AttackController = /*#__PURE__*/function () {
   function AttackController(io) {
     (0, _classCallCheck2["default"])(this, AttackController);
-    this.npcs = {};
-    this.npcsLocations = [];
+    this.players = {};
+    this.playerLocations = [];
     this.io = io;
   }
 
   (0, _createClass2["default"])(AttackController, [{
     key: "setupEventListeners",
     value: function setupEventListeners(socket) {}
-  }, {
-    key: "addNpc",
-    value: function addNpc(npcId, npc) {
-      this.npcs[npcId] = npc;
-      this.io.emit("npcSpawned", npc);
-    }
-  }, {
-    key: "deleteNpc",
-    value: function deleteNpc(npcId) {
-      delete this.npcs[npcId];
-      this.io.emit("npcRemoved", npcId);
-    }
   }]);
   return AttackController;
 }();
 
 exports["default"] = AttackController;
-//# sourceMappingURL=NpcController.js.map
+//# sourceMappingURL=AttackController.js.map

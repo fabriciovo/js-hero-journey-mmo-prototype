@@ -40,49 +40,22 @@ var MonsterController = /*#__PURE__*/function () {
     }
   }, {
     key: "setupEventListeners",
-    value: function setupEventListeners(socket, playerList) {
+    value: function setupEventListeners(socket) {
       var _this = this;
 
-      socket.on("monsterAttacked", function (monsterId) {
-        // update the spawner
-        if (_this.monsters[monsterId]) {
-          var monster = _this.monsters[monsterId];
-          var exp = monster.exp;
-          var playerAttackValue = playerList[socket.id].attack; // subtract health monster model
-
-          monster.loseHealth(playerAttackValue); // check the monsters health, and if dead remove that object
-
-          if (monster.health <= 0) {
-            //update xp
-            playerList[socket.id].updateExp(exp);
-
-            _this.io.emit("updateXp", exp, socket.id);
-
-            _this.deleteMonster(monster.id);
-          } else {
-            // update the monsters health
-            _this.io.emit("updateMonsterHealth", monsterId, monster.health);
-          }
-        }
-      });
-      socket.on("monsterAttack", function (monsterId, playerId) {
+      return socket.on("monsterHit", function (monsterId, playerAttack, playerId) {
         if (!_this.monsters[monsterId]) return;
-        var attack = _this.monsters[monsterId].attack; // update the players health
+        var monster = _this.monsters[monsterId];
+        var exp = monster.exp;
+        var playerAttackValue = playerAttack;
+        monster.loseHealth(playerAttackValue);
 
-        playerList[playerId].playerAttacked(attack);
+        if (monster.health <= 0) {
+          socket.emit("playerUpdateXp", playerId, exp);
 
-        _this.io.emit("updatePlayerHealth", playerId, playerList[playerId].health); // check the player's health, if below 0 have the player respawn
-
-
-        if (playerList[playerId].health <= 0) {
-          // update the gold the player has
-          playerList[playerId].updateGold(parseInt(-playerList[playerId].gold / 2, 10));
-          playerList[playerId].updateExp(parseInt(-playerList[playerId].exp / 2, 10));
-          socket.emit("updateScore", playerList[playerId].gold); // respawn the player
-
-          playerList[playerId].respawn(playerList);
-
-          _this.io.emit("respawnPlayer", playerList[playerId]);
+          _this.deleteMonster(monster.id);
+        } else {
+          socket.emit("updateMonsterHealth", monsterId, monster.health);
         }
       });
     }
@@ -108,7 +81,7 @@ var MonsterController = /*#__PURE__*/function () {
         if (Object.keys(_this3.monsters).length <= 8) {
           _this3.spawnMonster();
         }
-      }, 8000);
+      }, 3000);
     }
   }, {
     key: "pickRandomLocation",
@@ -133,6 +106,7 @@ var MonsterController = /*#__PURE__*/function () {
     key: "spawnMonster",
     value: function spawnMonster() {
       var randomEnemy = enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
+      console.log("spawnMonster");
       var location = this.pickRandomLocation();
       var monster = new _MonsterModel["default"](location[0], location[1], randomEnemy.goldValue, // gold value
       "monster-".concat((0, _uuid.v4)()), randomEnemy.key, // key

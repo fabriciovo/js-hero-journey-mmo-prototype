@@ -150,11 +150,19 @@ var Spawner = /*#__PURE__*/function () {
   }, {
     key: "resetMonsterInterval",
     value: function resetMonsterInterval(value) {
+      var _this3 = this;
+
       // clear the existing interval
       this.monsterIntervalTimer = value;
       clearInterval(this.moveMonsterInterval); // just start a new one
 
-      startInterval(this.moveMonsterInterval);
+      this.moveMonsterInterval = setInterval(function () {
+        _this3.objectsCreated.forEach(function (monster) {
+          monster.move();
+        });
+
+        _this3.moveObjects();
+      }, this.monsterIntervalTimer);
     }
   }]);
   return Spawner;

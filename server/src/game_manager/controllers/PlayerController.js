@@ -52,7 +52,7 @@ export default class PlayerController {
   }
 
   _eventNewPlayer(socket) {
-    socket.on("newPlayer", async (token, key) => {
+    socket.on("newPlayer", async (token, key, instanceId) => {
       console.log("Player newPlayer");
 
       try {
@@ -68,7 +68,7 @@ export default class PlayerController {
           playerSchema.player
         );
 
-        socket.emit("currentPlayers", this.players);
+        socket.emit("currentPlayers", this.players, instanceId);
 
         // inform the other players of the new player that joined
         socket.broadcast.emit("spawnPlayer", player);

@@ -19,33 +19,33 @@ export default class ItemController {
 
   setupEventListeners(socket) {
     socket.on("playerPickupItem", (itemId, player) => {
-      // if (this.items[itemId]) {
-      //   if (player.canPickupItem()) {
-      //     player.addItem(this.items[itemId]);
-      //     socket.emit("updateItems", player);
-      //     socket.broadcast.emit(
-      //       "updatePlayersItems",
-      //       socket.id,
-      //       player
-      //     );
-      //     this.deleteItems(itemId);
-      //   }
-      // }
+      if (this.items[itemId]) {
+        if (player.canPickupItem()) {
+          player.addItem(this.items[itemId]);
+          socket.emit("updateItems", player);
+          socket.broadcast.emit(
+            "updatePlayersItems",
+            socket.id,
+            player
+          );
+          this.deleteItems(itemId);
+        }
+      }
 
     });
 
     socket.on("pickUpChest", (chestId, player) => {
       if (this.chests[chestId]) {
-      //   const { gold } = this.chests[chestId];
-      //   // updating the players gold
-      //   player.updateGold(gold);
-      //   socket.emit("updateScore", player.gold);
-      //   socket.broadcast.emit(
-      //     "updatePlayersScore",
-      //     socket.id,
-      //     player.gold
-      //   );
-      // this.deleteChest(chestId);
+        const { gold } = this.chests[chestId];
+        // updating the players gold
+        player.updateGold(gold);
+        socket.emit("updateScore", player.gold);
+        socket.broadcast.emit(
+          "updatePlayersScore",
+          socket.id,
+          player.gold
+        );
+      this.deleteChest(chestId);
       }
     });
 

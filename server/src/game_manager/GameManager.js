@@ -8,6 +8,8 @@ import MonsterController from "./controllers/MonsterController";
 import PlayerController from "./controllers/PlayerController";
 import ItemController from "./controllers/ItemController";
 import NpcController from "./controllers/NpcController";
+import MessageController from "./controllers/MessageController";
+import CurrentController from "./controllers/currentController";
 
 export default class GameManager {
   constructor(io) {
@@ -17,6 +19,10 @@ export default class GameManager {
     this.playerController = new PlayerController(this.io);
     this.itemController = new ItemController(this.io);
     this.npcController = new NpcController(this.io);
+    this.messageController = new MessageController(this.io);
+    this.currentController = new CurrentController(this.io);
+
+    this.instanceId = "instance-0";
 
     this.rangedObjects = {};
 
@@ -45,29 +51,14 @@ export default class GameManager {
       this.itemController.setupEventListeners(socket);
       this.npcController.setupEventListeners(socket);
       this.playerController.setupEventListeners(socket);
+      this.messageController.setupEventListeners(socket);
+      this.currentController.setupEventListeners(socket);
 
 
-      socket.on("sendMessage", async (message, token, player) => {
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { email } = decoded.user;
-          await ChatModel.create({ email, message });
-          this.io.emit("newMessage", {
-            message,
-            name: player.playerName,
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      });
-
-      socket.on("currents", () => {
-        console.log("currents")
-        socket.emit("currentPlayers", this.playerController.players);
-        socket.emit("currentMonsters", this.monsterController.monsters);
-        socket.emit("currentChests", this.itemController.chests);
-        socket.emit("currentItems", this.itemController.items);
-      });
+      socket.emit("currentPlayers", this.playerController.players, this.instanceId);
+      socket.emit("currentMonsters", this.monsterController.monsters, this.instanceId);
+      socket.emit("currentChests", this.itemController.chests, this.instanceId);
+      socket.emit("currentItems", this.itemController.items, this.instanceId);
 
       // player connected to our game
       console.log("player connected to our game");
