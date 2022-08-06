@@ -1,5 +1,3 @@
-import * as Phaser from "phaser";
-import { randomNumber } from "../../../server/src/game_manager/utils";
 import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../utils/utils";
 import Entity from "./Entities/Entity";
 import Bar from "./UI/Bar";

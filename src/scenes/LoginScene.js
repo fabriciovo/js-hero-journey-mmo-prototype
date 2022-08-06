@@ -1,4 +1,3 @@
-import CredentialsBaseScene from "./CredentialsBaseScene";
 
 export default class LoginScene {
   constructor() {
