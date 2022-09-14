@@ -5,7 +5,6 @@ import Chest from "../classes/Chest";
 import Monster from "../classes/Monster";
 import GameMap from "../classes/GameMap";
 import { getRandomItem } from "../utils/utils";
-import DialogWindow from "../classes/window/DialogWindow";
 import Item from "../classes/items/Item";
 import Npc from "../classes/Entities/Npcs/Npc";
 
@@ -23,6 +22,8 @@ export default class GameScene extends Phaser.Scene {
 
     this.cameras.main.roundPixels = true;
 
+
+
   }
 
 
@@ -31,25 +32,23 @@ export default class GameScene extends Phaser.Scene {
     this.createAudio();
     this.createGroups();
     this.createInput();
+    this.createPlayer()
 
-    this.dialogWindow = new DialogWindow(this, {
-      x: this.scale.width,
-    });
 
    
     this.scale.on("resize", this.resize, this);
     this.resize({ height: this.scale.height, width: this.scale.width });
 
     this.keyDownEventListener();
+    
+    setInterval(()=>{
+      this.spawnMonster({x:350,y:350,key:"key", id:Phaser.Math.Between(-500,500),health:10,maxHealth:10,stateTime:"",randomPosition:0})
+    },[10000 ])
 
-    this.input.on("pointerdown", () => {
-      document.getElementById("chatInput").blur();
-    });
 
   }
 
   keyDownEventListener() {
-    this.inputMessageField = document.getElementById("chatInput");
     window.addEventListener("keydown", (event) => {
       if (event.keyCode === 13) {
         this.sendMessage();
@@ -109,37 +108,34 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  createPlayer(playerObject, mainPlayer) {
+  createPlayer() {
     const newPlayerObject = new PlayerContainer(
       this,
-      playerObject.x * 2,
-      playerObject.y * 2,
+      350,
+      350,
       this.selectedCharacter,
       0,
-      playerObject.health,
-      playerObject.maxHealth,
-      playerObject.id,
+      100,
+     100,
+      1,
       this.playerAttackAudio,
-      mainPlayer,
-      playerObject.playerName,
-      playerObject.gold,
-      playerObject.defense,
-      playerObject.attack,
-      playerObject.items,
-      playerObject.equipedItems,
-      playerObject.exp,
-      playerObject.maxExp,
-      playerObject.level,
-      playerObject.potions,
+      true,
+      "name",
+      10,
+      0,
+      1,
+      {},
+      {},
+      0,
+      100,
+      1,
+      0,
       {}
     );
-    if (mainPlayer) {
-      this.uiScene.createPlayersStatsUi(newPlayerObject);
-      this.player = newPlayerObject;
-    } else {
-      this.otherPlayers.add(newPlayerObject);
-    }
-    this.playerList.add(newPlayerObject);
+  
+    this.uiScene.createPlayersStatsUi(newPlayerObject);
+    this.player = newPlayerObject;
+
   }
 
   createGroups() {
@@ -153,18 +149,10 @@ export default class GameScene extends Phaser.Scene {
     this.npcs = this.physics.add.group();
     this.npcs.runChildUpdate = true;
 
-    this.playerList = this.physics.add.group();
-    this.playerList.runChildUpdate = true;
-
-    this.otherPlayers = this.physics.add.group();
-    this.otherPlayers.runChildUpdate = true;
-
     // create a chest group
     this.items = this.physics.add.group();
 
-    // create a ranged Attacks group
-    this.rangedObjects = this.physics.add.group();
-    this.rangedObjects.runChildUpdate = true;
+
   }
   spawnItem(itemObject) {
     let item = this.items.getFirstDead();
@@ -217,10 +205,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   spawnMonster(monsterObject) {
-    let monster = this.monsters.getFirstDead();
     debugger
-    if (!monster) {
-      monster = new Monster(
+      const monster = new Monster(
         this,
         monsterObject.x,
         monsterObject.y,
@@ -234,18 +220,8 @@ export default class GameScene extends Phaser.Scene {
       );
       // add monster to monsters group
       this.monsters.add(monster);
-    } else {
-      monster.id = monsterObject.id;
-      monster.health = monsterObject.health;
-      monster.maxHealth = monsterObject.maxHealth;
-      monster.stateTime = monsterObject.stateTime;
-      monster.randomPosition = monsterObject.randomPosition;
-
-      monster.setTexture(monsterObject.key, 0);
-      monster.setPosition(monsterObject.x, monsterObject.y);
-      //monster.body.setVelocity(monsterObject.velocity);
-      monster.makeActive();
-    }
+        debugger
+    
   }
 
   spawnNpc(npcObject) {
@@ -422,6 +398,5 @@ export default class GameScene extends Phaser.Scene {
     const { width, height } = gameSize;
     this.cameras.resize(width, height);
     this.cameras.main.roundPixels = true;
-    this.dialogWindow.resize(gameSize);
   }
 }

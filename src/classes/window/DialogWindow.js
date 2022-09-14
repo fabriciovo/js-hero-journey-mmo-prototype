@@ -64,8 +64,7 @@ export default class DialogWindow extends ModalWindow {
   makeInteractive() {
     this.rect.setInteractive();
     this.rect.on("pointerover", () => {
-      this.input.classList.add("chat-visible");
-      this.input.classList.remove("chat-invisible");
+
 
       this.windowAlpha = 1;
       this.borderAlpha = 1;
@@ -152,9 +151,6 @@ export default class DialogWindow extends ModalWindow {
   createInput() {
     this.input = createInputField(
       "text",
-      "chatInput",
-      "chatInput",
-      "chat-input chat-invisible"
     );
 
     if (this.x < 560) {

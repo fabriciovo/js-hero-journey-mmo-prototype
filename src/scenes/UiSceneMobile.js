@@ -116,15 +116,6 @@ export default class UiSceneMobile extends Phaser.Scene {
       }
     });
 
-    this.chatButton.on("pointerdown", () => {
-      this.chatController = !this.chatController;
-      if(this.chatController){
-        this.gameScene.dialogWindow.showWindow()
-      }
-      if(!this.chatController){
-        this.gameScene.dialogWindow.hideWindow()
-      }
-    });
 
     // create inventory button
     this.inventoryButton = this.add
@@ -160,7 +151,6 @@ export default class UiSceneMobile extends Phaser.Scene {
           this.inventoryWindow.inventoryItems[4].discardButton
         )
       ) {
-        this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();
         this.showInventory = false;
       }
@@ -191,10 +181,8 @@ export default class UiSceneMobile extends Phaser.Scene {
   toggleInventory(playerObject, mainPlayer) {
     this.showInventory = !this.showInventory;
     if (this.showInventory) {
-      this.gameScene.dialogWindow.rect.disableInteractive();
       this.inventoryWindow.showWindow(playerObject);
     } else {
-      this.gameScene.dialogWindow.rect.setInteractive();
       this.inventoryWindow.hideWindow();
     }
   }

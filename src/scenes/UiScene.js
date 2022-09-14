@@ -158,7 +158,6 @@ export default class UiScene extends Phaser.Scene {
         !gameObjects.includes(this.potionsBookButton) &&
         !gameObjects.includes(this.materialsBookButton)
       ) {
-        this.gameScene.dialogWindow.rect.setInteractive();
         this.inventoryWindow.hideWindow();
         this.showInventory = false;
 
@@ -233,10 +232,8 @@ export default class UiScene extends Phaser.Scene {
   toggleInventory(playerObject) {
     this.showInventory = !this.showInventory;
     if (this.showInventory) {
-      this.gameScene.dialogWindow.rect.disableInteractive();
       this.inventoryWindow.showWindow(playerObject);
     } else {
-      this.gameScene.dialogWindow.rect.setInteractive();
       this.inventoryWindow.hideWindow();
     }
   }
@@ -254,10 +251,8 @@ export default class UiScene extends Phaser.Scene {
   togglePlayerStats(playerObject) {
     this.showPlayerStats = !this.showPlayerStats;
     if (this.showPlayerStats) {
-      this.gameScene.dialogWindow.rect.disableInteractive();
       this.playerStatsWindow.showWindow(playerObject);
     } else {
-      this.gameScene.dialogWindow.rect.setInteractive();
       this.playerStatsWindow.hideWindow();
     }
   }
@@ -299,7 +294,7 @@ export default class UiScene extends Phaser.Scene {
       )
       .setDepth(DEPTH.UI);
 
-    this.potionACountText.setText(`${playerObject.potions}`);
+    //this.potionACountText.setText(`${playerObject.potions}`);
 
     //create equiped slots icons
 

@@ -17,39 +17,6 @@ body {
   height: 20px;
 }
 
-.chat-input {
-  position: absolute;
-  height: 30px;
-  font-size: 16px;
-  color: black;
-  font-style: italic;
-  bottom: 0px;
-}
-
-.chat-invisible {
-  display: none;
-  opacity: 0;
-}
-
-.chat-visible {
-  display: block;
-  opacity: 0.4;
-}
-
-.chat-bottom {
-  left: 100px;
-  width: 100%;
-}
-
-.chat-sidebar {
-  right: 0px;
-  width: 300px;
-}
-
-.chat-mobile {
-  right: 0px;
-  width: 100%;
-}
 
 @media screen and (max-height: 600px) {
   .input-div {
