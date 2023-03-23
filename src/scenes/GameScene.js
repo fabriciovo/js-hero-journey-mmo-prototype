@@ -14,10 +14,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    if (!this.game.mobile) {
-      this.scene.launch("Ui");
-      this.uiScene = this.scene.get("Ui");
-    }
+    this.scene.launch("Ui");
+    this.uiScene = this.scene.get("Ui");
+
     this.selectedCharacter = data.selectedCharacter || "characters_3";
 
     this.cameras.main.roundPixels = true;
@@ -133,8 +132,8 @@ export default class GameScene extends Phaser.Scene {
       {}
     );
   
-    this.uiScene.createPlayersStatsUi(newPlayerObject);
     this.player = newPlayerObject;
+    this.uiScene.createPlayersStatsUi(this.player);
 
   }
 
@@ -210,7 +209,7 @@ export default class GameScene extends Phaser.Scene {
         this,
         monsterObject.x,
         monsterObject.y,
-        monsterObject.key,
+        "enemy_mushy_pink",
         0,
         monsterObject.id,
         monsterObject.health,
@@ -220,6 +219,7 @@ export default class GameScene extends Phaser.Scene {
       );
       // add monster to monsters group
       this.monsters.add(monster);
+      this.add.scene(monster)
         debugger
     
   }
