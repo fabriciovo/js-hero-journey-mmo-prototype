@@ -1,11 +1,9 @@
 import * as Phaser from "phaser";
 import Player from "./Player";
 import Direction from "../../utils/direction";
-import Bow from "../Entities/weapons/Bow";
 import Potion from "../Armory/Potion/Potion";
 import {
   DEPTH,
-  DestroyHealthBar,
   healthBarTypes,
   iconsetPotionsTypes,
   iconsetWeaponTypes,
