@@ -64,7 +64,7 @@ export default class SignUpScene extends CredentialsBaseScene {
     const usernameValue = this.singupForm.getChildByName("username").value;
 
     if (loginValue && passwordValue && usernameValue) {
-      postData(`${SERVER_URL}/signup`, {
+      postData(`${import.meta.env.VITE_SERVER_URL}/signup`, {
         email: loginValue,
         password: passwordValue,
         username: usernameValue,

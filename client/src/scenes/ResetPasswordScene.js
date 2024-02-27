@@ -55,7 +55,7 @@ export default class ResetPasswordScene extends CredentialsBaseScene {
       verifyPassowrdValue &&
       verifyPassowrdValue === passwordValue
     ) {
-      postData(`${SERVER_URL}/reset-password`, {
+      postData(`${import.meta.env.VITE_SERVER_URL}/reset-password`, {
         password: passwordValue,
         verifiedPassword: verifyPassowrdValue,
         token: token,

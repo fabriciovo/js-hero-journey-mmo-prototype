@@ -31,7 +31,7 @@ const config = {
 class Game extends Phaser.Game {
   constructor(mobile) {
     super(config);
-    const socket = io(`${SERVER_URL}`);
+    const socket = io(`${import.meta.env.VITE_SERVER_URL}`);
     this.globals = { socket };
     this.mobile = mobile;
     this.scene.start("Boot");

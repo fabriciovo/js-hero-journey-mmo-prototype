@@ -21,7 +21,7 @@ export default class ForgotPasswordScene extends CredentialsBaseScene {
     const loginValue = this.loginInput.value;
 
     if (loginValue) {
-      postData(`${SERVER_URL}/forgot-password`, {
+      postData(`${import.meta.env.VITE_SERVER_URL}/forgot-password`, {
         email: loginValue,
       })
         .then((response) => {

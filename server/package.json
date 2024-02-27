@@ -13,11 +13,11 @@
     "cleanheroku": "rm -rf build && mkdir build",
     "build": "babel -d ./build ./src -s",
     "start": "npm run cleanheroku && npm run build && node ./build/index.js",
-    "dev": "npm run clean && npm run build && node ./build/index.js"
+    "dev": "npm run build && node ./build/index.js"
 
   },
   "engines": {
-    "node": "16.13.1",
+    "node": "^16.13.1",
     "npm": "7.21.0"
   },
   "author": "",

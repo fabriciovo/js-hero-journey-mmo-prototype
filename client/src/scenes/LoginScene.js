@@ -57,7 +57,7 @@ export default class LoginScene extends CredentialsBaseScene {
     const loginValue = this.loginForm.getChildByName("username").value;
     const passwordValue = this.loginForm.getChildByName("password").value;
     
-    postData(`${SERVER_URL}/login`, {
+    postData(`${import.meta.env.VITE_SERVER_URL}/login`, {
       username: loginValue,
       password: passwordValue,
     })
