@@ -1,0 +1,12 @@
+{
+    "potions": [
+      {
+        "frame": 70,
+        "name": "Health Potion",
+        "price": 20,
+        "value": 20,
+        "description": ""
+      }
+    ]
+  }
+  

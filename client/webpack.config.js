@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'build'),
-    publicPath: '/build/',
+    publicPath: '/',
     filename: 'project.bundle.js',
   },
   module: {
@@ -21,6 +21,14 @@ module.exports = {
         use: 'raw-loader',
       },
     ],
+  },
+  devServer: {
+    historyApiFallback: true,
+    static: {
+      directory: path.join(__dirname, 'build'),
+    },
+    compress: true,
+    port: 8000,
   },
   plugins: [
     new webpack.DefinePlugin({

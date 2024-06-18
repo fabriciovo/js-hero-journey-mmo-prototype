@@ -1,21 +1,15 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
 var _uuid = require("uuid");
-
 var _utils = require("../game_manager/utils");
-
-var MonsterModel = /*#__PURE__*/function () {
+var MonsterModel = exports["default"] = /*#__PURE__*/function () {
   function MonsterModel(x, y, gold, spawnerId, key, health, attack, exp, stateTime) {
     (0, _classCallCheck2["default"])(this, MonsterModel);
     this.id = "".concat(spawnerId, "-").concat((0, _uuid.v4)());
@@ -35,8 +29,7 @@ var MonsterModel = /*#__PURE__*/function () {
       y: 0
     };
   }
-
-  (0, _createClass2["default"])(MonsterModel, [{
+  return (0, _createClass2["default"])(MonsterModel, [{
     key: "setTarget",
     value: function setTarget(target) {
       this.targetPos = {
@@ -49,7 +42,6 @@ var MonsterModel = /*#__PURE__*/function () {
     value: function move() {
       var randomPosition = (0, _utils.randomNumber)(1, 9);
       var distance = 64;
-
       switch (randomPosition) {
         case 1:
           this.setTarget({
@@ -57,63 +49,54 @@ var MonsterModel = /*#__PURE__*/function () {
             y: this.y
           });
           break;
-
         case 2:
           this.setTarget({
             x: this.x -= distance,
             y: this.y
           });
           break;
-
         case 3:
           this.setTarget({
             x: this.x,
             y: this.y += distance
           });
           break;
-
         case 4:
           this.setTarget({
             x: this.x,
             y: this.y -= distance
           });
           break;
-
         case 5:
           this.setTarget({
             x: this.x += distance,
             y: this.y += distance
           });
           break;
-
         case 6:
           this.setTarget({
             x: this.x += distance,
             y: this.y -= distance
           });
           break;
-
         case 7:
           this.setTarget({
             x: this.x -= distance,
             y: this.y += distance
           });
           break;
-
         case 8:
           this.setTarget({
             x: this.x -= distance,
             y: this.y -= distance
           });
           break;
-
         case 9:
           this.setTarget({
             x: this.x,
             y: this.y
           });
           break;
-
         default:
           break;
       }
@@ -129,8 +112,5 @@ var MonsterModel = /*#__PURE__*/function () {
       return this.id;
     }
   }]);
-  return MonsterModel;
 }();
-
-exports["default"] = MonsterModel;
 //# sourceMappingURL=MonsterModel.js.map

@@ -1,33 +1,21 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 var _typeof = require("@babel/runtime/helpers/typeof");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
 var _ChestModel = _interopRequireDefault(require("../../models/ChestModel"));
-
 var _ItemModel = _interopRequireDefault(require("../../models/ItemModel"));
-
 var itemData = _interopRequireWildcard(require("../../../public/assets/level/tools.json"));
-
 var _uuid = require("uuid");
-
 var _utils = require("../utils");
-
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-var ItemController = /*#__PURE__*/function () {
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
+var ItemController = exports["default"] = /*#__PURE__*/function () {
   function ItemController(io) {
     (0, _classCallCheck2["default"])(this, ItemController);
     this.chests = {};
@@ -39,31 +27,27 @@ var ItemController = /*#__PURE__*/function () {
       "": this.drop.bind(this)
     };
   }
-
-  (0, _createClass2["default"])(ItemController, [{
+  return (0, _createClass2["default"])(ItemController, [{
     key: "setupEventListeners",
     value: function setupEventListeners(socket) {
       var _this = this;
-
       socket.on("playerPickupItem", function (itemId, player) {
         if (_this.items[itemId]) {
           if (player.canPickupItem()) {
             player.addItem(_this.items[itemId]);
             socket.emit("updateItems", player);
             socket.broadcast.emit("updatePlayersItems", socket.id, player);
-
             _this.deleteItems(itemId);
           }
         }
       });
       socket.on("pickUpChest", function (chestId, player) {
         if (_this.chests[chestId]) {
-          var gold = _this.chests[chestId].gold; // updating the players gold
-
+          var gold = _this.chests[chestId].gold;
+          // updating the players gold
           player.updateGold(gold);
           socket.emit("updateScore", player.gold);
           socket.broadcast.emit("updatePlayersScore", socket.id, player.gold);
-
           _this.deleteChest(chestId);
         }
       });
@@ -112,8 +96,5 @@ var ItemController = /*#__PURE__*/function () {
       this.addItems(item.id, item);
     }
   }]);
-  return ItemController;
 }();
-
-exports["default"] = ItemController;
 //# sourceMappingURL=ItemController.js.map

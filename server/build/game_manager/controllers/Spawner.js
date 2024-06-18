@@ -1,37 +1,23 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 var _typeof = require("@babel/runtime/helpers/typeof");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
 var _utils = require("../utils");
-
 var _ChestModel = _interopRequireDefault(require("../../models/ChestModel"));
-
 var _MonsterModel = _interopRequireDefault(require("../../models/MonsterModel"));
-
 var _ItemModel = _interopRequireDefault(require("../../models/ItemModel"));
-
 var itemData = _interopRequireWildcard(require("../../../public/assets/level/tools.json"));
-
 var enemyData = _interopRequireWildcard(require("../../../public/assets/Enemies/enemies.json"));
-
 var _NpcModel = _interopRequireDefault(require("../../models/NpcModel"));
-
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-var Spawner = /*#__PURE__*/function () {
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
+var Spawner = exports["default"] = /*#__PURE__*/function () {
   function Spawner(config, spawnLocations, addObject, deleteObject, moveObjects) {
     (0, _classCallCheck2["default"])(this, Spawner);
     this.id = config.id;
@@ -46,12 +32,10 @@ var Spawner = /*#__PURE__*/function () {
     this.objectsCreated = [];
     this.start();
   }
-
-  (0, _createClass2["default"])(Spawner, [{
+  return (0, _createClass2["default"])(Spawner, [{
     key: "start",
     value: function start() {
       var _this = this;
-
       this.interval = setInterval(function () {
         if (_this.objectsCreated.length < _this.limit) {
           _this.spawnObject();
@@ -94,11 +78,16 @@ var Spawner = /*#__PURE__*/function () {
     value: function spawnMonster() {
       var randomEnemy = enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
       var location = this.pickRandomLocation();
-      var monster = new _MonsterModel["default"](location[0], location[1], randomEnemy.goldValue, // gold value
-      this.id, randomEnemy.key, // key
-      randomEnemy.healthValue, // health value
-      randomEnemy.attackValue, // attack value
-      randomEnemy.expValue, // exp value
+      var monster = new _MonsterModel["default"](location[0], location[1], randomEnemy.goldValue,
+      // gold value
+      this.id, randomEnemy.key,
+      // key
+      randomEnemy.healthValue,
+      // health value
+      randomEnemy.attackValue,
+      // attack value
+      randomEnemy.expValue,
+      // exp value
       3000 //timer
       );
       this.objectsCreated.push(monster);
@@ -120,7 +109,6 @@ var Spawner = /*#__PURE__*/function () {
         if (obj.x === location[0] && obj.y === location[1]) {
           return true;
         }
-
         return false;
       });
       if (invalidLocation) return this.pickRandomLocation();
@@ -138,12 +126,10 @@ var Spawner = /*#__PURE__*/function () {
     key: "moveMonsters",
     value: function moveMonsters() {
       var _this2 = this;
-
       this.moveMonsterInterval = setInterval(function () {
         _this2.objectsCreated.forEach(function (monster) {
           monster.move();
         });
-
         _this2.moveObjects();
       }, this.monsterIntervalTimer);
     }
@@ -151,22 +137,17 @@ var Spawner = /*#__PURE__*/function () {
     key: "resetMonsterInterval",
     value: function resetMonsterInterval(value) {
       var _this3 = this;
-
       // clear the existing interval
       this.monsterIntervalTimer = value;
-      clearInterval(this.moveMonsterInterval); // just start a new one
-
+      clearInterval(this.moveMonsterInterval);
+      // just start a new one
       this.moveMonsterInterval = setInterval(function () {
         _this3.objectsCreated.forEach(function (monster) {
           monster.move();
         });
-
         _this3.moveObjects();
       }, this.monsterIntervalTimer);
     }
   }]);
-  return Spawner;
 }();
-
-exports["default"] = Spawner;
 //# sourceMappingURL=Spawner.js.map

@@ -1,6 +1,6 @@
 import { DEPTH, iconsetPotionsTypes } from "../../utils/utils";
 import ModalWindow from "./ModalWindow";
-import * as potionData from "../../../assets/Items/potions.json";
+import potionData from "../../../assets/Items/potions.json";
 import UiButton from "../UI/UiButton";
 
 export default class ShopWindow extends ModalWindow {

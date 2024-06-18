@@ -1,14 +1,11 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _mongoose = _interopRequireDefault(require("mongoose"));
-
 var Schema = _mongoose["default"].Schema;
 var ChatSchema = new Schema({
   email: {
@@ -21,9 +18,6 @@ var ChatSchema = new Schema({
     required: true
   }
 });
-
 var ChatModel = _mongoose["default"].model('chat', ChatSchema);
-
-var _default = ChatModel;
-exports["default"] = _default;
+var _default = exports["default"] = ChatModel;
 //# sourceMappingURL=ChatModel.js.map

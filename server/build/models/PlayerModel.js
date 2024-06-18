@@ -1,17 +1,13 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
-var PlayerModel = /*#__PURE__*/function () {
+var PlayerModel = exports["default"] = /*#__PURE__*/function () {
   function PlayerModel(playerId, spawnLocations, players, name, key, actionB, playerSchema) {
     (0, _classCallCheck2["default"])(this, PlayerModel);
     this.attack = playerSchema.attack;
@@ -27,7 +23,8 @@ var PlayerModel = /*#__PURE__*/function () {
     this.level = playerSchema.level;
     this.exp = playerSchema.exp;
     this.maxExp = playerSchema.maxExp;
-    this.potions = playerSchema.potions; //this.playerItems =  {};
+    this.potions = playerSchema.potions;
+    //this.playerItems =  {};
 
     this.maxNumberOfItems = 5;
     this.spawnLocations = spawnLocations;
@@ -38,8 +35,7 @@ var PlayerModel = /*#__PURE__*/function () {
     this.x = location[0];
     this.y = location[1];
   }
-
-  (0, _createClass2["default"])(PlayerModel, [{
+  return (0, _createClass2["default"])(PlayerModel, [{
     key: "addItem",
     value: function addItem(item) {
       this.items[item.id] = item;
@@ -75,7 +71,6 @@ var PlayerModel = /*#__PURE__*/function () {
       if (Object.keys(this.items).length < 5) {
         return true;
       }
-
       return false;
     }
   }, {
@@ -84,7 +79,6 @@ var PlayerModel = /*#__PURE__*/function () {
       if (Object.keys(this.equipedItems).length < 5) {
         return true;
       }
-
       return false;
     }
   }, {
@@ -141,8 +135,5 @@ var PlayerModel = /*#__PURE__*/function () {
       return [200, 200];
     }
   }]);
-  return PlayerModel;
 }();
-
-exports["default"] = PlayerModel;
 //# sourceMappingURL=PlayerModel.js.map
