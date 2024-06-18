@@ -1,0 +1,89 @@
+{
+  "locations": [
+    [150, 220],
+    [280, 220],
+    [250, 420],
+    [1250, 420],
+    [1550, 420],
+    [1550, 520],
+    [1050, 200],
+    [1050, 800],
+    [680, 800],
+    [680, 1000],
+    [280, 900]
+  ],
+  "items": [
+    {
+      "frame": 40,
+      "name": "Battle Axe"
+    },
+    {
+      "frame": 41,
+      "name": "Swift Shoes"
+    },
+    {
+      "frame": 42,
+      "name": "Buckle of the Sun"
+    },
+    {
+      "frame": 43,
+      "name": "Royal Shield"
+    },
+    {
+      "frame": 44,
+      "name": "Elven Cloak"
+    },
+    {
+      "frame": 45,
+      "name": "Twinstar Sword"
+    },
+    {
+      "frame": 46,
+      "name": "Mystic Wand"
+    },
+    {
+      "frame": 47,
+      "name": "Leather Gloves"
+    },
+    {
+      "frame": 48,
+      "name": "Iron Gloves"
+    },
+    {
+      "frame": 49,
+      "name": "Small Axe"
+    },
+    {
+      "frame": 50,
+      "name": "Mystical Hat"
+    },
+    {
+      "frame": 51,
+      "name": "Iron Helm"
+    },
+    {
+      "frame": 52,
+      "name": "Sky Helm"
+    },
+    {
+      "frame": 53,
+      "name": "Leather Boots"
+    },
+    {
+      "frame": 54,
+      "name": "Demon Shield"
+    },
+    {
+      "frame": 55,
+      "name": "Blood Ring"
+    },
+    {
+      "frame": 56,
+      "name": "Wizard Staff"
+    },
+    {
+      "frame": 57,
+      "name": "Wizard Hat"
+    }
+  ]
+}

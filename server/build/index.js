@@ -15,7 +15,6 @@ var _secure = _interopRequireDefault(require("./routes/secure"));
 var _GameManager = _interopRequireDefault(require("./game_manager/GameManager"));
 var app = (0, _express["default"])();
 var server = require("http").Server(app);
-//const io = require("socket.io")(server);
 var io = require("socket.io")(server, {
   cors: {
     origin: process.env.CORS_ORIGIN
