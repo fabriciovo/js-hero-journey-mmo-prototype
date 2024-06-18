@@ -28,7 +28,6 @@ var Spawner = exports["default"] = /*#__PURE__*/function () {
     this.addObject = addObject;
     this.deleteObject = deleteObject;
     this.moveObjects = moveObjects;
-    this.monsterIntervalTimer = 1000;
     this.objectsCreated = [];
     this.start();
   }
@@ -41,7 +40,6 @@ var Spawner = exports["default"] = /*#__PURE__*/function () {
           _this.spawnObject();
         }
       }, this.spawnInterval);
-      if (this.objectType === _utils.SpawnerType.MONSTER) this.moveMonsters();
     }
   }, {
     key: "spawnObject",
@@ -121,32 +119,6 @@ var Spawner = exports["default"] = /*#__PURE__*/function () {
         return obj.id !== id;
       });
       this.deleteObject(id);
-    }
-  }, {
-    key: "moveMonsters",
-    value: function moveMonsters() {
-      var _this2 = this;
-      this.moveMonsterInterval = setInterval(function () {
-        _this2.objectsCreated.forEach(function (monster) {
-          monster.move();
-        });
-        _this2.moveObjects();
-      }, this.monsterIntervalTimer);
-    }
-  }, {
-    key: "resetMonsterInterval",
-    value: function resetMonsterInterval(value) {
-      var _this3 = this;
-      // clear the existing interval
-      this.monsterIntervalTimer = value;
-      clearInterval(this.moveMonsterInterval);
-      // just start a new one
-      this.moveMonsterInterval = setInterval(function () {
-        _this3.objectsCreated.forEach(function (monster) {
-          monster.move();
-        });
-        _this3.moveObjects();
-      }, this.monsterIntervalTimer);
     }
   }]);
 }();

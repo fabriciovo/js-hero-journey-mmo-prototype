@@ -27,7 +27,6 @@ export default class Monster extends Entity {
     this.dead = false;
     this.hitbox = false;
     this.monsterAttackActive = false;
-    console.log("asdsdsaokpdokaspodsak");
     this.setDepth(DEPTH.ENTITIES);
     this.scene.anims.create({
       key: `normal_${this.key}`,
