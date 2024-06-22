@@ -3,9 +3,9 @@ import * as enemyData from "../../../public/assets/Enemies/enemies.json";
 import { v4 } from "uuid";
 
 export default class MonsterController {
-  constructor(io) {
+  constructor(io, locations) {
     this.monsters = {};
-    this.monsterLocations = [];
+    this.monsterLocations = locations;
     this.io = io;
 
     this.setupSpawn();
@@ -74,7 +74,6 @@ export default class MonsterController {
   spawnMonster() {
     const randomEnemy =
       enemyData.enemies[Math.floor(Math.random() * enemyData.enemies.length)];
-    console.log("spawnMonster")
     const location = this.pickRandomLocation();
     const monster = new MonsterModel(
       location[0],

@@ -1,19 +1,27 @@
-import jwt from "jsonwebtoken";
+import { v4 } from "uuid";
 
-import UserModel from "../../models/UserModel";
-import PlayerModel from "../../models/PlayerModel";
-export default class AttackController {
-  constructor(io) {
+export default class NpcController {
+  constructor(io, npcsLocations) {
     this.npcs = {};
-    this.npcsLocations = [];
+    this.npcsLocations = npcsLocations;
     this.io = io;
+    console.log(this.npcsLocations);
+
+    this.spawnNpc();
   }
 
+  setupEventListeners(socket) {}
 
-  setupEventListeners(socket) {
-
+  spawnNpc() {
+    const location = this.npcsLocations[0];
+    const npc = {
+      x: location[0],
+      y: location[1],
+      id: `npc-${v4()}`,
+    };
+    this.addNpc(npc.id, npc);
   }
-  
+
   addNpc(npcId, npc) {
     this.npcs[npcId] = npc;
     this.io.emit("npcSpawned", npc);

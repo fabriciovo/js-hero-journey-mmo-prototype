@@ -140,6 +140,8 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
     value: function _eventPickupChest(socket) {
       var _this4 = this;
       return socket.on("pickUpChest", function (chestId) {
+        console.log("pickUpChest");
+        console.log(chestId);
         _this4.io.emit("playerPickupChest", chestId, _this4.players[socket.id]);
       });
     }

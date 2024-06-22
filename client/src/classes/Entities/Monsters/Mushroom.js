@@ -1,9 +1,8 @@
-import * as Phaser from "phaser";
-import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../utils/utils";
-import Entity from "./Entities/Entity";
-import Bar from "./UI/Bar";
+import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../../../utils/utils";
+import Bar from "../../UI/Bar";
+import Monster from "./Monster";
 
-export default class Monster extends Monster {
+export default class Mushroom extends Monster {
   constructor(
     scene,
     x,
@@ -54,8 +53,6 @@ export default class Monster extends Monster {
     this.monsterAttack.setScale(2);
     this.scene.physics.world.enable(this.monsterAttack);
     this.monsterAttack.alpha = 0;
-
-    //this.move();
   }
 
   createHealthBar() {
@@ -95,64 +92,6 @@ export default class Monster extends Monster {
 
   move(targetPosition) {
     this.scene.physics.moveToObject(this, targetPosition, 90);
-    // const distance = 164;
-    // switch (this.randomPosition) {
-    //   case 1:
-    //     this.body.setVelocityX(distance);
-    //     break;
-    //   case 2:
-    //     this.body.setVelocityX(-distance);
-    //     break;
-    //   case 3:
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 4:
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    //   case 5:
-    //     this.body.setVelocityX(distance);
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 6:
-    //     this.body.setVelocityX(distance);
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    //   case 7:
-    //     this.body.setVelocityX(-distance);
-    //     this.body.setVelocityY(distance);
-    //     break;
-    //   case 8:
-    //     this.body.setVelocityX(-distance);
-    //     this.body.setVelocityY(-distance);
-    //     break;
-    // }
-    // this.stateTime = Phaser.Math.Between(1000, 3000);
-    // // this.timer = this.scene.time.delayedCall(
-    // //   this.stateTime,
-    // //   this.idle,
-    // //   [],
-    // //   this
-    // // );
-  }
-
-  followPlayer(playerPosition) {
-    if (!playerPosition || this.dead) return;
-    const dis = Phaser.Math.Distance.Between(
-      playerPosition.x,
-      playerPosition.y,
-      this.x,
-      this.y
-    );
-
-    if (dis < 200) {
-      this.scene.sendPlayerNearMonster(this.id, playerPosition);
-    } else {
-      this.scene.sendMonsterStopFollowingPlayer(this.id);
-    }
-
-    if (dis < 90) {
-      this.attack();
-    }
   }
 
   attack() {

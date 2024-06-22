@@ -32,6 +32,7 @@ var ItemController = exports["default"] = /*#__PURE__*/function () {
     value: function setupEventListeners(socket) {
       var _this = this;
       socket.on("playerPickupItem", function (itemId, player) {
+        console.log("playerPickupItem");
         if (_this.items[itemId]) {
           if (player.canPickupItem()) {
             player.addItem(_this.items[itemId]);
@@ -41,16 +42,31 @@ var ItemController = exports["default"] = /*#__PURE__*/function () {
           }
         }
       });
-      socket.on("pickUpChest", function (chestId, player) {
+      socket.on("playerPickupChest", function (chestId, player) {
         if (_this.chests[chestId]) {
           var gold = _this.chests[chestId].gold;
-          // updating the players gold
           player.updateGold(gold);
           socket.emit("updateScore", player.gold);
           socket.broadcast.emit("updatePlayersScore", socket.id, player.gold);
           _this.deleteChest(chestId);
         }
       });
+
+      // socket.on("pickUpChest", (chestId, player) => {
+      //   if (this.chests[chestId]) {
+      //     const { gold } = this.chests[chestId];
+      //     // updating the players gold
+      //     player.updateGold(gold);
+      //     socket.emit("updateScore", player.gold);
+      //     socket.broadcast.emit(
+      //       "updatePlayersScore",
+      //       socket.id,
+      //       player.gold
+      //     );
+      //   this.deleteChest(chestId);
+      //   }
+      // });
+
       socket.on("dropItem", function (x, y, item) {
         _this.itemDictionary[item](x, y);
       });
@@ -59,6 +75,7 @@ var ItemController = exports["default"] = /*#__PURE__*/function () {
     key: "addItems",
     value: function addItems(itemId, item) {
       this.items[itemId] = item;
+      console.log(this.items);
       this.io.emit("itemSpawned", item);
     }
   }, {
@@ -71,12 +88,12 @@ var ItemController = exports["default"] = /*#__PURE__*/function () {
     key: "addChest",
     value: function addChest(chestId, chest) {
       this.chests[chestId] = chest;
+      console.log(this.chests);
       this.io.emit("chestSpawned", chest);
     }
   }, {
     key: "deleteChest",
     value: function deleteChest(chestId) {
-      delete this.chests[chestId];
       this.io.emit("chestRemoved", chestId);
     }
   }, {

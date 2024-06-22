@@ -1,7 +1,5 @@
-import * as Phaser from "phaser";
-import { DEPTH, healthBarTypes, iconsetWeaponTypes } from "../utils/utils";
-import Entity from "./Entities/Entity";
-import Bar from "./UI/Bar";
+import { DEPTH, healthBarTypes } from "../../../utils/utils";
+import Entity from "../Entity";
 
 export default class Monster extends Entity {
   constructor(

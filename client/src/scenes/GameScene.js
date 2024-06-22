@@ -95,10 +95,6 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socket.on("monsterSpawned", (monster) => {
-      console.log("monsterSpawned")
-      console.log(monster)
-      console.log(this.monsters)
-
       this.spawnMonster(monster);
     });
 
@@ -746,9 +742,6 @@ export default class GameScene extends Phaser.Scene {
   playerOverlapMonster(weapon, enemy) {
     if (this.player.actionAActive && !this.player.hitbox) {
       this.player.hitbox = true;
-      console.log(this.player)
-      console.log(this.player)
-
       this.socket.emit(
         "monsterHit",
         enemy.id,

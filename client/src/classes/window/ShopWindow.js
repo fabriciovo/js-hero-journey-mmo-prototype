@@ -142,6 +142,7 @@ export default class ShopWindow extends ModalWindow {
       1.8,
       this.buyItem.bind(this, this.selectItem)
     );
+    this.buyButton.alpha = 1;
 
     this.shopContainer.add(this.buyButton);
 

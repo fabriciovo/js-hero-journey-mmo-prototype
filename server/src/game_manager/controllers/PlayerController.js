@@ -3,9 +3,9 @@ import jwt from "jsonwebtoken";
 import UserModel from "../../models/UserModel";
 import PlayerModel from "../../models/PlayerModel";
 export default class PlayerController {
-  constructor(io) {
+  constructor(io, playerLocations) {
     this.players = {};
-    this.playerLocations = [];
+    this.playerLocations = playerLocations;
     this.io = io;
   }
 
@@ -18,11 +18,11 @@ export default class PlayerController {
     this._eventPlayerEquipedItem(socket);
     this._eventPlayerUnequipedItem(socket);
     this._eventHealthPotion(socket);
-    this._eventPickupItem(socket);
     this._eventAttackedPlayer(socket);
     this._eventPlayerHit(socket);
     this._eventSendBuyItemMessage(socket);
     this._eventPlayerUpdateXp(socket);
+    this._eventLevelUp(socket);
     this._eventDisconnect(socket);
   }
 
@@ -52,9 +52,7 @@ export default class PlayerController {
   }
 
   _eventNewPlayer(socket) {
-    socket.on("newPlayer", async (token, key, instanceId) => {
-      console.log("Player newPlayer");
-
+    return socket.on("newPlayer", async (token, key, instanceId) => {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const { name, _id } = decoded.user;
@@ -99,13 +97,23 @@ export default class PlayerController {
 
   _eventPickupChest(socket) {
     return socket.on("pickUpChest", (chestId) => {
-      this.io.emit("playerPickupChest", chestId, this.players[socket.id]);
+      const player = this.players[socket.id];
+      player.updateGold(20);
+      socket.emit("updateScore", player.gold);
+      socket.broadcast.emit("updatePlayersScore", socket.id, player.gold);
+      this.io.emit("chestRemoved", chestId);
     });
   }
 
   _eventPickupItem(socket) {
     return socket.on("pickUpItem", (itemId) => {
-      this.io.emit("playerPickupItem", itemId, this.players[socket.id]);
+      const player = this.players[socket.id];
+      if (player.canPickupItem()) {
+        //player.addItem(this.items[itemId]);
+        socket.emit("updateItems", player);
+        socket.broadcast.emit("updatePlayersItems", socket.id, player);
+        this.io.emit("itemRemoved", itemId);
+      }
     });
   }
 
@@ -157,7 +165,7 @@ export default class PlayerController {
       }
     });
   }
-  _eventPickupItem(socket) {
+  _eventLevelUp(socket) {
     return socket.on("levelUp", () => {
       this.players[socket.id].levelUp();
       this.io.emit(
@@ -239,6 +247,18 @@ export default class PlayerController {
         playerId,
         this.players[playerId].health
       );
+      // check the player's health, if below 0 have the player respawn
+      if (this.players[playerId].health <= 0) {
+        // update the gold the player has
+        this.players[playerId].updateGold(
+          parseInt(-this.players[playerId].gold / 2, 10)
+        );
+        socket.emit("updateScore", this.players[playerId].gold);
+
+        // respawn the player
+        this.players[playerId].respawn(this.players);
+        this.io.emit("respawnPlayer", this.players[playerId]);
+      }
     });
   }
 
@@ -253,21 +273,6 @@ export default class PlayerController {
         socket.id,
         this.players[socket.id].gold
       );
-      // check the player's health, if below 0 have the player respawn
-      if (this.players[playerId].health <= 0) {
-        // update the gold the player has
-        this.players[playerId].updateGold(
-          parseInt(-this.players[playerId].gold / 2, 10)
-        );
-        this.players[playerId].updateExp(
-          parseInt(-this.players[playerId].exp / 2, 10)
-        );
-        socket.emit("updateScore", this.players[playerId].gold);
-
-        // respawn the player
-        this.players[playerId].respawn(this.players);
-        this.io.emit("respawnPlayer", this.players[playerId]);
-      }
     });
   }
 
@@ -288,44 +293,6 @@ export default class PlayerController {
 
       // emit a message to all players to remove this player
       this.io.emit("disconnected", socket.id);
-    });
-  }
-
-  _eventPlayerHit(socket) {
-    return socket.on("playerHit", (playerId, monsterAttack, gold = 20) => {
-      this.players[playerId].playerAttacked(monsterAttack);
-      // check attacked players health, if dead send gold to other player
-      if (this.players[playerId].health <= 0) {
-        // get the amount of gold, and update player object
-        this.players[playerId].updateGold(gold);
-
-        // respawn attacked player
-        this.players[playerId].respawn(this.players);
-        this.io.emit("respawnPlayer", this.players[playerId]);
-
-        // send update gold message to player
-        socket.emit("updateScore", this.players[socket.id].gold);
-
-        // reset the attacked players gold
-        this.players[playerId].updateGold(-gold);
-        this.io
-          .to(`${playerId}`)
-          .emit("updateScore", this.players[playerId].gold);
-
-        // add bonus health to the player
-        this.players[socket.id].updateHealth(15);
-        this.io.emit(
-          "updatePlayerHealth",
-          socket.id,
-          this.players[socket.id].health
-        );
-      } else {
-        this.io.emit(
-          "updatePlayerHealth",
-          playerId,
-          this.players[playerId].health
-        );
-      }
     });
   }
 
