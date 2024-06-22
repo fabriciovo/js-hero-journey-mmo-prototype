@@ -466,6 +466,10 @@ export default class GameScene extends Phaser.Scene {
     //     });
     //   }
     // });
+
+    this.npcs.getChildren().forEach((npc) => {
+      npc.update();
+    });
   }
 
   createAudio() {
@@ -747,6 +751,7 @@ export default class GameScene extends Phaser.Scene {
 
   npcAction(player, npc) {
     npc.action(this.uiScene, player);
+    console.log(player);
   }
 
   collectChest(player, chest) {

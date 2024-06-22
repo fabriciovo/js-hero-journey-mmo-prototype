@@ -1,9 +1,10 @@
+import Phaser from "phaser";
 import Entity from "../Entity";
 export default class Npc extends Entity {
   constructor(scene, x, y, key, frame, id) {
     super(scene, x, y, key, frame, id);
     this.key = key;
-    this.overlaping = true;
+    this.player = null;
     this.scene.anims.create({
       key: `idle_${this.key}`,
       frames: this.scene.anims.generateFrameNumbers(this.key, {
@@ -17,21 +18,24 @@ export default class Npc extends Entity {
     this.createNpcName();
   }
 
-  update() {}
+  update() {
+    if (this.player) {
+      if (
+        !Phaser.Geom.Intersects.RectangleToRectangle(
+          this.player.getBounds(),
+          this.player.getBounds()
+        )
+      ) {
+        this.player = null;
+        console.log(this.player);
+        uiScene.toggleShop(null, false);
+      }
+    }
+  }
 
   action(uiScene, player) {
-    console.log(player);
-    const dis = Phaser.Math.Distance.Between(
-      player.x,
-      player.y,
-      this.x,
-      this.y
-    );
-    if (dis >= 30 && dis <= 90) {
-      uiScene.toggleShop(player, true);
-    } else {
-      uiScene.toggleShop(player, false);
-    }
+    this.player = player;
+    uiScene.toggleShop(player, true);
   }
 
   createNpcName() {
