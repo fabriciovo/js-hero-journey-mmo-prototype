@@ -244,7 +244,6 @@ export default class UiScene extends Phaser.Scene {
   toggleShop(playerObject, active) {
     this.showShopWindow = active;
     if (this.showShopWindow) {
-
       this.shopWindow.showWindow(playerObject);
     } else {
       this.shopWindow.hideWindow();

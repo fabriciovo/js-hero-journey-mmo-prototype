@@ -25,6 +25,14 @@ export default class PlayerController {
     this._eventLevelUp(socket);
     this._eventDisconnect(socket);
     this._eventSavePlayerData(socket);
+
+    socket.on("playerGetItem", (item, playerId) => {
+      console.log("sdadssda");
+      const player = this.players[playerId];
+      player.addItem(item);
+      socket.emit("updateItems", player);
+      socket.broadcast.emit("updatePlayersItems", playerId, player);
+    });
   }
 
   _eventSavePlayerData(socket) {
@@ -110,10 +118,7 @@ export default class PlayerController {
     return socket.on("pickUpItem", (itemId) => {
       const player = this.players[socket.id];
       if (player.canPickupItem()) {
-        //player.addItem(this.items[itemId]);
-        socket.emit("updateItems", player);
-        socket.broadcast.emit("updatePlayersItems", socket.id, player);
-        this.io.emit("itemRemoved", itemId);
+        socket.emit("collectItem", itemId);
       }
     });
   }
@@ -279,7 +284,7 @@ export default class PlayerController {
 
   _eventPlayerUpdateXp(socket) {
     return socket.on("playerUpdateXp", (playerId, exp) => {
-      console.log("playerUpdateXp")
+      console.log("playerUpdateXp");
       this.players[playerId].updateExp(exp);
       this.io.emit("updateXp", exp, socket.id);
     });

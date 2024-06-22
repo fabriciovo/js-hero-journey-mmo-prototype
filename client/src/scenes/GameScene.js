@@ -46,8 +46,6 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-
-
     // spawn monster game objects
     this.socket.on("currentMonsters", (monsters) => {
       Object.keys(monsters).forEach((id) => {
@@ -116,20 +114,9 @@ export default class GameScene extends Phaser.Scene {
       });
     });
 
-    // this.socket.on("monsterMoved", (monsterData) => {
-    //   this.monsters.getChildren().forEach((monster) => {
-    //     if (monsterData.id === monster.id) {
-    //       monster.setPosition(monsterData.x, monsterData.y);
-    //       //monster.body.x = monsterData.x;
-    //       //monster.body.y = monsterData.y;
-    //       monster.randomPosition = monsterData.randomPosition;
-    //       monster.stateTime = monsterData.stateTime;
-    //     }
-    //   });
-    // });
-
     //Npc
     this.socket.on("npcSpawned", (npc) => {
+      console.log("npc");
       this.spawnNpc(npc);
     });
 
@@ -273,6 +260,14 @@ export default class GameScene extends Phaser.Scene {
       this.uiScene.inventoryWindow.updateInventory(this.player);
       this.uiScene.playerStatsWindow.updateEquipment(this.player);
       this.uiScene.playerStatsWindow.updatePlayerStats(this.player);
+    });
+
+    this.socket.on("collectItem", (itemId) => {
+      this.socket.emit("playerCollectedItem", itemId);
+    });
+
+    this.socket.on("collectedItem", (item) => {
+      this.socket.emit("playerGetItem", item, this.player.id);
     });
 
     this.socket.on("updatePlayersItems", (playerId, playerObject) => {
@@ -605,7 +600,6 @@ export default class GameScene extends Phaser.Scene {
 
   spawnMonster(monsterObject) {
     let monster = this.monsters.getFirstDead();
-    debugger
     if (!monster) {
       monster = new Monster(
         this,
@@ -729,7 +723,7 @@ export default class GameScene extends Phaser.Scene {
   monsterAttackOverlap(monster, player) {
     if (monster.monsterAttackActive && !monster.hitbox && !monster.dead) {
       monster.hitbox = true;
-      this.socket.emit("playerHit",player.id, 30);
+      this.socket.emit("playerHit", player.id, 30);
     }
   }
 

@@ -25,9 +25,7 @@ export default class MonsterController {
       monster.loseHealth(playerAttackValue);
 
       if (monster.health <= 0) {
-        //socket.emit("playerUpdateXp", playerId, exp);
         this.io.emit("updateXp", exp, playerId);
-        console.log("asdddasdssa");
         this.deleteMonster(monster.id);
       } else {
         socket.emit("updateMonsterHealth", monsterId, monster.health);

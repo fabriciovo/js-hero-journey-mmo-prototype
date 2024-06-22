@@ -17,20 +17,6 @@ export default class ItemController {
     };
   }
 
-  _eventPickupItem(socket) {
-    socket.on("playerPickupItem", (itemId, player) => {
-      console.log(player);
-      if (this.items[itemId]) {
-        if (player.canPickupItem()) {
-          player.addItem(this.items[itemId]);
-          socket.emit("updateItems", player);
-          socket.broadcast.emit("updatePlayersItems", socket.id, player);
-          this.deleteItems(itemId);
-        }
-      }
-    });
-  }
-
   _eventDrop(socket) {
     return socket.on("dropItem", (x, y, item) => {
       this.itemDictionary[item](x, y);
@@ -39,6 +25,10 @@ export default class ItemController {
 
   setupEventListeners(socket) {
     this._eventDrop(socket);
+    socket.on("playerCollectedItem", (itemId) => {
+      socket.emit("collectedItem", this.items[itemId]);
+      this.deleteItems(itemId);
+    });
   }
 
   addItems(itemId, item) {

@@ -77,7 +77,6 @@ export default class PlayerWindow extends ModalWindow {
       this.createEquipmentStats();
       this.createEquipmentButtons();
       this.createEquipmentSlots();
-
     }
   }
 
@@ -161,6 +160,7 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   showWindow(playerObject) {
+    console.log("adadsds");
     this.mainPlayer = true;
     this.playerObject = playerObject;
     this.rect.setInteractive();
@@ -171,7 +171,6 @@ export default class PlayerWindow extends ModalWindow {
     for (let i = Object.keys(playerObject.equipedItems).length; i < 5; i += 1) {
       this.hideEquipmentItem(i);
     }
-
 
     // update player stats
     this.updatePlayerStats(playerObject);
@@ -198,8 +197,6 @@ export default class PlayerWindow extends ModalWindow {
   }
 
   createEquipmentSlots() {
-
-
     for (let x = 0; x < 5; x += 1) {
       const yPos = this.statsContainer.height / 2 + 300;
       const xPos = 50 * x;
