@@ -155,7 +155,7 @@ export default class GameScene extends Phaser.Scene {
         this.uiScene.updatePlayerExpBar(this.player);
         this.uiScene.updatePlayerStatsUi(this.player);
 
-        if (this.player.exp > this.player.maxExp) {
+        if (this.player.exp >= this.player.maxExp) {
           this.socket.emit("levelUp", this.player);
           this.uiScene.popup.levelUp(this.player);
         }

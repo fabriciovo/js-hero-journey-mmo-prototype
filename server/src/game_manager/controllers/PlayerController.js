@@ -24,6 +24,7 @@ export default class PlayerController {
     this._eventPlayerUpdateXp(socket);
     this._eventLevelUp(socket);
     this._eventDisconnect(socket);
+    this._eventSavePlayerData(socket);
   }
 
   _eventSavePlayerData(socket) {
@@ -278,6 +279,7 @@ export default class PlayerController {
 
   _eventPlayerUpdateXp(socket) {
     return socket.on("playerUpdateXp", (playerId, exp) => {
+      console.log("playerUpdateXp")
       this.players[playerId].updateExp(exp);
       this.io.emit("updateXp", exp, socket.id);
     });

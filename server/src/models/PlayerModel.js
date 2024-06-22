@@ -102,7 +102,7 @@ export default class PlayerModel {
     this.maxHealth += 1;
     this.level++;
     const calcNewExp = this.exp - this.maxExp;
-    this.exp = calcNewExp;
+    this.exp = calcNewExp <= 0 ? 0 : calcNewExp;
     this.maxExp = this.maxExp * 2;
   }
 
