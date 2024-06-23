@@ -14,12 +14,13 @@ var _password = _interopRequireDefault(require("./routes/password"));
 var _secure = _interopRequireDefault(require("./routes/secure"));
 var _GameManager = _interopRequireDefault(require("./game_manager/GameManager"));
 var app = (0, _express["default"])();
-var server = require("http").Server(app);
-var io = require("socket.io")(server, {
-  cors: {
-    origin: process.env.CORS_ORIGIN
-  }
-});
+var server = require("https").Server(app);
+// const io = require("socket.io")(server, {
+//   cors: {
+//     origin: process.env.CORS_ORIGIN,
+//   },
+// });
+var io = require("socket.io")(server);
 var gameManager = new _GameManager["default"](io);
 gameManager.setup();
 var port = process.env.PORT || 3000;
