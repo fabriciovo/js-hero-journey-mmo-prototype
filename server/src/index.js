@@ -14,12 +14,12 @@ import GameManager from "./game_manager/GameManager";
 
 const app = express();
 const server = require("https").Server(app);
-// const io = require("socket.io")(server, {
-//   cors: {
-//     origin: process.env.CORS_ORIGIN,
-//   },
-// });
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: process.env.CORS_ORIGIN,
+    methods: ["GET", "POST"]
+  }
+});
 const gameManager = new GameManager(io);
 gameManager.setup();
 const port = process.env.PORT || 3000;
