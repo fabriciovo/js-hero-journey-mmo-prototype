@@ -26,7 +26,7 @@ export default class SignUpScene extends CredentialsBaseScene {
         "backgroundLogin"
       )
       .setOrigin(0)
-      .setScrollFactor(0, 1)
+      .setScrollFactor(0)
       .setScale(2);
 
     this.singupForm = this.add
@@ -52,10 +52,18 @@ export default class SignUpScene extends CredentialsBaseScene {
       );
 
     this.background.setTilePosition(this.cameras.main.scrollX);
+
+    this.enterKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ENTER
+    );
   }
 
   update() {
     this.background.tilePositionX += 0.3;
+
+    if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+      singUp();
+    }
   }
 
   singUp() {
@@ -86,7 +94,7 @@ export default class SignUpScene extends CredentialsBaseScene {
       alert("All fields must be filled out");
     }
   }
-  
+
   startScene(targetScene) {
     this.scale.removeListener("resize", this.resize);
 

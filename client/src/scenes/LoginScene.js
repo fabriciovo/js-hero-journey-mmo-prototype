@@ -12,7 +12,6 @@ export default class LoginScene extends CredentialsBaseScene {
   }
 
   create() {
-
     this.background = this.add
       .tileSprite(
         0,
@@ -22,7 +21,7 @@ export default class LoginScene extends CredentialsBaseScene {
         "backgroundLogin"
       )
       .setOrigin(0)
-      .setScrollFactor(0, 1)
+      .setScrollFactor(0)
       .setScale(2);
 
     this.loginForm = this.add
@@ -31,32 +30,49 @@ export default class LoginScene extends CredentialsBaseScene {
 
     this.loginForm.setPerspective(800);
 
-    this.loginForm.getChildByName("loginButton").addEventListener("click", this.login.bind(this), function(event) {
-      this.login();
-    });
+    this.loginForm
+      .getChildByName("loginButton")
+      .addEventListener("click", this.login.bind(this), function (event) {
+        this.login();
+      });
 
-    this.loginForm.getChildByName("forgotPassword").addEventListener("click", this.startScene.bind(this, "ForgotPassword"), function(event) {
-      this.startScene("ForgotPassword");
-    });
+    this.loginForm
+      .getChildByName("forgotPassword")
+      .addEventListener(
+        "click",
+        this.startScene.bind(this, "ForgotPassword"),
+        function (event) {
+          this.startScene("ForgotPassword");
+        }
+      );
 
-    this.loginForm.getChildByName("singUp").addEventListener("click", this.startScene.bind(this,"SignUp"), function(event) {
-      this.startScene("SignUp");
-    });
-
-
+    this.loginForm
+      .getChildByName("singUp")
+      .addEventListener(
+        "click",
+        this.startScene.bind(this, "SignUp"),
+        function (event) {
+          this.startScene("SignUp");
+        }
+      );
 
     this.background.setTilePosition(this.cameras.main.scrollX);
+    this.enterKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ENTER
+    );
   }
 
   update() {
     this.background.tilePositionX += 0.3;
+    if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+      this.login();
+    }
   }
 
   login() {
-    
     const loginValue = this.loginForm.getChildByName("username").value;
     const passwordValue = this.loginForm.getChildByName("password").value;
-    
+
     postData(`${SERVER_URL}/login`, {
       username: loginValue,
       password: passwordValue,
@@ -65,7 +81,6 @@ export default class LoginScene extends CredentialsBaseScene {
         if (response.status === 200) {
           refreshTokenInterval();
           this.startScene("Game");
-          
         } else {
           console.log(response.error);
           window.alert("Invalid Username or Password!");
