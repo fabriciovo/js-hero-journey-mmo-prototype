@@ -1,2 +1,2 @@
 web: npm run start
-ps:scale web=1
+ps: scale web=1
