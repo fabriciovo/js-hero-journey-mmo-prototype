@@ -16,7 +16,7 @@ const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: process.env.CORS_ORIGIN,
+    origin: [process.env.CORS_ORIGIN, "http://127.0.0.1:5500"],
     methods: ["GET", "POST"]
   }
 });
