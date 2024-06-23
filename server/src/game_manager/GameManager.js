@@ -1,13 +1,10 @@
-import jwt from "jsonwebtoken";
-
-import ChatModel from "../models/ChatModel";
-
 import * as levelData from "../../public/assets/level/new_level.json";
 
 import MonsterController from "./controllers/MonsterController";
 import PlayerController from "./controllers/PlayerController";
 import ItemController from "./controllers/ItemController";
 import NpcController from "./controllers/NpcController";
+import MessageController from "./controllers/MessageController";
 
 export default class GameManager {
   constructor(io) {
@@ -17,10 +14,11 @@ export default class GameManager {
     this.playerController = undefined;
     this.itemController = undefined;
     this.npcController = undefined;
-    
+    this.messageController = undefined;
+
     this.levelData = levelData;
 
-    this.playerLocations = [[200,200]];
+    this.playerLocations = [[200, 200]];
     this.chestLocations = {};
     this.monsterLocations = {};
     this.npcLocations = [];
@@ -32,11 +30,15 @@ export default class GameManager {
     this.setupEventListeners();
   }
 
-  setupControllers(){
-    this.monsterController = new MonsterController(this.io,this.monsterLocations);
-    this.playerController = new PlayerController(this.io,this.playerLocations);
+  setupControllers() {
+    this.monsterController = new MonsterController(
+      this.io,
+      this.monsterLocations
+    );
+    this.playerController = new PlayerController(this.io, this.playerLocations);
     this.itemController = new ItemController(this.io);
-    this.npcController = new NpcController(this.io,this.npcLocations);
+    this.npcController = new NpcController(this.io, this.npcLocations);
+    this.messageController = new MessageController(this.io);
   }
 
   parseMapData() {
@@ -84,21 +86,8 @@ export default class GameManager {
       this.itemController.setupEventListeners(socket);
       this.npcController.setupEventListeners(socket);
       this.playerController.setupEventListeners(socket);
-
-      socket.on("sendMessage", async (message, token, player) => {
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { email } = decoded.user;
-          await ChatModel.create({ email, message });
-          this.io.emit("newMessage", {
-            message,
-            name: player.playerName,
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      });
-
+      this.messageController.setupEventListeners(socket);
+      
       socket.on("currents", () => {
         socket.emit("currentPlayers", this.playerController.players);
         socket.emit("currentMonsters", this.monsterController.monsters);

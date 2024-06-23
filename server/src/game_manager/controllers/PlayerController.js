@@ -67,7 +67,7 @@ export default class PlayerController {
         const { name, _id } = decoded.user;
 
         const playerSchema = await UserModel.findById(_id);
-
+        console.log(name);
         const player = this._spawnPlayer(
           socket.id,
           name,

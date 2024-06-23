@@ -6,17 +6,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
-var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
 var levelData = _interopRequireWildcard(require("../../public/assets/level/new_level.json"));
 var _MonsterController = _interopRequireDefault(require("./controllers/MonsterController"));
 var _PlayerController = _interopRequireDefault(require("./controllers/PlayerController"));
 var _ItemController = _interopRequireDefault(require("./controllers/ItemController"));
 var _NpcController = _interopRequireDefault(require("./controllers/NpcController"));
+var _MessageController = _interopRequireDefault(require("./controllers/MessageController"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 var GameManager = exports["default"] = /*#__PURE__*/function () {
@@ -27,6 +24,7 @@ var GameManager = exports["default"] = /*#__PURE__*/function () {
     this.playerController = undefined;
     this.itemController = undefined;
     this.npcController = undefined;
+    this.messageController = undefined;
     this.levelData = levelData;
     this.playerLocations = [[200, 200]];
     this.chestLocations = {};
@@ -47,6 +45,7 @@ var GameManager = exports["default"] = /*#__PURE__*/function () {
       this.playerController = new _PlayerController["default"](this.io, this.playerLocations);
       this.itemController = new _ItemController["default"](this.io);
       this.npcController = new _NpcController["default"](this.io, this.npcLocations);
+      this.messageController = new _MessageController["default"](this.io);
     }
   }, {
     key: "parseMapData",
@@ -97,41 +96,22 @@ var GameManager = exports["default"] = /*#__PURE__*/function () {
         _this2.itemController.setupEventListeners(socket);
         _this2.npcController.setupEventListeners(socket);
         _this2.playerController.setupEventListeners(socket);
-        socket.on("sendMessage", /*#__PURE__*/function () {
-          var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(message, token, player) {
-            var decoded, email;
-            return _regenerator["default"].wrap(function _callee$(_context) {
-              while (1) switch (_context.prev = _context.next) {
-                case 0:
-                  _context.prev = 0;
-                  decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
-                  email = decoded.user.email;
-                  _context.next = 5;
-                  return _ChatModel["default"].create({
-                    email: email,
-                    message: message
-                  });
-                case 5:
-                  _this2.io.emit("newMessage", {
-                    message: message,
-                    name: player.playerName
-                  });
-                  _context.next = 11;
-                  break;
-                case 8:
-                  _context.prev = 8;
-                  _context.t0 = _context["catch"](0);
-                  console.log(_context.t0);
-                case 11:
-                case "end":
-                  return _context.stop();
-              }
-            }, _callee, null, [[0, 8]]);
-          }));
-          return function (_x, _x2, _x3) {
-            return _ref.apply(this, arguments);
-          };
-        }());
+        _this2.messageController.setupEventListeners(socket);
+
+        // socket.on("sendMessage", async (message, token, player) => {
+        //   try {
+        //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        //     const { email } = decoded.user;
+        //     await ChatModel.create({ email, message });
+        //     this.io.emit("newMessage", {
+        //       message,
+        //       name: player.playerName,
+        //     });
+        //   } catch (error) {
+        //     console.log(error);
+        //   }
+        // });
+
         socket.on("currents", function () {
           socket.emit("currentPlayers", _this2.playerController.players);
           socket.emit("currentMonsters", _this2.monsterController.monsters);

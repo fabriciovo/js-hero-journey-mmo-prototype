@@ -28,54 +28,27 @@ var ItemController = exports["default"] = /*#__PURE__*/function () {
     };
   }
   return (0, _createClass2["default"])(ItemController, [{
+    key: "_eventDrop",
+    value: function _eventDrop(socket) {
+      var _this = this;
+      return socket.on("dropItem", function (x, y, item) {
+        _this.itemDictionary[item](x, y);
+      });
+    }
+  }, {
     key: "setupEventListeners",
     value: function setupEventListeners(socket) {
-      var _this = this;
-      socket.on("playerPickupItem", function (itemId, player) {
-        console.log("playerPickupItem");
-        if (_this.items[itemId]) {
-          if (player.canPickupItem()) {
-            player.addItem(_this.items[itemId]);
-            socket.emit("updateItems", player);
-            socket.broadcast.emit("updatePlayersItems", socket.id, player);
-            _this.deleteItems(itemId);
-          }
-        }
-      });
-      socket.on("playerPickupChest", function (chestId, player) {
-        if (_this.chests[chestId]) {
-          var gold = _this.chests[chestId].gold;
-          player.updateGold(gold);
-          socket.emit("updateScore", player.gold);
-          socket.broadcast.emit("updatePlayersScore", socket.id, player.gold);
-          _this.deleteChest(chestId);
-        }
-      });
-
-      // socket.on("pickUpChest", (chestId, player) => {
-      //   if (this.chests[chestId]) {
-      //     const { gold } = this.chests[chestId];
-      //     // updating the players gold
-      //     player.updateGold(gold);
-      //     socket.emit("updateScore", player.gold);
-      //     socket.broadcast.emit(
-      //       "updatePlayersScore",
-      //       socket.id,
-      //       player.gold
-      //     );
-      //   this.deleteChest(chestId);
-      //   }
-      // });
-
-      socket.on("dropItem", function (x, y, item) {
-        _this.itemDictionary[item](x, y);
+      var _this2 = this;
+      this._eventDrop(socket);
+      socket.on("playerCollectedItem", function (itemId) {
+        socket.emit("collectedItem", _this2.items[itemId]);
+        _this2.deleteItems(itemId);
       });
     }
   }, {
     key: "addItems",
     value: function addItems(itemId, item) {
       this.items[itemId] = item;
-      console.log(this.items);
       this.io.emit("itemSpawned", item);
     }
   }, {
@@ -88,7 +61,6 @@ var ItemController = exports["default"] = /*#__PURE__*/function () {
     key: "addChest",
     value: function addChest(chestId, chest) {
       this.chests[chestId] = chest;
-      console.log(this.chests);
       this.io.emit("chestSpawned", chest);
     }
   }, {

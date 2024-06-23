@@ -13,15 +13,16 @@ var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 var _UserModel = _interopRequireDefault(require("../../models/UserModel"));
 var _PlayerModel = _interopRequireDefault(require("../../models/PlayerModel"));
 var PlayerController = exports["default"] = /*#__PURE__*/function () {
-  function PlayerController(io) {
+  function PlayerController(io, playerLocations) {
     (0, _classCallCheck2["default"])(this, PlayerController);
     this.players = {};
-    this.playerLocations = [];
+    this.playerLocations = playerLocations;
     this.io = io;
   }
   return (0, _createClass2["default"])(PlayerController, [{
     key: "setupEventListeners",
     value: function setupEventListeners(socket) {
+      var _this = this;
       this._eventNewPlayer(socket);
       this._eventPlayerMovement(socket);
       this._eventPickupChest(socket);
@@ -30,34 +31,42 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
       this._eventPlayerEquipedItem(socket);
       this._eventPlayerUnequipedItem(socket);
       this._eventHealthPotion(socket);
-      this._eventPickupItem(socket);
       this._eventAttackedPlayer(socket);
       this._eventPlayerHit(socket);
       this._eventSendBuyItemMessage(socket);
       this._eventPlayerUpdateXp(socket);
+      this._eventLevelUp(socket);
       this._eventDisconnect(socket);
+      this._eventSavePlayerData(socket);
+      socket.on("playerGetItem", function (item, playerId) {
+        console.log("sdadssda");
+        var player = _this.players[playerId];
+        player.addItem(item);
+        socket.emit("updateItems", player);
+        socket.broadcast.emit("updatePlayersItems", playerId, player);
+      });
     }
   }, {
     key: "_eventSavePlayerData",
     value: function _eventSavePlayerData(socket) {
-      var _this = this;
+      var _this2 = this;
       return socket.on("savePlayerData", /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
         return _regenerator["default"].wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              if (!_this.players[socket.id].items) {
-                _this.players[socket.id].items = null;
+              if (!_this2.players[socket.id].items) {
+                _this2.players[socket.id].items = null;
               }
-              if (!_this.players[socket.id].equipedItems) {
-                _this.players[socket.id].equipedItems = null;
+              if (!_this2.players[socket.id].equipedItems) {
+                _this2.players[socket.id].equipedItems = null;
               }
               _context.next = 5;
               return _UserModel["default"].updateOne({
-                username: _this.players[socket.id].playerName
+                username: _this2.players[socket.id].playerName
               }, {
                 $set: {
-                  player: _this.players[socket.id]
+                  player: _this2.players[socket.id]
                 }
               });
             case 5:
@@ -77,23 +86,23 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
   }, {
     key: "_eventNewPlayer",
     value: function _eventNewPlayer(socket) {
-      var _this2 = this;
-      socket.on("newPlayer", /*#__PURE__*/function () {
+      var _this3 = this;
+      return socket.on("newPlayer", /*#__PURE__*/function () {
         var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(token, key, instanceId) {
           var decoded, _decoded$user, name, _id, playerSchema, player;
           return _regenerator["default"].wrap(function _callee2$(_context2) {
             while (1) switch (_context2.prev = _context2.next) {
               case 0:
-                console.log("Player newPlayer");
-                _context2.prev = 1;
+                _context2.prev = 0;
                 decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
                 _decoded$user = decoded.user, name = _decoded$user.name, _id = _decoded$user._id;
-                _context2.next = 6;
+                _context2.next = 5;
                 return _UserModel["default"].findById(_id);
-              case 6:
+              case 5:
                 playerSchema = _context2.sent;
-                player = _this2._spawnPlayer(socket.id, name, key, playerSchema.player);
-                socket.emit("currentPlayers", _this2.players, instanceId);
+                console.log(name);
+                player = _this3._spawnPlayer(socket.id, name, key, playerSchema.player);
+                socket.emit("currentPlayers", _this3.players, instanceId);
 
                 // inform the other players of the new player that joined
                 socket.broadcast.emit("spawnPlayer", player);
@@ -103,14 +112,14 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
                 break;
               case 14:
                 _context2.prev = 14;
-                _context2.t0 = _context2["catch"](1);
+                _context2.t0 = _context2["catch"](0);
                 console.log(_context2.t0);
                 socket.emit("invalidToken");
               case 18:
               case "end":
                 return _context2.stop();
             }
-          }, _callee2, null, [[1, 14]]);
+          }, _callee2, null, [[0, 14]]);
         }));
         return function (_x, _x2, _x3) {
           return _ref2.apply(this, arguments);
@@ -120,73 +129,62 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
   }, {
     key: "_eventPlayerMovement",
     value: function _eventPlayerMovement(socket) {
-      var _this3 = this;
+      var _this4 = this;
       return socket.on("playerMovement", function (playerData) {
-        if (_this3.players[socket.id]) {
-          _this3.players[socket.id].x = playerData.x;
-          _this3.players[socket.id].y = playerData.y;
-          _this3.players[socket.id].flipX = playerData.flipX;
-          _this3.players[socket.id].actionAActive = playerData.actionAActive;
-          _this3.players[socket.id].potionAActive = playerData.potionAActive;
-          _this3.players[socket.id].frame = playerData.frame;
-          _this3.players[socket.id].currentDirection = playerData.currentDirection;
+        if (_this4.players[socket.id]) {
+          _this4.players[socket.id].x = playerData.x;
+          _this4.players[socket.id].y = playerData.y;
+          _this4.players[socket.id].flipX = playerData.flipX;
+          _this4.players[socket.id].actionAActive = playerData.actionAActive;
+          _this4.players[socket.id].potionAActive = playerData.potionAActive;
+          _this4.players[socket.id].frame = playerData.frame;
+          _this4.players[socket.id].currentDirection = playerData.currentDirection;
           // emit a message to all players about the player that moved
-          _this3.io.emit("playerMoved", _this3.players[socket.id]);
+          _this4.io.emit("playerMoved", _this4.players[socket.id]);
         }
       });
     }
   }, {
     key: "_eventPickupChest",
     value: function _eventPickupChest(socket) {
-      var _this4 = this;
+      var _this5 = this;
       return socket.on("pickUpChest", function (chestId) {
-        console.log("pickUpChest");
-        console.log(chestId);
-        _this4.io.emit("playerPickupChest", chestId, _this4.players[socket.id]);
+        var player = _this5.players[socket.id];
+        player.updateGold(20);
+        socket.emit("updateScore", player.gold);
+        socket.broadcast.emit("updatePlayersScore", socket.id, player.gold);
+        _this5.io.emit("chestRemoved", chestId);
       });
     }
   }, {
     key: "_eventPickupItem",
     value: function _eventPickupItem(socket) {
-      var _this5 = this;
-      return socket.on("levelUp", function () {
-        _this5.players[socket.id].levelUp();
-        _this5.io.emit("updatePlayerStats", socket.id, _this5.players[socket.id].level, _this5.players[socket.id].attack, _this5.players[socket.id].defense, _this5.players[socket.id].maxHealth, _this5.players[socket.id].exp, _this5.players[socket.id].maxExp);
+      var _this6 = this;
+      return socket.on("pickUpItem", function (itemId) {
+        var player = _this6.players[socket.id];
+        if (player.canPickupItem()) {
+          socket.emit("collectItem", itemId);
+        }
       });
     }
   }, {
     key: "_eventPlayerDroppedItem",
     value: function _eventPlayerDroppedItem(socket) {
-      var _this6 = this;
+      var _this7 = this;
       return socket.on("playerDroppedItem", function (itemId) {
-        _this6.players[socket.id].removeItem(itemId);
-        socket.emit("updateItems", _this6.players[socket.id]);
-        socket.broadcast.emit("updatePlayersItems", socket.id, _this6.players[socket.id]);
+        _this7.players[socket.id].removeItem(itemId);
+        socket.emit("updateItems", _this7.players[socket.id]);
+        socket.broadcast.emit("updatePlayersItems", socket.id, _this7.players[socket.id]);
       });
     }
   }, {
     key: "_eventPlayerEquipedItem",
     value: function _eventPlayerEquipedItem(socket) {
-      var _this7 = this;
-      return socket.on("playerEquipedItem", function (itemId) {
-        if (_this7.players[socket.id].items[itemId]) {
-          if (_this7.players[socket.id].canEquipItem()) {
-            _this7.players[socket.id].equipItem(_this7.players[socket.id].items[itemId]);
-            socket.emit("updateItems", _this7.players[socket.id]);
-            socket.broadcast.emit("updatePlayersItems", socket.id, _this7.players[socket.id]);
-          }
-        }
-      });
-    }
-  }, {
-    key: "_eventPlayerUnequipedItem",
-    value: function _eventPlayerUnequipedItem(socket) {
       var _this8 = this;
-      return socket.on("playerUnequipedItem", function (itemId) {
-        if (_this8.players[socket.id].equipedItems[itemId]) {
-          if (_this8.players[socket.id].canPickupItem()) {
-            _this8.players[socket.id].addItem(_this8.players[socket.id].equipedItems[itemId]);
-            _this8.players[socket.id].removeEquipedItem(itemId);
+      return socket.on("playerEquipedItem", function (itemId) {
+        if (_this8.players[socket.id].items[itemId]) {
+          if (_this8.players[socket.id].canEquipItem()) {
+            _this8.players[socket.id].equipItem(_this8.players[socket.id].items[itemId]);
             socket.emit("updateItems", _this8.players[socket.id]);
             socket.broadcast.emit("updatePlayersItems", socket.id, _this8.players[socket.id]);
           }
@@ -194,49 +192,73 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
       });
     }
   }, {
+    key: "_eventPlayerUnequipedItem",
+    value: function _eventPlayerUnequipedItem(socket) {
+      var _this9 = this;
+      return socket.on("playerUnequipedItem", function (itemId) {
+        if (_this9.players[socket.id].equipedItems[itemId]) {
+          if (_this9.players[socket.id].canPickupItem()) {
+            _this9.players[socket.id].addItem(_this9.players[socket.id].equipedItems[itemId]);
+            _this9.players[socket.id].removeEquipedItem(itemId);
+            socket.emit("updateItems", _this9.players[socket.id]);
+            socket.broadcast.emit("updatePlayersItems", socket.id, _this9.players[socket.id]);
+          }
+        }
+      });
+    }
+  }, {
+    key: "_eventLevelUp",
+    value: function _eventLevelUp(socket) {
+      var _this10 = this;
+      return socket.on("levelUp", function () {
+        _this10.players[socket.id].levelUp();
+        _this10.io.emit("updatePlayerStats", socket.id, _this10.players[socket.id].level, _this10.players[socket.id].attack, _this10.players[socket.id].defense, _this10.players[socket.id].maxHealth, _this10.players[socket.id].exp, _this10.players[socket.id].maxExp);
+      });
+    }
+  }, {
     key: "_eventHealthPotion",
     value: function _eventHealthPotion(socket) {
-      var _this9 = this;
+      var _this11 = this;
       return socket.on("healthPotion", function (playerId, health) {
-        _this9.players[playerId];
-        _this9.players[playerId].potion(health);
-        _this9.io.emit("updatePlayerHealth", playerId, _this9.players[playerId].health);
+        _this11.players[playerId];
+        _this11.players[playerId].potion(health);
+        _this11.io.emit("updatePlayerHealth", playerId, _this11.players[playerId].health);
       });
     }
   }, {
     key: "_eventAttackedPlayer",
     value: function _eventAttackedPlayer(socket) {
-      var _this10 = this;
+      var _this12 = this;
       return socket.on("attackedPlayer", function (attackedPlayerId) {
-        if (_this10.players[attackedPlayerId]) {
+        if (_this12.players[attackedPlayerId]) {
           // get required info from attacked player
-          var gold = _this10.players[attackedPlayerId].gold;
-          var playerAttackValue = _this10.players[socket.id].attack;
+          var gold = _this12.players[attackedPlayerId].gold;
+          var playerAttackValue = _this12.players[socket.id].attack;
 
           // subtract health from attacked player
-          _this10.players[attackedPlayerId].playerAttacked(playerAttackValue);
+          _this12.players[attackedPlayerId].playerAttacked(playerAttackValue);
 
           // check attacked players health, if dead send gold to other player
-          if (_this10.players[attackedPlayerId].health <= 0) {
+          if (_this12.players[attackedPlayerId].health <= 0) {
             // get the amount of gold, and update player object
-            _this10.players[socket.id].updateGold(gold);
+            _this12.players[socket.id].updateGold(gold);
 
             // respawn attacked player
-            _this10.players[attackedPlayerId].respawn(_this10.players);
-            _this10.io.emit("respawnPlayer", _this10.players[attackedPlayerId]);
+            _this12.players[attackedPlayerId].respawn(_this12.players);
+            _this12.io.emit("respawnPlayer", _this12.players[attackedPlayerId]);
 
             // send update gold message to player
-            socket.emit("updateScore", _this10.players[socket.id].gold);
+            socket.emit("updateScore", _this12.players[socket.id].gold);
 
             // reset the attacked players gold
-            _this10.players[attackedPlayerId].updateGold(-gold);
-            _this10.io.to("".concat(attackedPlayerId)).emit("updateScore", _this10.players[attackedPlayerId].gold);
+            _this12.players[attackedPlayerId].updateGold(-gold);
+            _this12.io.to("".concat(attackedPlayerId)).emit("updateScore", _this12.players[attackedPlayerId].gold);
 
             // add bonus health to the player
-            _this10.players[socket.id].updateHealth(15);
-            _this10.io.emit("updatePlayerHealth", socket.id, _this10.players[socket.id].health);
+            _this12.players[socket.id].updateHealth(15);
+            _this12.io.emit("updatePlayerHealth", socket.id, _this12.players[socket.id].health);
           } else {
-            _this10.io.emit("updatePlayerHealth", attackedPlayerId, _this10.players[attackedPlayerId].health);
+            _this12.io.emit("updatePlayerHealth", attackedPlayerId, _this12.players[attackedPlayerId].health);
           }
         }
       });
@@ -244,77 +266,55 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
   }, {
     key: "_eventPlayerHit",
     value: function _eventPlayerHit(socket) {
-      var _this11 = this;
+      var _this13 = this;
       return socket.on("playerHit", function (playerId, monsterAttack) {
-        var gold = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 20;
-        _this11.players[playerId].playerAttacked(monsterAttack);
-        // check attacked players health, if dead send gold to other player
-        if (_this11.players[playerId].health <= 0) {
-          // get the amount of gold, and update player object
-          _this11.players[playerId].updateGold(gold);
+        _this13.players[playerId].playerAttacked(monsterAttack);
+        _this13.io.emit("updatePlayerHealth", playerId, _this13.players[playerId].health);
+        // check the player's health, if below 0 have the player respawn
+        if (_this13.players[playerId].health <= 0) {
+          // update the gold the player has
+          _this13.players[playerId].updateGold(parseInt(-_this13.players[playerId].gold / 2, 10));
+          socket.emit("updateScore", _this13.players[playerId].gold);
 
-          // respawn attacked player
-          _this11.players[playerId].respawn(_this11.players);
-          _this11.io.emit("respawnPlayer", _this11.players[playerId]);
-
-          // send update gold message to player
-          socket.emit("updateScore", _this11.players[socket.id].gold);
-
-          // reset the attacked players gold
-          _this11.players[playerId].updateGold(-gold);
-          _this11.io.to("".concat(playerId)).emit("updateScore", _this11.players[playerId].gold);
-
-          // add bonus health to the player
-          _this11.players[socket.id].updateHealth(15);
-          _this11.io.emit("updatePlayerHealth", socket.id, _this11.players[socket.id].health);
-        } else {
-          _this11.io.emit("updatePlayerHealth", playerId, _this11.players[playerId].health);
+          // respawn the player
+          _this13.players[playerId].respawn(_this13.players);
+          _this13.io.emit("respawnPlayer", _this13.players[playerId]);
         }
       });
     }
   }, {
     key: "_eventSendBuyItemMessage",
     value: function _eventSendBuyItemMessage(socket) {
-      var _this12 = this;
+      var _this14 = this;
       return socket.on("sendBuyItemMessage", function (item) {
-        _this12.players[socket.id].potions++;
-        _this12.players[socket.id].updateGold(-item.price);
-        socket.emit("updateScore", _this12.players[socket.id].gold);
-        socket.broadcast.emit("updatePlayersScore", socket.id, _this12.players[socket.id].gold);
-        // check the player's health, if below 0 have the player respawn
-        if (_this12.players[playerId].health <= 0) {
-          // update the gold the player has
-          _this12.players[playerId].updateGold(parseInt(-_this12.players[playerId].gold / 2, 10));
-          _this12.players[playerId].updateExp(parseInt(-_this12.players[playerId].exp / 2, 10));
-          socket.emit("updateScore", _this12.players[playerId].gold);
-
-          // respawn the player
-          _this12.players[playerId].respawn(_this12.players);
-          _this12.io.emit("respawnPlayer", _this12.players[playerId]);
-        }
+        _this14.players[socket.id].potions++;
+        _this14.players[socket.id].updateGold(-item.price);
+        socket.emit("updateScore", _this14.players[socket.id].gold);
+        socket.broadcast.emit("updatePlayersScore", socket.id, _this14.players[socket.id].gold);
       });
     }
   }, {
     key: "_eventPlayerUpdateXp",
     value: function _eventPlayerUpdateXp(socket) {
-      var _this13 = this;
+      var _this15 = this;
       return socket.on("playerUpdateXp", function (playerId, exp) {
-        _this13.players[playerId].updateExp(exp);
-        _this13.io.emit("updateXp", exp, socket.id);
+        console.log("playerUpdateXp");
+        _this15.players[playerId].updateExp(exp);
+        _this15.io.emit("updateXp", exp, socket.id);
       });
     }
   }, {
     key: "_eventDisconnect",
     value: function _eventDisconnect(socket) {
-      var _this14 = this;
+      var _this16 = this;
       return socket.on("disconnect", function () {
         // delete user data from server
 
         console.log("Player Disconnect");
-        delete _this14.players[socket.id];
+        delete _this16.players[socket.id];
 
         // emit a message to all players to remove this player
-        _this14.io.emit("disconnected", socket.id);
+        _this16.io.emit("disconnected", socket.id);
       });
     }
   }, {

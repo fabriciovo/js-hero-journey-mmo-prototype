@@ -38,7 +38,7 @@ var MonsterController = exports["default"] = /*#__PURE__*/function () {
         var playerAttackValue = playerAttack;
         monster.loseHealth(playerAttackValue);
         if (monster.health <= 0) {
-          socket.emit("playerUpdateXp", playerId, exp);
+          _this.io.emit("updateXp", exp, playerId);
           _this.deleteMonster(monster.id);
         } else {
           socket.emit("updateMonsterHealth", monsterId, monster.health);

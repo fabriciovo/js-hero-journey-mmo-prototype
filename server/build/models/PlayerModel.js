@@ -112,7 +112,7 @@ var PlayerModel = exports["default"] = /*#__PURE__*/function () {
       this.maxHealth += 1;
       this.level++;
       var calcNewExp = this.exp - this.maxExp;
-      this.exp = calcNewExp;
+      this.exp = calcNewExp <= 0 ? 0 : calcNewExp;
       this.maxExp = this.maxExp * 2;
     }
   }, {
