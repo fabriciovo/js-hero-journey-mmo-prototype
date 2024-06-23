@@ -750,8 +750,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   npcAction(player, npc) {
-    npc.action(this.uiScene, player);
-    console.log(player);
+    npc.action(player);
   }
 
   collectChest(player, chest) {

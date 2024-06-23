@@ -5,6 +5,7 @@ export default class Npc extends Entity {
     super(scene, x, y, key, frame, id);
     this.key = key;
     this.player = null;
+    this.scene = scene;
     this.scene.anims.create({
       key: `idle_${this.key}`,
       frames: this.scene.anims.generateFrameNumbers(this.key, {
@@ -20,22 +21,16 @@ export default class Npc extends Entity {
 
   update() {
     if (this.player) {
-      if (
-        !Phaser.Geom.Intersects.RectangleToRectangle(
-          this.player.getBounds(),
-          this.player.getBounds()
-        )
-      ) {
+      if (!this.scene.physics.overlap(this, this.player, false, false, this)) {
         this.player = null;
-        console.log(this.player);
-        uiScene.toggleShop(null, false);
+        this.scene.uiScene.toggleShop(this.player, false);
       }
     }
   }
 
-  action(uiScene, player) {
+  action(player) {
     this.player = player;
-    uiScene.toggleShop(player, true);
+    this.scene.uiScene.toggleShop(this.player, true);
   }
 
   createNpcName() {
