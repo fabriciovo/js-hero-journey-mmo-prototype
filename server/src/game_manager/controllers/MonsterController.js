@@ -55,7 +55,6 @@ export default class MonsterController {
       this.monsterLocations[
         Math.floor(Math.random() * this.monsterLocations.length)
       ];
-
     if (this.monsters.length > 0) {
       const invalidLocation = this.monsters.some((obj) => {
         if (obj.x === location[0] && obj.y === location[1]) {

@@ -20,7 +20,7 @@ export default class GameManager {
 
     this.playerLocations = [[200, 200]];
     this.chestLocations = {};
-    this.monsterLocations = {};
+    this.monsterLocations = [];
     this.npcLocations = [];
   }
 
@@ -50,11 +50,7 @@ export default class GameManager {
         });
       } else if (layer.name === "monster_locations") {
         layer.objects.forEach((obj) => {
-          if (this.monsterLocations[obj.properties.spawner]) {
-            this.monsterLocations[obj.properties.spawner].push([obj.x, obj.y]);
-          } else {
-            this.monsterLocations[obj.properties.spawner] = [[obj.x, obj.y]];
-          }
+          this.monsterLocations.push([obj.x, obj.y]);
         });
       } else if (layer.name === "chest_locations") {
         layer.objects.forEach((obj) => {
@@ -87,7 +83,7 @@ export default class GameManager {
       this.npcController.setupEventListeners(socket);
       this.playerController.setupEventListeners(socket);
       this.messageController.setupEventListeners(socket);
-      
+
       socket.on("currents", () => {
         socket.emit("currentPlayers", this.playerController.players);
         socket.emit("currentMonsters", this.monsterController.monsters);

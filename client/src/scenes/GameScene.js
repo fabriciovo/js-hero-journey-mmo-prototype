@@ -116,7 +116,6 @@ export default class GameScene extends Phaser.Scene {
 
     //Npc
     this.socket.on("npcSpawned", (npc) => {
-      console.log("npc");
       this.spawnNpc(npc);
     });
 

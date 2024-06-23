@@ -5,7 +5,6 @@ export default class NpcController {
     this.npcs = {};
     this.npcsLocations = npcsLocations;
     this.io = io;
-    console.log(this.npcsLocations);
 
     this.spawnNpc();
   }

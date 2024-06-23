@@ -27,7 +27,6 @@ export default class PlayerController {
     this._eventSavePlayerData(socket);
 
     socket.on("playerGetItem", (item, playerId) => {
-      console.log("sdadssda");
       const player = this.players[playerId];
       player.addItem(item);
       socket.emit("updateItems", player);
@@ -284,7 +283,6 @@ export default class PlayerController {
 
   _eventPlayerUpdateXp(socket) {
     return socket.on("playerUpdateXp", (playerId, exp) => {
-      console.log("playerUpdateXp");
       this.players[playerId].updateExp(exp);
       this.io.emit("updateXp", exp, socket.id);
     });
