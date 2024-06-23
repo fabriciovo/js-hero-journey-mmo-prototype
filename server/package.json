@@ -16,10 +16,6 @@
     "dev": "npm run clean && npm run build && node ./build/index.js"
 
   },
-  "engines": {
-    "node": "16.13.1",
-    "npm": "7.21.0"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

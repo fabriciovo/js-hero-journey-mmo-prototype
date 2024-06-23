@@ -28,7 +28,7 @@ var GameManager = exports["default"] = /*#__PURE__*/function () {
     this.levelData = levelData;
     this.playerLocations = [[200, 200]];
     this.chestLocations = {};
-    this.monsterLocations = {};
+    this.monsterLocations = [];
     this.npcLocations = [];
   }
   return (0, _createClass2["default"])(GameManager, [{
@@ -59,11 +59,7 @@ var GameManager = exports["default"] = /*#__PURE__*/function () {
           });
         } else if (layer.name === "monster_locations") {
           layer.objects.forEach(function (obj) {
-            if (_this.monsterLocations[obj.properties.spawner]) {
-              _this.monsterLocations[obj.properties.spawner].push([obj.x, obj.y]);
-            } else {
-              _this.monsterLocations[obj.properties.spawner] = [[obj.x, obj.y]];
-            }
+            _this.monsterLocations.push([obj.x, obj.y]);
           });
         } else if (layer.name === "chest_locations") {
           layer.objects.forEach(function (obj) {
@@ -97,21 +93,6 @@ var GameManager = exports["default"] = /*#__PURE__*/function () {
         _this2.npcController.setupEventListeners(socket);
         _this2.playerController.setupEventListeners(socket);
         _this2.messageController.setupEventListeners(socket);
-
-        // socket.on("sendMessage", async (message, token, player) => {
-        //   try {
-        //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        //     const { email } = decoded.user;
-        //     await ChatModel.create({ email, message });
-        //     this.io.emit("newMessage", {
-        //       message,
-        //       name: player.playerName,
-        //     });
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        // });
-
         socket.on("currents", function () {
           socket.emit("currentPlayers", _this2.playerController.players);
           socket.emit("currentMonsters", _this2.monsterController.monsters);

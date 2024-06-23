@@ -39,7 +39,6 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
       this._eventDisconnect(socket);
       this._eventSavePlayerData(socket);
       socket.on("playerGetItem", function (item, playerId) {
-        console.log("sdadssda");
         var player = _this.players[playerId];
         player.addItem(item);
         socket.emit("updateItems", player);
@@ -298,7 +297,6 @@ var PlayerController = exports["default"] = /*#__PURE__*/function () {
     value: function _eventPlayerUpdateXp(socket) {
       var _this15 = this;
       return socket.on("playerUpdateXp", function (playerId, exp) {
-        console.log("playerUpdateXp");
         _this15.players[playerId].updateExp(exp);
         _this15.io.emit("updateXp", exp, socket.id);
       });

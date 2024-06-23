@@ -14,7 +14,6 @@ var NpcController = exports["default"] = /*#__PURE__*/function () {
     this.npcs = {};
     this.npcsLocations = npcsLocations;
     this.io = io;
-    console.log(this.npcsLocations);
     this.spawnNpc();
   }
   return (0, _createClass2["default"])(NpcController, [{
