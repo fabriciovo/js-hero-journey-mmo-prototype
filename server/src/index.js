@@ -13,13 +13,14 @@ import secureRoutes from "./routes/secure";
 import GameManager from "./game_manager/GameManager";
 
 const app = express();
-const server = require("https").Server(app);
+const server = require("http").Server(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: process.env.CORS_ORIGIN,
     methods: ["GET", "POST"]
   }
 });
+
 const gameManager = new GameManager(io);
 gameManager.setup();
 const port = process.env.PORT || 3000;
@@ -36,7 +37,6 @@ if (process.env.MONGO_USER_NAME && process.env.MONGO_PASSWORD) {
   mongoConfig.auth.password = process.env.MONGO_PASSWORD;
 }
 
-//TODO
 mongoose.connect(uri, mongoConfig);
 mongoose.connection.on("error", (error) => {
   console.log(error);
@@ -63,10 +63,10 @@ app.get(
   }
 );
 
-app.use(express.static(path.join(__dirname, "/../public")));
+app.use(express.static(path.join(__dirname, "../public")));
 
 app.get("/", (request, response) => {
-  response.send(path.join(__dirname, "/../index.html"));
+  response.sendFile(path.join(__dirname, "../index.html"));
 });
 
 app.use("/", routes);
