@@ -17,6 +17,7 @@
 
   },
   "author": "",
+  "type": "module",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
