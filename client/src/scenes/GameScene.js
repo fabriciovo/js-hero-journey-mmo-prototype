@@ -380,7 +380,6 @@ export default class GameScene extends Phaser.Scene {
       const message = this.inputMessageField.value;
       if (message) {
         this.inputMessageField.value = "";
-        console.log(this.player);
         this.socket.emit("sendMessage", message, getCookie("jwt"));
       }
     }
