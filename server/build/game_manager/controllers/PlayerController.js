@@ -10,8 +10,8 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
-var _UserModel = _interopRequireDefault(require("../../models/UserModel"));
-var _PlayerModel = _interopRequireDefault(require("../../models/PlayerModel"));
+var _UserModel = _interopRequireDefault(require("../../models/UserModel.js"));
+var _PlayerModel = _interopRequireDefault(require("../../models/PlayerModel.js"));
 var PlayerController = exports["default"] = /*#__PURE__*/function () {
   function PlayerController(io, playerLocations) {
     (0, _classCallCheck2["default"])(this, PlayerController);

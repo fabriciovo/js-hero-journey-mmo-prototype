@@ -9,11 +9,11 @@ exports["default"] = void 0;
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 var levelData = _interopRequireWildcard(require("../../public/assets/level/new_level.json"));
-var _MonsterController = _interopRequireDefault(require("./controllers/MonsterController"));
-var _PlayerController = _interopRequireDefault(require("./controllers/PlayerController"));
-var _ItemController = _interopRequireDefault(require("./controllers/ItemController"));
-var _NpcController = _interopRequireDefault(require("./controllers/NpcController"));
-var _MessageController = _interopRequireDefault(require("./controllers/MessageController"));
+var _MonsterController = _interopRequireDefault(require("./controllers/MonsterController.js"));
+var _PlayerController = _interopRequireDefault(require("./controllers/PlayerController.js"));
+var _ItemController = _interopRequireDefault(require("./controllers/ItemController.js"));
+var _NpcController = _interopRequireDefault(require("./controllers/NpcController.js"));
+var _MessageController = _interopRequireDefault(require("./controllers/MessageController.js"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 var GameManager = exports["default"] = /*#__PURE__*/function () {

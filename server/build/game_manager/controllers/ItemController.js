@@ -8,8 +8,8 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = void 0;
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _ChestModel = _interopRequireDefault(require("../../models/ChestModel"));
-var _ItemModel = _interopRequireDefault(require("../../models/ItemModel"));
+var _ChestModel = _interopRequireDefault(require("../../models/ChestModel.js"));
+var _ItemModel = _interopRequireDefault(require("../../models/ItemModel.js"));
 var itemData = _interopRequireWildcard(require("../../../public/assets/level/tools.json"));
 var _uuid = require("uuid");
 var _utils = require("../utils");

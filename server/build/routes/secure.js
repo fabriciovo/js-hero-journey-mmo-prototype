@@ -8,7 +8,7 @@ exports["default"] = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _express = _interopRequireDefault(require("express"));
-var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
+var _ChatModel = _interopRequireDefault(require("../models/ChatModel.js"));
 var router = _express["default"].Router();
 router.post('/chat', /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(request, response) {

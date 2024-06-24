@@ -10,7 +10,7 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
-var _ChatModel = _interopRequireDefault(require("../../models/ChatModel"));
+var _ChatModel = _interopRequireDefault(require("../../models/ChatModel.js"));
 var MessageController = exports["default"] = /*#__PURE__*/function () {
   function MessageController(io) {
     (0, _classCallCheck2["default"])(this, MessageController);

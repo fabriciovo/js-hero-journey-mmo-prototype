@@ -36,12 +36,14 @@ export default class PlayerModel {
   }
 
   addItem(item) {
-    this.items[item.id] = item;
+    console.log(item)
+    if(item){
+      this.items[item.id] = item;
+    }
   }
 
   equipItem(item) {
     this.equipedItems[item.id] = item;
-
     this.attack += this.equipedItems[item.id].attackBonus;
     this.defense += this.equipedItems[item.id].defenseBonus;
     this.maxHealth += this.equipedItems[item.id].healthBonus;

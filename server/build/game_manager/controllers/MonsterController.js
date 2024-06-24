@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = void 0;
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _MonsterModel = _interopRequireDefault(require("../../models/MonsterModel"));
+var _MonsterModel = _interopRequireDefault(require("../../models/MonsterModel.js"));
 var enemyData = _interopRequireWildcard(require("../../../public/assets/Enemies/enemies.json"));
 var _uuid = require("uuid");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
