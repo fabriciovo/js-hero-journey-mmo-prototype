@@ -1,4 +1,4 @@
-import MonsterModel from "../../models/MonsterModel";
+import MonsterModel from "../../models/MonsterModel.js";
 import * as enemyData from "../../../public/assets/Enemies/enemies.json";
 import { v4 } from "uuid";
 

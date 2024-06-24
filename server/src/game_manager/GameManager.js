@@ -1,10 +1,10 @@
 import * as levelData from "../../public/assets/level/new_level.json";
 
-import MonsterController from "./controllers/MonsterController";
-import PlayerController from "./controllers/PlayerController";
-import ItemController from "./controllers/ItemController";
-import NpcController from "./controllers/NpcController";
-import MessageController from "./controllers/MessageController";
+import MonsterController from "./controllers/MonsterController.js";
+import PlayerController from "./controllers/PlayerController.js";
+import ItemController from "./controllers/ItemController.js";
+import NpcController from "./controllers/NpcController.js";
+import MessageController from "./controllers/MessageController.js";
 
 export default class GameManager {
   constructor(io) {

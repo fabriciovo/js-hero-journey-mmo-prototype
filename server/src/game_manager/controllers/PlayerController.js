@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
-import UserModel from "../../models/UserModel";
-import PlayerModel from "../../models/PlayerModel";
+import UserModel from "../../models/UserModel.js";
+import PlayerModel from "../../models/PlayerModel.js";
 export default class PlayerController {
   constructor(io, playerLocations) {
     this.players = {};

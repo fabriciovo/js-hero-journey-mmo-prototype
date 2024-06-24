@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import ChatModel from "../../models/ChatModel";
+import ChatModel from "../../models/ChatModel.js";
 export default class MessageController {
   constructor(io) {
     this.io = io;

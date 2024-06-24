@@ -7,18 +7,18 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import mongoose from "mongoose";
 
-import routes from "./routes/main";
-import passwordRoutes from "./routes/password";
-import secureRoutes from "./routes/secure";
-import GameManager from "./game_manager/GameManager";
+import routes from "./routes/main.js";
+import passwordRoutes from "./routes/password.js";
+import secureRoutes from "./routes/secure.js";
+import GameManager from "./game_manager/GameManager.js";
 
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: [process.env.CORS_ORIGIN, "http://127.0.0.1:5500"],
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 
 const gameManager = new GameManager(io);

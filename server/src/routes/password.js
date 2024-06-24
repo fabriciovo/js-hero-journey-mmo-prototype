@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 import crypto from 'crypto';
 
-import UserModel from '../models/UserModel';
+import UserModel from '../models/UserModel.js';
 
 const email = process.env.EMAIL;
 const password = process.env.PASSWORD;

@@ -1,5 +1,5 @@
-import ChestModel from "../../models/ChestModel";
-import ItemModel from "../../models/ItemModel";
+import ChestModel from "../../models/ChestModel.js";
+import ItemModel from "../../models/ItemModel.js";
 import * as itemData from "../../../public/assets/level/tools.json";
 import { v4 } from "uuid";
 import { getRandonValues, randomNumber, WeaponTypes } from "../utils";
