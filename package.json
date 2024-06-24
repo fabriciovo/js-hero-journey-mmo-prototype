@@ -14,8 +14,8 @@
     "build": "babel -d ./build ./src -s",
     "start": "npm run build && node ./build/index.js",
     "dev": "npm run clean && npm run build && node ./build/index.js"
+
   },
-  "type": "module",
   "author": "",
   "license": "ISC",
   "dependencies": {
