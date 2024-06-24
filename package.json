@@ -20,6 +20,7 @@
     "node": "16.13.1",
     "npm": "7.21.0"
   },
+  "type": "module",
   "author": "",
   "license": "ISC",
   "dependencies": {
