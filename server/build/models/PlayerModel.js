@@ -38,7 +38,10 @@ var PlayerModel = exports["default"] = /*#__PURE__*/function () {
   return (0, _createClass2["default"])(PlayerModel, [{
     key: "addItem",
     value: function addItem(item) {
-      this.items[item.id] = item;
+      console.log(item);
+      if (item) {
+        this.items[item.id] = item;
+      }
     }
   }, {
     key: "equipItem",
