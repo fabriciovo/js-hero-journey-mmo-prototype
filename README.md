@@ -14,7 +14,7 @@
 * MongoDB
 
 ## App
-* Heroku: https://herojourney.herokuapp.com/
+* link: https://js-hero-journey-mmo-prototype.onrender.com/
 
 
 ## Credits
